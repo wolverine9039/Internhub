@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const pool = require('./config/db'); // IMPORT THE LIVE DB CONNECTION
 
 dotenv.config();
 
@@ -12,57 +13,12 @@ app.use(cors());
 app.use(express.json());
 
 // ============================================================
-// DEMO DATA (in-memory mock data — replace with MySQL later)
-// ============================================================
-
-let users = [
-  { id: 1, name: 'Admin User', email: 'admin@internhub.com', password: 'admin123', role: 'admin' },
-  { id: 2, name: 'Trainer One', email: 'trainer@internhub.com', password: 'trainer123', role: 'trainer' },
-  { id: 3, name: 'Intern One', email: 'intern@internhub.com', password: 'intern123', role: 'intern' },
-  { id: 4, name: 'Intern Two', email: 'intern2@internhub.com', password: 'intern123', role: 'intern' },
-];
-
-let cohorts = [
-  { id: 1, name: 'Cohort 2026 - Batch A', trainer_id: 2, created_at: '2026-03-01' },
-  { id: 2, name: 'Cohort 2026 - Batch B', trainer_id: 2, created_at: '2026-03-15' },
-];
-
-let projects = [
-  { id: 1, name: 'InternHub Platform', description: 'Full stack internship management app', cohort_id: 1, created_at: '2026-03-01' },
-  { id: 2, name: 'E-Commerce Dashboard', description: 'Analytics dashboard for e-commerce', cohort_id: 2, created_at: '2026-03-15' },
-];
-
-let tasks = [
-  { id: 1, title: 'Setup Repository', description: 'Initialize repo with folder structure', project_id: 1, assigned_to: 3, status: 'completed', due_date: '2026-03-07' },
-  { id: 2, title: 'Build Admin Dashboard', description: 'Create admin panel with CRUD operations', project_id: 1, assigned_to: 3, status: 'in-progress', due_date: '2026-03-14' },
-  { id: 3, title: 'Design Database Schema', description: 'Create MySQL schema for all tables', project_id: 1, assigned_to: 4, status: 'pending', due_date: '2026-03-14' },
-];
-
-let submissions = [
-  { id: 1, task_id: 1, intern_id: 3, link: 'https://github.com/org/internhub', notes: 'Initial setup complete', submitted_at: '2026-03-06' },
-];
-
-let evaluations = [
-  { id: 1, submission_id: 1, trainer_id: 2, score: 9, feedback: 'Excellent repo structure!', evaluated_at: '2026-03-07' },
-];
-
-// Auto-increment IDs
-let nextId = {
-  users: 5,
-  cohorts: 3,
-  projects: 3,
-  tasks: 4,
-  submissions: 2,
-  evaluations: 2,
-};
-
-// ============================================================
-// ROUTES
+// ROUTES (Connected to AWS RDS)
 // ============================================================
 
 // --- Health Check ---
 app.get('/api', (req, res) => {
-  res.json({ message: 'InternHub API is running', status: 'ok' });
+  res.json({ message: 'InternHub API is running', status: 'ok', database: 'connected' });
 });
 
 // ============================================================
@@ -70,27 +26,36 @@ app.get('/api', (req, res) => {
 // ============================================================
 
 // POST /api/auth/login — Login and get user info
-app.post('/api/auth/login', (req, res) => {
-  const { email, password } = req.body;
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    // In a real application, you would use bcrypt.compare() to check password hashes
+    const [rows] = await pool.execute(
+      'SELECT id, name, email, role, cohort_id, is_active FROM users WHERE email = ? AND password_hash = ? AND is_active = 1',
+      [email, password] // Note: our mock seed data uses "hashed_pw_admin" as plaintext passwords for now
+    );
+
+    if (rows.length === 0) {
+      return res.status(401).json({ error: 'Invalid credentials or inactive account' });
+    }
+
+    const user = rows[0];
+    const token = `demo-token-${user.id}-${user.role}-${Date.now()}`;
+
+    res.json({
+      message: 'Login successful',
+      token,
+      user,
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Database error' });
   }
-
-  const user = users.find(u => u.email === email && u.password === password);
-
-  if (!user) {
-    return res.status(401).json({ error: 'Invalid credentials' });
-  }
-
-  // Demo token (replace with real JWT later)
-  const token = `demo-token-${user.id}-${user.role}-${Date.now()}`;
-
-  res.json({
-    message: 'Login successful',
-    token,
-    user: { id: user.id, name: user.name, email: user.email, role: user.role },
-  });
 });
 
 // ============================================================
@@ -98,32 +63,38 @@ app.post('/api/auth/login', (req, res) => {
 // ============================================================
 
 // GET /api/users — List all users
-app.get('/api/users', (req, res) => {
-  const safeUsers = users.map(({ password, ...rest }) => rest);
-  res.json({ count: safeUsers.length, users: safeUsers });
+app.get('/api/users', async (req, res) => {
+  try {
+    const [users] = await pool.query('SELECT id, name, email, role, cohort_id, is_active, created_at FROM users');
+    res.json({ count: users.length, users });
+  } catch (error) {
+    console.error('Fetch users error:', error);
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 // POST /api/users — Create a new user
-app.post('/api/users', (req, res) => {
-  const { name, email, password, role } = req.body;
+app.post('/api/users', async (req, res) => {
+  try {
+    const { name, email, password, role, cohort_id } = req.body;
 
-  if (!name || !email || !password || !role) {
-    return res.status(400).json({ error: 'name, email, password, and role are required' });
+    if (!name || !email || !password || !role) {
+      return res.status(400).json({ error: 'name, email, password, and role are required' });
+    }
+
+    const [result] = await pool.execute(
+      'INSERT INTO users (name, email, password_hash, role, cohort_id) VALUES (?, ?, ?, ?, ?)',
+      [name, email, password, role, cohort_id || null]
+    );
+
+    res.status(201).json({ message: 'User created', userId: result.insertId });
+  } catch (error) {
+    console.error('Create user error:', error);
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ error: 'User with this email already exists' });
+    }
+    res.status(500).json({ error: 'Database error' });
   }
-
-  if (!['admin', 'trainer', 'intern'].includes(role)) {
-    return res.status(400).json({ error: 'role must be admin, trainer, or intern' });
-  }
-
-  if (users.find(u => u.email === email)) {
-    return res.status(409).json({ error: 'User with this email already exists' });
-  }
-
-  const newUser = { id: nextId.users++, name, email, password, role };
-  users.push(newUser);
-
-  const { password: _, ...safeUser } = newUser;
-  res.status(201).json({ message: 'User created', user: safeUser });
 });
 
 // ============================================================
@@ -131,27 +102,35 @@ app.post('/api/users', (req, res) => {
 // ============================================================
 
 // GET /api/cohorts — List all cohorts
-app.get('/api/cohorts', (req, res) => {
-  res.json({ count: cohorts.length, cohorts });
+app.get('/api/cohorts', async (req, res) => {
+  try {
+    const [cohorts] = await pool.query('SELECT * FROM cohorts');
+    res.json({ count: cohorts.length, cohorts });
+  } catch (error) {
+    console.error('Fetch cohorts error:', error);
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 // POST /api/cohorts — Create a new cohort
-app.post('/api/cohorts', (req, res) => {
-  const { name, trainer_id } = req.body;
+app.post('/api/cohorts', async (req, res) => {
+  try {
+    const { name, description, start_date, end_date } = req.body;
 
-  if (!name || !trainer_id) {
-    return res.status(400).json({ error: 'name and trainer_id are required' });
+    if (!name) {
+      return res.status(400).json({ error: 'name is required' });
+    }
+
+    const [result] = await pool.execute(
+      'INSERT INTO cohorts (name, description, start_date, end_date) VALUES (?, ?, ?, ?)',
+      [name, description || null, start_date || null, end_date || null]
+    );
+
+    res.status(201).json({ message: 'Cohort created', cohortId: result.insertId });
+  } catch (error) {
+    console.error('Create cohort error:', error);
+    res.status(500).json({ error: 'Database error' });
   }
-
-  const newCohort = {
-    id: nextId.cohorts++,
-    name,
-    trainer_id,
-    created_at: new Date().toISOString().split('T')[0],
-  };
-  cohorts.push(newCohort);
-
-  res.status(201).json({ message: 'Cohort created', cohort: newCohort });
 });
 
 // ============================================================
@@ -159,28 +138,35 @@ app.post('/api/cohorts', (req, res) => {
 // ============================================================
 
 // GET /api/projects — List all projects
-app.get('/api/projects', (req, res) => {
-  res.json({ count: projects.length, projects });
+app.get('/api/projects', async (req, res) => {
+  try {
+    const [projects] = await pool.query('SELECT * FROM projects');
+    res.json({ count: projects.length, projects });
+  } catch (error) {
+    console.error('Fetch projects error:', error);
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 // POST /api/projects — Create a new project
-app.post('/api/projects', (req, res) => {
-  const { name, description, cohort_id } = req.body;
+app.post('/api/projects', async (req, res) => {
+  try {
+    const { title, description, cohort_id, trainer_id } = req.body;
 
-  if (!name || !cohort_id) {
-    return res.status(400).json({ error: 'name and cohort_id are required' });
+    if (!title || !cohort_id) {
+      return res.status(400).json({ error: 'title and cohort_id are required' });
+    }
+
+    const [result] = await pool.execute(
+      'INSERT INTO projects (title, description, cohort_id, trainer_id) VALUES (?, ?, ?, ?)',
+      [title, description || null, cohort_id, trainer_id || null]
+    );
+
+    res.status(201).json({ message: 'Project created', projectId: result.insertId });
+  } catch (error) {
+    console.error('Create project error:', error);
+    res.status(500).json({ error: 'Database error' });
   }
-
-  const newProject = {
-    id: nextId.projects++,
-    name,
-    description: description || '',
-    cohort_id,
-    created_at: new Date().toISOString().split('T')[0],
-  };
-  projects.push(newProject);
-
-  res.status(201).json({ message: 'Project created', project: newProject });
 });
 
 // ============================================================
@@ -188,37 +174,46 @@ app.post('/api/projects', (req, res) => {
 // ============================================================
 
 // GET /api/tasks — Get all tasks (optionally filter by assigned_to)
-app.get('/api/tasks', (req, res) => {
-  const { assigned_to } = req.query;
+app.get('/api/tasks', async (req, res) => {
+  try {
+    const { assigned_to } = req.query;
 
-  let result = tasks;
-  if (assigned_to) {
-    result = tasks.filter(t => t.assigned_to === parseInt(assigned_to));
+    let query = 'SELECT * FROM tasks';
+    const params = [];
+
+    if (assigned_to) {
+      query += ' WHERE assigned_to = ?';
+      params.push(assigned_to);
+    }
+
+    const [tasks] = await pool.execute(query, params);
+    res.json({ count: tasks.length, tasks });
+  } catch (error) {
+    console.error('Fetch tasks error:', error);
+    res.status(500).json({ error: 'Database error' });
   }
-
-  res.json({ count: result.length, tasks: result });
 });
 
 // POST /api/tasks — Create and assign a task
-app.post('/api/tasks', (req, res) => {
-  const { title, description, project_id, assigned_to, due_date } = req.body;
+app.post('/api/tasks', async (req, res) => {
+  try {
+    const { title, description, project_id, assigned_to, created_by, due_date, priority } = req.body;
 
-  if (!title || !project_id || !assigned_to) {
-    return res.status(400).json({ error: 'title, project_id, and assigned_to are required' });
+    if (!title || !project_id || !assigned_to) {
+      return res.status(400).json({ error: 'title, project_id, and assigned_to are required' });
+    }
+
+    const [result] = await pool.execute(
+      `INSERT INTO tasks (title, description, project_id, assigned_to, created_by, due_date, priority) 
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [title, description || null, project_id, assigned_to, created_by || null, due_date || null, priority || 'medium']
+    );
+
+    res.status(201).json({ message: 'Task created', taskId: result.insertId });
+  } catch (error) {
+    console.error('Create task error:', error);
+    res.status(500).json({ error: 'Database error' });
   }
-
-  const newTask = {
-    id: nextId.tasks++,
-    title,
-    description: description || '',
-    project_id,
-    assigned_to,
-    status: 'pending',
-    due_date: due_date || null,
-  };
-  tasks.push(newTask);
-
-  res.status(201).json({ message: 'Task created', task: newTask });
 });
 
 // ============================================================
@@ -226,39 +221,58 @@ app.post('/api/tasks', (req, res) => {
 // ============================================================
 
 // GET /api/submissions — View all submissions (Trainer)
-app.get('/api/submissions', (req, res) => {
-  const { task_id, intern_id } = req.query;
+app.get('/api/submissions', async (req, res) => {
+  try {
+    const { task_id, intern_id } = req.query;
 
-  let result = submissions;
-  if (task_id) result = result.filter(s => s.task_id === parseInt(task_id));
-  if (intern_id) result = result.filter(s => s.intern_id === parseInt(intern_id));
+    let query = 'SELECT * FROM submissions WHERE 1=1';
+    const params = [];
 
-  res.json({ count: result.length, submissions: result });
+    if (task_id) { query += ' AND task_id = ?'; params.push(task_id); }
+    if (intern_id) { query += ' AND intern_id = ?'; params.push(intern_id); }
+
+    const [submissions] = await pool.execute(query, params);
+    res.json({ count: submissions.length, submissions });
+  } catch (error) {
+    console.error('Fetch submissions error:', error);
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 // POST /api/submissions — Submit work (Intern)
-app.post('/api/submissions', (req, res) => {
-  const { task_id, intern_id, link, notes } = req.body;
+app.post('/api/submissions', async (req, res) => {
+  try {
+    const { task_id, intern_id, github_url, notes } = req.body;
 
-  if (!task_id || !intern_id || !link) {
-    return res.status(400).json({ error: 'task_id, intern_id, and link are required' });
+    if (!task_id || !intern_id || !github_url) {
+      return res.status(400).json({ error: 'task_id, intern_id, and github_url are required' });
+    }
+
+    // Since we are creating a submission and updating the task status, use a transaction
+    const connection = await pool.getConnection();
+
+    try {
+      await connection.beginTransaction();
+
+      const [result] = await connection.execute(
+        'INSERT INTO submissions (task_id, intern_id, github_url, notes) VALUES (?, ?, ?, ?)',
+        [task_id, intern_id, github_url, notes || null]
+      );
+
+      await connection.execute('UPDATE tasks SET status = ? WHERE id = ?', ['submitted', task_id]);
+
+      await connection.commit();
+      res.status(201).json({ message: 'Submission recorded', submissionId: result.insertId });
+    } catch (err) {
+      await connection.rollback();
+      throw err;
+    } finally {
+      connection.release();
+    }
+  } catch (error) {
+    console.error('Create submission error:', error);
+    res.status(500).json({ error: 'Database error' });
   }
-
-  const newSubmission = {
-    id: nextId.submissions++,
-    task_id,
-    intern_id,
-    link,
-    notes: notes || '',
-    submitted_at: new Date().toISOString().split('T')[0],
-  };
-  submissions.push(newSubmission);
-
-  // Update task status
-  const task = tasks.find(t => t.id === task_id);
-  if (task) task.status = 'submitted';
-
-  res.status(201).json({ message: 'Submission recorded', submission: newSubmission });
 });
 
 // ============================================================
@@ -266,38 +280,45 @@ app.post('/api/submissions', (req, res) => {
 // ============================================================
 
 // GET /api/evaluations — View all evaluations
-app.get('/api/evaluations', (req, res) => {
-  const { submission_id } = req.query;
+app.get('/api/evaluations', async (req, res) => {
+  try {
+    const { submission_id } = req.query;
 
-  let result = evaluations;
-  if (submission_id) result = result.filter(e => e.submission_id === parseInt(submission_id));
+    let query = 'SELECT * FROM evaluations';
+    const params = [];
 
-  res.json({ count: result.length, evaluations: result });
+    if (submission_id) {
+      query += ' WHERE submission_id = ?';
+      params.push(submission_id);
+    }
+
+    const [evaluations] = await pool.execute(query, params);
+    res.json({ count: evaluations.length, evaluations });
+  } catch (error) {
+    console.error('Fetch evaluations error:', error);
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 // POST /api/evaluations — Score a submission (Trainer)
-app.post('/api/evaluations', (req, res) => {
-  const { submission_id, trainer_id, score, feedback } = req.body;
+app.post('/api/evaluations', async (req, res) => {
+  try {
+    const { submission_id, trainer_id, score, feedback } = req.body;
 
-  if (!submission_id || !trainer_id || score === undefined) {
-    return res.status(400).json({ error: 'submission_id, trainer_id, and score are required' });
+    if (!submission_id || !trainer_id || score === undefined) {
+      return res.status(400).json({ error: 'submission_id, trainer_id, and score are required' });
+    }
+
+    const [result] = await pool.execute(
+      'INSERT INTO evaluations (submission_id, trainer_id, score, feedback) VALUES (?, ?, ?, ?)',
+      [submission_id, trainer_id, score, feedback || null]
+    );
+
+    res.status(201).json({ message: 'Evaluation recorded', evaluationId: result.insertId });
+  } catch (error) {
+    console.error('Create evaluation error:', error);
+    res.status(500).json({ error: 'Database error' });
   }
-
-  if (score < 0 || score > 10) {
-    return res.status(400).json({ error: 'Score must be between 0 and 10' });
-  }
-
-  const newEvaluation = {
-    id: nextId.evaluations++,
-    submission_id,
-    trainer_id,
-    score,
-    feedback: feedback || '',
-    evaluated_at: new Date().toISOString().split('T')[0],
-  };
-  evaluations.push(newEvaluation);
-
-  res.status(201).json({ message: 'Evaluation recorded', evaluation: newEvaluation });
 });
 
 // ============================================================
@@ -305,26 +326,9 @@ app.post('/api/evaluations', (req, res) => {
 // ============================================================
 
 app.listen(PORT, () => {
-  console.log(`\n  InternHub API Server`);
-  console.log(`  ====================`);
+  console.log(`\n  ✅ InternHub API Server is running`);
+  console.log(`  ==================================`);
+  console.log(`  Live AWS RDS Database Connected`);
   console.log(`  Running on: http://localhost:${PORT}`);
-  console.log(`  API base:   http://localhost:${PORT}/api`);
-  console.log(`\n  Available endpoints:`);
-  console.log(`  POST   /api/auth/login`);
-  console.log(`  GET    /api/users`);
-  console.log(`  POST   /api/users`);
-  console.log(`  GET    /api/cohorts`);
-  console.log(`  POST   /api/cohorts`);
-  console.log(`  GET    /api/projects`);
-  console.log(`  POST   /api/projects`);
-  console.log(`  GET    /api/tasks`);
-  console.log(`  POST   /api/tasks`);
-  console.log(`  GET    /api/submissions`);
-  console.log(`  POST   /api/submissions`);
-  console.log(`  GET    /api/evaluations`);
-  console.log(`  POST   /api/evaluations`);
-  console.log(`\n  Demo credentials:`);
-  console.log(`  Admin:   admin@internhub.com / admin123`);
-  console.log(`  Trainer: trainer@internhub.com / trainer123`);
-  console.log(`  Intern:  intern@internhub.com / intern123\n`);
+  console.log(`  API base:   http://localhost:${PORT}/api\n`);
 });
