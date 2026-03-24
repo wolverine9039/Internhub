@@ -5,7 +5,7 @@ import TrainerPanel from './pages/trainerpanel';
 import InternPanel from './pages/internpanel';
 import './App.css';
 
-function App() {
+const App: React.FC = () => {
   return (
     <Router>
       <div className="app-container">
@@ -19,6 +19,6 @@ function App() {
       </div>
     </Router>
   );
-}
+};
 
 export default App;

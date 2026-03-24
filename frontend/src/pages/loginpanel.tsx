@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LoginPanel = () => {
+const LoginPanel: React.FC = () => {
     return (
         <div style={{ padding: '20px', textAlign: 'center' }}>
             <h1>InternHub Login</h1>

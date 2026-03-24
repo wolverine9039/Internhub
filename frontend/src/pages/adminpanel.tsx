@@ -1,6 +1,6 @@
 import React from 'react';
 
-const AdminPanel = () => {
+const AdminPanel: React.FC = () => {
     return (
         <div style={{ padding: '20px' }}>
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #333', marginBottom: '20px' }}>
