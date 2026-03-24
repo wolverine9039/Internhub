@@ -1,6 +1,6 @@
 import React from 'react';
 
-const InternPanel = () => {
+const InternPanel: React.FC = () => {
     return (
         <div style={{ padding: '20px' }}>
             <h1>Intern Panel</h1>

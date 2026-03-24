@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TrainerPanel = () => {
+const TrainerPanel: React.FC = () => {
     return (
         <div style={{ padding: '20px' }}>
             <h1>Trainer Panel</h1>
