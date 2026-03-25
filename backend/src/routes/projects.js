@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
+const { authenticate, authorize } = require('../middleware/authMiddleware');
 
 /**
  * GET /projects — List with pagination, sorting, and cohort_id filter
  */
-router.get('/', async (req, res, next) => {
+router.get('/', authenticate, async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const page_size = Math.min(100, Math.max(1, parseInt(req.query.page_size) || 20));
@@ -37,7 +38,7 @@ router.get('/', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', authenticate, async (req, res, next) => {
   try {
     const [rows] = await pool.execute('SELECT * FROM projects WHERE id = ?', [req.params.id]);
     if (rows.length === 0) throw new AppError(404, 'NOT_FOUND', 'Project not found');
@@ -45,7 +46,7 @@ router.get('/:id', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
   try {
     const { title, description, cohort_id, trainer_id } = req.body;
     if (!title || !cohort_id) {
@@ -62,7 +63,7 @@ router.post('/', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', authenticate, authorize('admin'), async (req, res, next) => {
   try {
     const ALLOWED = ['title', 'description', 'cohort_id', 'trainer_id'];
     const updates = []; const params = [];
@@ -78,7 +79,7 @@ router.patch('/:id', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', authenticate, authorize('admin'), async (req, res, next) => {
   try {
     const [result] = await pool.execute('DELETE FROM projects WHERE id = ?', [req.params.id]);
     if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Project not found');

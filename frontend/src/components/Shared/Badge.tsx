@@ -1,5 +1,5 @@
 import React from 'react';
-
+import './Badge.css';
 interface BadgeProps {
   variant?: 'blue' | 'green' | 'red' | 'yellow' | 'gray';
   children: React.ReactNode;
