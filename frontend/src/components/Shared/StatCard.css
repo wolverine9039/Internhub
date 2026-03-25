@@ -1,0 +1,39 @@
+/* ── STAT CARDS ── */
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg, 12px);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 12px 12px 0 0;
+}
+.stat-card.blue::before { background: var(--accent); }
+.stat-card.red::before { background: var(--accent2); }
+.stat-card.green::before { background: var(--accent3); }
+.stat-card.yellow::before { background: var(--accent4); }
+
+.stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.stat-value {
+  font-family: var(--font-heading, 'Syne', sans-serif);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+}
+.stat-delta {
+  font-size: 11px;
+  margin-top: 4px;
+  color: var(--accent3);
+}

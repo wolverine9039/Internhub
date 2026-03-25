@@ -1,4 +1,5 @@
 import React from 'react';
+import './Sidebar.css';
 
 interface SidebarProps {
   role: 'admin' | 'trainer' | 'intern';
@@ -6,6 +7,8 @@ interface SidebarProps {
   onNavigate: (screen: string) => void;
   userName: string;
   userRole: string;
+  isOpen?: boolean;
+  onToggle?: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -14,8 +17,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   onNavigate,
   userName,
   userRole,
+  isOpen = true,
+  onToggle,
 }) => {
-  // Navigation items per role
   const navItems: Record<string, { label: string; icon: string; screen: string }[]> = {
     admin: [
       { label: 'Dashboard', icon: '⬛', screen: 'admin-dashboard' },
@@ -23,6 +27,8 @@ const Sidebar: React.FC<SidebarProps> = ({
       { label: 'Cohorts', icon: '🗂', screen: 'admin-cohorts' },
       { label: 'Projects', icon: '📁', screen: 'admin-projects' },
       { label: 'Task Assignment', icon: '✅', screen: 'admin-tasks' },
+      { label: 'Submissions', icon: '📬', screen: 'admin-submissions' },
+      { label: 'Evaluations', icon: '⭐', screen: 'admin-evaluations' },
       { label: 'Analytics', icon: '📊', screen: 'admin-analytics' },
     ],
     trainer: [
@@ -45,35 +51,48 @@ const Sidebar: React.FC<SidebarProps> = ({
     .join('')
     .toUpperCase();
 
+  const handleNavClick = (screen: string) => {
+    onNavigate(screen);
+    // Close sidebar on mobile after navigation
+    if (onToggle && window.innerWidth <= 768) {
+      onToggle();
+    }
+  };
+
   return (
-    <aside className="sidebar">
-      <div className="sidebar-logo">
-        Intern<span>Hub</span>
-      </div>
+    <>
+      {/* Mobile backdrop */}
+      {isOpen && <div className="sidebar-backdrop" onClick={onToggle} />}
 
-      <nav className="sidebar-nav">
-        {navItems[role]?.map((item) => (
-          <div
-            key={item.screen}
-            className={`nav-item ${activeScreen === item.screen ? 'active' : ''}`}
-            onClick={() => onNavigate(item.screen)}
-          >
-            <span className="icon">{item.icon}</span>
-            {item.label}
-          </div>
-        ))}
-      </nav>
+      <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
+        <div className="sidebar-logo">
+          Intern<span>Hub</span>
+        </div>
 
-      <div className="sidebar-footer">
-        <div className="user-chip">
-          <div className="avatar">{initials}</div>
-          <div className="user-info">
-            <div className="user-name">{userName}</div>
-            <div className="user-role">{userRole}</div>
+        <nav className="sidebar-nav">
+          {navItems[role]?.map((item) => (
+            <div
+              key={item.screen}
+              className={`nav-item ${activeScreen === item.screen ? 'active' : ''}`}
+              onClick={() => handleNavClick(item.screen)}
+            >
+              <span className="icon">{item.icon}</span>
+              {item.label}
+            </div>
+          ))}
+        </nav>
+
+        <div className="sidebar-footer">
+          <div className="user-chip">
+            <div className="avatar">{initials}</div>
+            <div className="user-info">
+              <div className="user-name">{userName}</div>
+              <div className="user-role">{userRole}</div>
+            </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 };
 

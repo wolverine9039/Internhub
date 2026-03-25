@@ -5,25 +5,21 @@ export enum UserRole {
   INTERN = 'intern',
 }
 
-// ─── User ───
+// ─── User (matches DB columns) ───
 export interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
+  id: number;
+  name: string;
   email: string;
   role: UserRole;
-  cohortId?: string;
-  phone?: string;
-  status: 'active' | 'inactive';
-  createdAt: string;
-  updatedAt: string;
+  cohort_id?: number | null;
+  is_active: boolean;
+  created_at: string;
 }
 
 // ─── Auth ───
 export interface LoginRequest {
   email: string;
   password: string;
-  role: UserRole;
 }
 
 export interface LoginResponse {
@@ -32,66 +28,90 @@ export interface LoginResponse {
   message: string;
 }
 
+// ─── Paginated Response ───
+export interface PaginatedResponse<T> {
+  items: T[];
+  page: number;
+  page_size: number;
+  total: number;
+  pages: number;
+}
+
 // ─── Cohort ───
 export interface Cohort {
-  id: string;
+  id: number;
   name: string;
-  description: string;
-  trainerId: string;
-  status: 'active' | 'completed' | 'upcoming';
-  startDate: string;
-  endDate: string;
-  progress: number;
+  description: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  created_at: string;
 }
 
 // ─── Project ───
 export interface Project {
-  id: string;
-  name: string;
-  cohortId: string;
-  totalTasks: number;
-  completedTasks: number;
-  submissions: number;
-  deadline: string;
-  status: 'planning' | 'in_progress' | 'at_risk' | 'completed';
+  id: number;
+  title: string;
+  description: string | null;
+  cohort_id: number;
+  trainer_id: number | null;
+  created_at: string;
 }
 
 // ─── Task ───
 export interface Task {
-  id: string;
+  id: number;
   title: string;
-  description: string;
-  projectId: string;
-  assigneeId: string;
-  dueDate: string;
-  status: 'not_started' | 'in_progress' | 'submitted' | 'evaluated' | 'overdue';
-  progress?: number;
+  description: string | null;
+  project_id: number;
+  assigned_to: number;
+  created_by: number | null;
+  due_date: string | null;
+  priority: 'low' | 'medium' | 'high';
+  status: 'pending' | 'in_progress' | 'completed' | 'overdue' | 'submitted';
+  created_at: string;
+  assigned_to_name?: string;
+  project_title?: string;
 }
 
 // ─── Submission ───
 export interface Submission {
-  id: string;
-  taskId: string;
-  internId: string;
-  repoUrl: string;
-  demoUrl?: string;
+  id: number;
+  task_id: number;
+  intern_id: number;
+  attempt_no: number;
+  github_url: string;
+  demo_url?: string;
+  file_url?: string;
   notes?: string;
-  attachments?: string[];
-  submittedAt: string;
-  status: 'pending' | 'reviewed' | 'revision_requested';
+  status: 'pending' | 'submitted' | 'reviewed' | 'revision_requested';
+  submitted_at: string;
+  reviewed_at?: string;
+  updated_at: string;
+  task_title?: string;
+  intern_name?: string;
 }
 
 // ─── Evaluation ───
 export interface Evaluation {
-  id: string;
-  submissionId: string;
-  trainerId: string;
-  codeQuality: number;
-  functionality: number;
-  documentation: number;
-  timeliness: number;
-  totalScore: number;
-  strengths: string;
-  improvements: string;
-  evaluatedAt: string;
+  id: number;
+  submission_id: number;
+  trainer_id: number;
+  code_quality: number | null;
+  functionality: number | null;
+  documentation: number | null;
+  timeliness: number | null;
+  score: number | null;
+  feedback?: string;
+  strengths?: string;
+  improvements?: string;
+  evaluated_at: string;
+  updated_at: string;
+}
+
+// ─── Dashboard Stats ───
+export interface DashboardStats {
+  totalInterns: number;
+  activeProjects: number;
+  pendingSubmissions: number;
+  evaluationsDue: number;
 }

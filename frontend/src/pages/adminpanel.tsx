@@ -1,32 +1,59 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Sidebar from '@/components/Shared/Sidebar';
+import { useAuth } from '@/context/AuthContext';
+import AdminDashboard from '@/components/Admin/AdminDashboard';
+import AdminUsers from '@/components/Admin/AdminUsers';
+import AdminCohorts from '@/components/Admin/AdminCohorts';
+import AdminProjects from '@/components/Admin/AdminProjects';
+import AdminTasks from '@/components/Admin/AdminTasks';
+import AdminSubmissions from '@/components/Admin/AdminSubmissions';
+import AdminEvaluations from '@/components/Admin/AdminEvaluations';
+import './AdminPanel.css';
 
 const AdminPanel: React.FC = () => {
+    const { user } = useAuth();
+    const [activeScreen, setActiveScreen] = useState('admin-dashboard');
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    const renderScreen = () => {
+        switch (activeScreen) {
+            case 'admin-dashboard':
+                return <AdminDashboard onNavigate={setActiveScreen} />;
+            case 'admin-users':
+                return <AdminUsers onNavigate={setActiveScreen} />;
+            case 'admin-cohorts':
+                return <AdminCohorts onNavigate={setActiveScreen} />;
+            case 'admin-projects':
+                return <AdminProjects onNavigate={setActiveScreen} />;
+            case 'admin-tasks':
+                return <AdminTasks onNavigate={setActiveScreen} />;
+            case 'admin-submissions':
+                return <AdminSubmissions onNavigate={setActiveScreen} />;
+            case 'admin-evaluations':
+                return <AdminEvaluations onNavigate={setActiveScreen} />;
+            default:
+                return <AdminDashboard onNavigate={setActiveScreen} />;
+        }
+    };
+
     return (
-        <div style={{ padding: '20px' }}>
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #333', marginBottom: '20px' }}>
-                <h1>Admin Dashboard</h1>
-                <nav>
-                    <button style={{ margin: '0 5px' }}>Users</button>
-                    <button style={{ margin: '0 5px' }}>Cohorts</button>
-                    <button style={{ margin: '0 5px' }}>Projects</button>
-                    <button style={{ margin: '0 5px', color: 'red' }}>Logout</button>
-                </nav>
-            </header>
-            <main>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
-                    <div style={{ padding: '15px', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#f9f9f9' }}>
-                        <h3>Total Users</h3>
-                        <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>4</p>
-                    </div>
-                    <div style={{ padding: '15px', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#f9f9f9' }}>
-                        <h3>Active Cohorts</h3>
-                        <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>2</p>
-                    </div>
-                    <div style={{ padding: '15px', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#f9f9f9' }}>
-                        <h3>Open Projects</h3>
-                        <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>2</p>
-                    </div>
+        <div className="app fade-in">
+            <Sidebar 
+                role="admin" 
+                activeScreen={activeScreen} 
+                onNavigate={setActiveScreen} 
+                userName={user?.name || 'Administrator'} 
+                userRole="Admin" 
+                isOpen={sidebarOpen}
+                onToggle={() => setSidebarOpen(!sidebarOpen)}
+            />
+            <main className="main">
+                {/* Mobile header */}
+                <div className="mobile-header">
+                    <button className="hamburger-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>☰</button>
+                    <div className="mobile-brand">Intern<span>Hub</span></div>
                 </div>
+                {renderScreen()}
             </main>
         </div>
     );

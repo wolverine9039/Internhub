@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
+const { authenticate, authorize } = require('../middleware/authMiddleware');
 
 /**
  * GET /users — List users with pagination, sorting, field selection, and filtering
  * Query params: page, page_size, sort, fields, role, is_active, search
  */
-router.get('/', async (req, res, next) => {
+router.get('/', authenticate, async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const page_size = Math.min(100, Math.max(1, parseInt(req.query.page_size) || 20));
@@ -70,7 +71,7 @@ router.get('/', async (req, res, next) => {
 /**
  * GET /users/:id — Get a single user by ID
  */
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', authenticate, async (req, res, next) => {
   try {
     const [rows] = await pool.execute(
       'SELECT id, name, email, role, cohort_id, is_active, created_at FROM users WHERE id = ?',
@@ -86,7 +87,7 @@ router.get('/:id', async (req, res, next) => {
 /**
  * POST /users — Create a new user
  */
-router.post('/', async (req, res, next) => {
+router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
   try {
     const { name, email, password, role, cohort_id } = req.body;
 
@@ -113,7 +114,7 @@ router.post('/', async (req, res, next) => {
 /**
  * PATCH /users/:id — Partial update a user
  */
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', authenticate, authorize('admin'), async (req, res, next) => {
   try {
     const ALLOWED_UPDATES = ['name', 'email', 'role', 'cohort_id', 'is_active'];
     const updates = [];
@@ -145,7 +146,7 @@ router.patch('/:id', async (req, res, next) => {
 /**
  * DELETE /users/:id — Delete a user
  */
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', authenticate, authorize('admin'), async (req, res, next) => {
   try {
     const [result] = await pool.execute('DELETE FROM users WHERE id = ?', [req.params.id]);
     if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'User not found');

@@ -1,0 +1,220 @@
+/* ── ADMIN DASHBOARD CARDS ── */
+.admin-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px; /* sharper than typical 12px */
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.admin-card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.admin-card-title {
+  font-family: var(--font-heading, 'Syne', sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.admin-card-body {
+  padding: 16px 20px;
+}
+
+/* ── TABLES (Stark, grid-like) ── */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.admin-table th {
+  padding: 11px 20px;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+.admin-table td {
+  padding: 13px 20px;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(42,48,69,.5);
+}
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr:hover td { background: rgba(255,255,255,.02); }
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.avatar.micro {
+  width: 24px;
+  height: 24px;
+  font-size: 9px;
+}
+.avatar.green { background: var(--accent3); }
+.avatar.yellow { background: var(--accent4); }
+
+.time-muted {
+  color: var(--muted);
+}
+
+/* ── PROGRESS BARS ── */
+.progress-group {
+  margin-bottom: 16px;
+}
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.progress-value.blue { color: var(--accent); }
+.progress-value.green { color: var(--accent3); }
+.progress-value.yellow { color: var(--accent4); }
+
+.progress-bar {
+  height: 4px; /* very thin and stark */
+  background: var(--surface2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 2px;
+}
+.progress-fill.blue { background: var(--accent); }
+.progress-fill.green { background: var(--accent3); }
+.progress-fill.yellow { background: var(--accent4); }
+
+/* ── UPCOMING DEADLINES ── */
+.upcoming-deadlines {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.upcoming-deadlines .admin-card-title {
+  margin-bottom: 12px;
+}
+.deadline-list {
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.deadline-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.deadline-project {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ── PROGRESS META ── */
+.progress-meta {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.progress-value { font-weight: 600; }
+.progress-value.red { color: var(--accent2); }
+.progress-fill.red { background: var(--accent2); }
+
+/* AVATAR COLORS */
+.avatar.blue { background: var(--accent); }
+.avatar.red { background: var(--accent2); }
+.avatar.gray { background: var(--muted); }
+
+/* LOADING PLACEHOLDER */
+.loading-placeholder {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  min-height: 90px;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.3; }
+}
+
+/* ── RESPONSIVE: Dashboard-specific ── */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .screen-admin-dashboard .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .screen-admin-dashboard .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .screen-admin-dashboard .two-col {
+    grid-template-columns: 1fr;
+  }
+  .screen-admin-dashboard .admin-table th,
+  .screen-admin-dashboard .admin-table td {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  .screen-admin-dashboard .admin-card-header {
+    padding: 12px 14px;
+  }
+  .screen-admin-dashboard .admin-card-body {
+    padding: 12px 14px;
+  }
+  .screen-admin-dashboard .progress-header span {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .deadline-item {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .deadline-project {
+    display: none;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .screen-admin-dashboard .stat-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .screen-admin-dashboard .admin-table th:nth-child(3),
+  .screen-admin-dashboard .admin-table td:nth-child(3) {
+    display: none; /* hide TIME column on very small screens */
+  }
+  .screen-admin-dashboard .page-title {
+    font-size: 16px;
+  }
+  .screen-admin-dashboard .btn-group {
+    width: 100%;
+  }
+  .screen-admin-dashboard .btn-group .btn {
+    flex: 1;
+  }
+}

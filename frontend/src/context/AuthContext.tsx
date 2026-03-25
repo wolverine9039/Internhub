@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, type ReactNode } from 'react';
+import React, { createContext, useState, useEffect, useContext, type ReactNode } from 'react';
 import type { User } from '@/types';
 
 interface AuthContextType {
@@ -16,6 +16,8 @@ export const AuthContext = createContext<AuthContextType>({
   login: () => {},
   logout: () => {},
 });
+
+export const useAuth = () => useContext(AuthContext);
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -48,7 +50,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    // Sync state if localStorage changes in another tab
     const handleStorage = (e: StorageEvent) => {
       if (e.key === 'token' && !e.newValue) {
         setUser(null);

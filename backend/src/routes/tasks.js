@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
+const { authenticate, authorize } = require('../middleware/authMiddleware');
 
 /**
  * GET /tasks — List with pagination, sorting, and filters (assigned_to, project_id, status, priority)
  */
-router.get('/', async (req, res, next) => {
+router.get('/', authenticate, async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const page_size = Math.min(100, Math.max(1, parseInt(req.query.page_size) || 20));
@@ -23,23 +24,34 @@ router.get('/', async (req, res, next) => {
     }
 
     const conditions = []; const params = [];
-    if (req.query.assigned_to) { conditions.push('assigned_to = ?'); params.push(req.query.assigned_to); }
-    if (req.query.project_id) { conditions.push('project_id = ?'); params.push(req.query.project_id); }
-    if (req.query.status) { conditions.push('status = ?'); params.push(req.query.status); }
-    if (req.query.priority) { conditions.push('priority = ?'); params.push(req.query.priority); }
-    if (req.query.search) { conditions.push('title LIKE ?'); params.push(`%${req.query.search}%`); }
+    if (req.query.assigned_to) { conditions.push('t.assigned_to = ?'); params.push(req.query.assigned_to); }
+    if (req.query.project_id) { conditions.push('t.project_id = ?'); params.push(req.query.project_id); }
+    if (req.query.status) { conditions.push('t.status = ?'); params.push(req.query.status); }
+    if (req.query.priority) { conditions.push('t.priority = ?'); params.push(req.query.priority); }
+    if (req.query.search) { conditions.push('t.title LIKE ?'); params.push(`%${req.query.search}%`); }
     const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
+    const countQuery = `SELECT COUNT(*) AS total FROM tasks t ${where}`;
+    const dataQuery = `
+      SELECT t.*, u.name as assigned_to_name, p.title as project_title 
+      FROM tasks t 
+      LEFT JOIN users u ON t.assigned_to = u.id 
+      LEFT JOIN projects p ON t.project_id = p.id 
+      ${where} 
+      ORDER BY t.${sortField} ${sortOrder} 
+      LIMIT ? OFFSET ?
+    `;
+
     const [[countResult], [tasks]] = await Promise.all([
-      pool.execute(`SELECT COUNT(*) AS total FROM tasks ${where}`, params),
-      pool.execute(`SELECT * FROM tasks ${where} ORDER BY ${sortField} ${sortOrder} LIMIT ? OFFSET ?`, [...params, String(page_size), String(offset)]),
+      pool.execute(countQuery, params),
+      pool.execute(dataQuery, [...params, String(page_size), String(offset)]),
     ]);
 
     res.status(200).json({ items: tasks, page, page_size, total: countResult[0].total, pages: Math.ceil(countResult[0].total / page_size) });
   } catch (err) { next(err); }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', authenticate, async (req, res, next) => {
   try {
     const [rows] = await pool.execute('SELECT * FROM tasks WHERE id = ?', [req.params.id]);
     if (rows.length === 0) throw new AppError(404, 'NOT_FOUND', 'Task not found');
@@ -47,7 +59,7 @@ router.get('/:id', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', authenticate, authorize('admin', 'trainer'), async (req, res, next) => {
   try {
     const { title, description, project_id, assigned_to, created_by, due_date, priority } = req.body;
     if (!title || !project_id || !assigned_to) {
@@ -65,7 +77,7 @@ router.post('/', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', authenticate, authorize('admin', 'trainer'), async (req, res, next) => {
   try {
     const ALLOWED = ['title', 'description', 'status', 'priority', 'due_date', 'assigned_to'];
     const updates = []; const params = [];
@@ -81,7 +93,7 @@ router.patch('/:id', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', authenticate, authorize('admin'), async (req, res, next) => {
   try {
     const [result] = await pool.execute('DELETE FROM tasks WHERE id = ?', [req.params.id]);
     if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Task not found');

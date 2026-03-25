@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
+const { authenticate, authorize } = require('../middleware/authMiddleware');
 
 /**
  * GET /cohorts — List cohorts with pagination and sorting
  */
-router.get('/', async (req, res, next) => {
+router.get('/', authenticate, async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const page_size = Math.min(100, Math.max(1, parseInt(req.query.page_size) || 20));
@@ -39,7 +40,7 @@ router.get('/', async (req, res, next) => {
 /**
  * GET /cohorts/:id — Get single cohort
  */
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', authenticate, async (req, res, next) => {
   try {
     const [rows] = await pool.execute('SELECT * FROM cohorts WHERE id = ?', [req.params.id]);
     if (rows.length === 0) throw new AppError(404, 'NOT_FOUND', 'Cohort not found');
@@ -50,7 +51,7 @@ router.get('/:id', async (req, res, next) => {
 /**
  * POST /cohorts — Create a new cohort
  */
-router.post('/', async (req, res, next) => {
+router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
   try {
     const { name, description, start_date, end_date } = req.body;
     if (!name) throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', [{ field: 'name', message: 'Name is required' }]);
@@ -66,7 +67,7 @@ router.post('/', async (req, res, next) => {
 /**
  * PATCH /cohorts/:id — Partial update
  */
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', authenticate, authorize('admin'), async (req, res, next) => {
   try {
     const ALLOWED = ['name', 'description', 'start_date', 'end_date'];
     const updates = []; const params = [];
@@ -85,7 +86,7 @@ router.patch('/:id', async (req, res, next) => {
 /**
  * DELETE /cohorts/:id
  */
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', authenticate, authorize('admin'), async (req, res, next) => {
   try {
     const [result] = await pool.execute('DELETE FROM cohorts WHERE id = ?', [req.params.id]);
     if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Cohort not found');
