@@ -8,12 +8,14 @@ import AdminProjects from '@/components/Admin/AdminProjects';
 import AdminTasks from '@/components/Admin/AdminTasks';
 import AdminSubmissions from '@/components/Admin/AdminSubmissions';
 import AdminEvaluations from '@/components/Admin/AdminEvaluations';
+import AdminAnalytics from '@/components/Admin/AdminAnalytics';
 import './AdminPanel.css';
 
 const AdminPanel: React.FC = () => {
     const { user } = useAuth();
     const [activeScreen, setActiveScreen] = useState('admin-dashboard');
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
     const renderScreen = () => {
         switch (activeScreen) {
@@ -31,6 +33,8 @@ const AdminPanel: React.FC = () => {
                 return <AdminSubmissions onNavigate={setActiveScreen} />;
             case 'admin-evaluations':
                 return <AdminEvaluations onNavigate={setActiveScreen} />;
+            case 'admin-analytics':
+                return <AdminAnalytics onNavigate={setActiveScreen} />;
             default:
                 return <AdminDashboard onNavigate={setActiveScreen} />;
         }
@@ -46,8 +50,10 @@ const AdminPanel: React.FC = () => {
                 userRole="Admin" 
                 isOpen={sidebarOpen}
                 onToggle={() => setSidebarOpen(!sidebarOpen)}
+                collapsed={sidebarCollapsed}
+                onCollapseToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
             />
-            <main className="main">
+            <main className={`main ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
                 {/* Mobile header */}
                 <div className="mobile-header">
                     <button className="hamburger-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>☰</button>

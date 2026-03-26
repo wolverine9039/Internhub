@@ -13,6 +13,7 @@ const taskRoutes = require('./routes/tasks');
 const submissionRoutes = require('./routes/submissions');
 const evaluationRoutes = require('./routes/evaluations');
 const adminRoutes = require('./routes/admin');
+const internRoutes = require('./routes/intern');
 
 dotenv.config();
 
@@ -54,6 +55,7 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/submissions', submissionRoutes);
 app.use('/api/evaluations', evaluationRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/intern', internRoutes);
 
 // ─── 404 Catch-All ───────────────────────────────────────────
 app.use((req, res) => {
