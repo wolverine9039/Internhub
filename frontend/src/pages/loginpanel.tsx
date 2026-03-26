@@ -31,10 +31,18 @@ const LoginPanel: React.FC = () => {
     setLoading(true);
     try {
       const { data } = await api.post("/auth/login", form);
+      const role = data.user?.role;
+
+      // Validate that the user is logging into the correct panel
+      if (selectedRole && role !== selectedRole) {
+        setError(`Access denied. Please sign in via the ${role.charAt(0).toUpperCase() + role.slice(1)} Login panel.`);
+        setLoading(false);
+        return;
+      }
+
       login(data.user, data.token);
 
       // Role-based navigation
-      const role = data.user?.role;
       if (role === "admin") navigate("/admin");
       else if (role === "trainer") navigate("/trainer");
       else navigate("/intern");
