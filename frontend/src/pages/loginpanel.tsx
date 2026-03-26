@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { useTheme } from "@/context/ThemeContext";
 import api from "@/services/api";
 import "./LoginPanel.css";
 
@@ -8,10 +9,10 @@ const LoginPanel: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { login } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  const [darkMode, setDarkMode] = useState<boolean>(true);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const selectedRole = searchParams.get("role") || "";
 
@@ -45,52 +46,77 @@ const LoginPanel: React.FC = () => {
     }
   };
 
+  const roleLabel = selectedRole
+    ? selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)
+    : "";
+
   return (
-    <div className={`container ${darkMode ? "dark" : ""}`}>
-      <div className="theme-toggle" onClick={() => setDarkMode(!darkMode)} title="Toggle Theme">
-        {darkMode ? "☀️" : "🌙"}
+    <div className="login-page">
+      {/* Theme Toggle Switch */}
+      <div className="login-theme-toggle">
+        <span className="toggle-icon">🌙</span>
+        <label className="switch">
+          <input
+            type="checkbox"
+            checked={!isDark}
+            onChange={toggleTheme}
+          />
+          <span className="slider"></span>
+        </label>
+        <span className="toggle-icon">☀️</span>
       </div>
 
       <button className="back-button" onClick={() => navigate("/")} title="Go back">
         ← Back
       </button>
 
-      <div className="glass-card">
+      <div className="login-card">
+        {/* Branded Logo */}
         <div className="card-header">
-          <h2>Welcome to InternHub</h2>
-          <p>Login to continue</p>
-          {selectedRole && <p className="role-label">Logging in as: <strong>{selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}</strong></p>}
+          <h1 className="login-logo">
+            <span className="logo-intern">Intern</span>
+            <span className="logo-hub">Hub</span>
+          </h1>
+          <h2 className="login-title">
+            {roleLabel ? `${roleLabel} Login` : "Login to continue"}
+          </h2>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
-          <div className="input-group">
+          <div className="form-group">
+            <label htmlFor="login-email">Email</label>
             <input
+              id="login-email"
               type="email"
               name="email"
-              placeholder="Email address"
+              placeholder="Enter your email"
               value={form.email}
               onChange={handleChange}
               required
             />
           </div>
 
-          <div className="input-group">
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Password"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
-            <span onClick={() => setShowPassword(!showPassword)} className="password-toggle">
-              {showPassword ? "Hide" : "Show"}
-            </span>
+          <div className="form-group">
+            <label htmlFor="login-password">Password</label>
+            <div className="password-wrapper">
+              <input
+                id="login-password"
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter your password"
+                value={form.password}
+                onChange={handleChange}
+                required
+              />
+              <span onClick={() => setShowPassword(!showPassword)} className="password-toggle">
+                {showPassword ? "Hide" : "Show"}
+              </span>
+            </div>
           </div>
 
           {error && <div className="error-message">{error}</div>}
 
-          <button type="submit" className="login-button" disabled={loading}>
+          <button type="submit" className="login-btn" disabled={loading}>
             {loading ? "Signing in…" : "Sign In"}
           </button>
         </form>
