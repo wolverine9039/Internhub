@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
@@ -100,9 +101,19 @@ router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
       ]);
     }
 
+    // Check for duplicate email
+    const [existing] = await pool.execute('SELECT id FROM users WHERE email = ?', [email]);
+    if (existing.length > 0) {
+      throw new AppError(409, 'DUPLICATE_EMAIL', 'A user with this email already exists');
+    }
+
+    // Hash password before storing
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     const [result] = await pool.execute(
       'INSERT INTO users (name, email, password_hash, role, cohort_id) VALUES (?, ?, ?, ?, ?)',
-      [name, email, password, role, cohort_id || null]
+      [name, email, hashedPassword, role, cohort_id || null]
     );
 
     res.status(201).location(`/api/users/${result.insertId}`).json({ message: 'User created', userId: result.insertId });
