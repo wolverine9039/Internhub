@@ -1,0 +1,14 @@
+.logo {
+  font-size: 10rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.intern {
+  color: #ef4444;
+}
+
+.hub {
+  color: var(--text);
+}
