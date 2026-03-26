@@ -1,3 +1,4 @@
-// Intern-specific components
-// Export components here as they are created.
-// Example: export { default as TaskBoard } from './TaskBoard';
+export { default as InternDashboard } from './InternDashboard';
+export { default as InternTasks } from './InternTasks';
+export { default as InternSubmit } from './InternSubmit';
+export { default as InternProgress } from './InternProgress';
