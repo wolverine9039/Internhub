@@ -1,17 +1,19 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import api from "@/services/api";
 import "./LoginPanel.css";
 
 const LoginPanel: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { login } = useAuth();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [darkMode, setDarkMode] = useState<boolean>(true);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const selectedRole = searchParams.get("role") || "";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -49,10 +51,15 @@ const LoginPanel: React.FC = () => {
         {darkMode ? "☀️" : "🌙"}
       </div>
 
+      <button className="back-button" onClick={() => navigate("/")} title="Go back">
+        ← Back
+      </button>
+
       <div className="glass-card">
         <div className="card-header">
           <h2>Welcome to InternHub</h2>
           <p>Login to continue</p>
+          {selectedRole && <p className="role-label">Logging in as: <strong>{selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}</strong></p>}
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
