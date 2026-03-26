@@ -1,0 +1,169 @@
+.intern-module .intern-stat-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.intern-module .intern-stat-card .stat-value {
+  font-size: 42px;
+}
+
+.intern-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+
+.intern-list-item:last-child {
+  border-bottom: none;
+}
+
+.intern-item-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.intern-item-meta {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.intern-feedback-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.intern-feedback-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.intern-kanban {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.intern-kanban-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  margin-bottom: 10px;
+  background: var(--surface2);
+}
+
+.intern-card-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.intern-progress-bar {
+  margin-top: 8px;
+  height: 6px;
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.intern-progress-fill {
+  height: 100%;
+  border-radius: 6px;
+  width: 70%;
+  background: var(--accent4);
+}
+
+.intern-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.intern-form input,
+.intern-form select,
+.intern-form textarea {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 9px 10px;
+  color: var(--text);
+}
+
+.intern-field-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.intern-success {
+  padding: 10px;
+  border: 1px solid var(--accent3);
+  color: var(--accent3);
+  background: rgba(67, 232, 176, 0.1);
+  border-radius: 4px;
+}
+
+.intern-bar-chart {
+  height: 220px;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.intern-bar {
+  flex: 1;
+  min-height: 8px;
+  border-radius: 4px 4px 0 0;
+  background: var(--accent);
+}
+
+.intern-skill-row {
+  margin-bottom: 12px;
+}
+
+.intern-skill-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 13px;
+}
+
+.intern-meta-row {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+@media (max-width: 1024px) {
+  .intern-module .intern-stat-grid,
+  .intern-kanban {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .intern-module .intern-stat-grid,
+  .intern-kanban {
+    grid-template-columns: 1fr;
+  }
+
+  .intern-field-row {
+    grid-template-columns: 1fr;
+  }
+
+  .intern-meta-row {
+    flex-direction: column;
+    gap: 6px;
+  }
+}

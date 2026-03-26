@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InternHub – UI Wireframes</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161a23;
+    --surface2: #1e2330;
+    --border: #2a3045;
+    --accent: #5b8cff;
+    --accent2: #ff6b6b;
+    --accent3: #43e8b0;
+    --accent4: #f5c542;
+    --text: #e8ecf4;
+    --muted: #6b748a;
+    --sidebar-w: 220px;
+    --header-h: 56px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); }
+
+  /* ── NAV BAR (role switcher) ── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+    height: 44px; background: #080a0f;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 24px; gap: 8px;
+  }
+  .topbar span { font-family: 'Syne', sans-serif; font-size: 13px; color: var(--muted); margin-right: 8px; }
+  .role-btn {
+    padding: 4px 14px; border-radius: 20px; border: 1px solid var(--border);
+    background: transparent; color: var(--muted); font-size: 12px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; transition: all .2s;
+  }
+  .role-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .page-label {
+    margin-left: auto; font-size: 12px; color: var(--muted);
+    font-family: 'Syne', sans-serif;
+  }
+
+  /* ── LAYOUT ── */
+  .app { display: flex; margin-top: 44px; min-height: calc(100vh - 44px); }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w); background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: fixed; top: 44px; bottom: 0; left: 0;
+    display: flex; flex-direction: column;
+    padding: 20px 0;
+  }
+  .sidebar-logo {
+    padding: 0 20px 20px;
+    font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
+    color: var(--accent); border-bottom: 1px solid var(--border);
+  }
+  .sidebar-logo span { color: var(--text); }
+  .sidebar-section { padding: 16px 12px 8px; font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 16px; margin: 1px 8px; border-radius: 8px;
+    font-size: 13.5px; color: var(--muted); cursor: pointer;
+    transition: all .18s;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: rgba(91,140,255,.15); color: var(--accent); }
+  .nav-item .icon { width: 16px; text-align: center; font-size: 15px; }
+  .sidebar-footer {
+    margin-top: auto; padding: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .user-chip {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .user-info { flex: 1; overflow: hidden; }
+  .user-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .user-role { font-size: 11px; color: var(--muted); }
+
+  /* ── MAIN ── */
+  .main { margin-left: var(--sidebar-w); flex: 1; padding: 28px 32px; min-height: calc(100vh - 44px); }
+
+  /* ── HEADER ── */
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+  .page-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; }
+  .page-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .btn { padding: 8px 18px; border-radius: 8px; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; transition: all .2s; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #4a7ef5; }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-sm { padding: 5px 12px; font-size: 12px; border-radius: 6px; }
+  .btn-group { display: flex; gap: 8px; }
+
+  /* ── STAT CARDS ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; position: relative; overflow: hidden; }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 12px 12px 0 0; }
+  .stat-card.blue::before { background: var(--accent); }
+  .stat-card.red::before { background: var(--accent2); }
+  .stat-card.green::before { background: var(--accent3); }
+  .stat-card.yellow::before { background: var(--accent4); }
+  .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .stat-value { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; }
+  .stat-delta { font-size: 11px; margin-top: 4px; color: var(--accent3); }
+
+  /* ── TABLES ── */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+  .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; }
+  th { padding: 11px 20px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; text-align: left; border-bottom: 1px solid var(--border); font-weight: 500; }
+  td { padding: 13px 20px; font-size: 13px; border-bottom: 1px solid rgba(42,48,69,.5); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,.02); }
+
+  /* ── BADGES ── */
+  .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+  .badge-blue { background: rgba(91,140,255,.15); color: var(--accent); }
+  .badge-green { background: rgba(67,232,176,.15); color: var(--accent3); }
+  .badge-red { background: rgba(255,107,107,.15); color: var(--accent2); }
+  .badge-yellow { background: rgba(245,197,66,.15); color: var(--accent4); }
+  .badge-gray { background: var(--surface2); color: var(--muted); }
+
+  /* ── FORM ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1/-1; }
+  label { font-size: 12px; color: var(--muted); }
+  input, select, textarea {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 9px 12px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; width: 100%;
+    outline: none; transition: border .2s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  textarea { resize: vertical; min-height: 80px; }
+  select option { background: var(--surface2); }
+  .form-actions { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ── SCREEN VISIBILITY ── */
+  .screen { display: none; }
+  .screen.visible { display: block; }
+
+  /* ── TWO-COL ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  /* ── PROGRESS ── */
+  .progress-bar { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+  .progress-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+  .progress-fill.green { background: var(--accent3); }
+  .progress-fill.yellow { background: var(--accent4); }
+
+  /* ── TASK BOARD ── */
+  .kanban { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .kanban-col { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .kanban-col-title { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .kanban-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; cursor: pointer; transition: border .2s; }
+  .kanban-card:hover { border-color: var(--accent); }
+  .kanban-card-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .kanban-card-meta { font-size: 11px; color: var(--muted); }
+
+  /* ── EVALUATION ── */
+  .eval-score { display: flex; gap: 6px; }
+  .score-dot { width: 28px; height: 28px; border-radius: 6px; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; transition: all .2s; }
+  .score-dot.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* ── SEARCH BAR ── */
+  .search-row { display: flex; gap: 10px; margin-bottom: 20px; }
+  .search-input { flex: 1; }
+  .filter-chip { padding: 7px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; cursor: pointer; color: var(--muted); }
+  .filter-chip.active { border-color: var(--accent); color: var(--accent); background: rgba(91,140,255,.1); }
+
+  /* ── SUBMISSION CARD ── */
+  .sub-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+  .sub-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .sub-card-title { font-size: 14px; font-weight: 600; }
+  .sub-link { display: inline-flex; align-items: center; gap: 6px; color: var(--accent); font-size: 12px; margin-top: 8px; }
+
+  /* ── ANALYTICS ── */
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 100px; padding: 8px 0; }
+  .bar { flex: 1; border-radius: 4px 4px 0 0; background: var(--accent); opacity: .7; min-width: 20px; transition: opacity .2s; }
+  .bar:hover { opacity: 1; }
+  .bar-labels { display: flex; gap: 8px; }
+  .bar-label { flex: 1; text-align: center; font-size: 10px; color: var(--muted); min-width: 20px; }
+
+  /* ── MINI CALENDAR ── */
+  .mini-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 11px; cursor: pointer; color: var(--muted); }
+  .cal-day.today { background: var(--accent); color: #fff; }
+  .cal-day.has-event { background: rgba(91,140,255,.15); color: var(--accent); }
+  .cal-day-header { color: var(--muted); font-size: 9px; text-transform: uppercase; text-align: center; padding-bottom: 4px; }
+
+  /* ── INTERN TASK ── */
+  .task-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid rgba(42,48,69,.5); }
+  .task-item:last-child { border-bottom: none; }
+  .task-check { width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border); margin-top: 2px; flex-shrink: 0; }
+  .task-check.done { background: var(--accent3); border-color: var(--accent3); }
+  .task-body { flex: 1; }
+  .task-name { font-size: 13px; font-weight: 500; }
+  .task-meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .task-due { font-size: 11px; color: var(--accent4); }
+
+  /* ── EMPTY STATE ── */
+  .empty { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
+
+  /* ── NOTIFICATION DOT ── */
+  .notif { width: 7px; height: 7px; border-radius: 50%; background: var(--accent2); margin-left: auto; }
+
+  /* annotations */
+  .wf-note { display: inline-block; background: rgba(245,197,66,.12); border: 1px dashed var(--accent4); color: var(--accent4); font-size: 10px; padding: 2px 7px; border-radius: 4px; margin-left: 8px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- Role Switcher Topbar -->
+<div class="topbar">
+  <span>View as:</span>
+  <button class="role-btn active" onclick="switchRole('admin')">👑 Admin</button>
+  <button class="role-btn" onclick="switchRole('trainer')">🎓 Trainer</button>
+  <button class="role-btn" onclick="switchRole('intern')">💼 Intern</button>
+  <span class="page-label" id="currentPageLabel">Admin Dashboard</span>
+</div>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">Intern<span>Hub</span></div>
+
+    <!-- Admin Nav -->
+    <div id="nav-admin">
+      <div class="sidebar-section">Overview</div>
+      <div class="nav-item active" onclick="showScreen('admin-dashboard')"><span class="icon">⬛</span> Dashboard</div>
+      <div class="sidebar-section">Manage</div>
+      <div class="nav-item" onclick="showScreen('admin-users')"><span class="icon">👥</span> Users</div>
+      <div class="nav-item" onclick="showScreen('admin-cohorts')"><span class="icon">🗂</span> Cohorts</div>
+      <div class="nav-item" onclick="showScreen('admin-projects')"><span class="icon">📁</span> Projects</div>
+      <div class="nav-item" onclick="showScreen('admin-tasks')"><span class="icon">✅</span> Task Assignment</div>
+      <div class="sidebar-section">Insights</div>
+      <div class="nav-item" onclick="showScreen('admin-analytics')"><span class="icon">📊</span> Analytics</div>
+    </div>
+
+    <!-- Trainer Nav -->
+    <div id="nav-trainer" style="display:none">
+      <div class="sidebar-section">Overview</div>
+      <div class="nav-item active" onclick="showScreen('trainer-dashboard')"><span class="icon">⬛</span> Dashboard</div>
+      <div class="sidebar-section">Review</div>
+      <div class="nav-item" onclick="showScreen('trainer-submissions')"><span class="icon">📬</span> Submissions <div class="notif"></div></div>
+      <div class="nav-item" onclick="showScreen('trainer-evaluation')"><span class="icon">⭐</span> Evaluation Form</div>
+    </div>
+
+    <!-- Intern Nav -->
+    <div id="nav-intern" style="display:none">
+      <div class="sidebar-section">Overview</div>
+      <div class="nav-item active" onclick="showScreen('intern-dashboard')"><span class="icon">⬛</span> Dashboard</div>
+      <div class="sidebar-section">Work</div>
+      <div class="nav-item" onclick="showScreen('intern-tasks')"><span class="icon">✅</span> My Tasks</div>
+      <div class="nav-item" onclick="showScreen('intern-submission')"><span class="icon">📤</span> Submit Work</div>
+      <div class="sidebar-section">Progress</div>
+      <div class="nav-item" onclick="showScreen('intern-progress')"><span class="icon">📈</span> My Progress</div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="avatar" id="avatarInitial">AD</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Priya Sharma</div>
+          <div class="user-role" id="userRole">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- ═══════════════════════════════════════
+         ADMIN: DASHBOARD
+    ═══════════════════════════════════════ -->
+    <div class="screen visible" id="screen-admin-dashboard">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Dashboard <span class="wf-note">Admin View</span></div>
+          <div class="page-subtitle">Program overview — Week 2 of 4</div>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-secondary btn-sm">Export Report</button>
+          <button class="btn btn-primary btn-sm" onclick="showScreen('admin-users')">+ Add User</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Total Interns</div>
+          <div class="stat-value">24</div>
+          <div class="stat-delta">↑ 4 this cohort</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Active Projects</div>
+          <div class="stat-value">6</div>
+          <div class="stat-delta">2 nearing deadline</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-label">Pending Submissions</div>
+          <div class="stat-value">13</div>
+          <div class="stat-delta">↓ 3 from yesterday</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Evaluations Due</div>
+          <div class="stat-value">7</div>
+          <div class="stat-delta">Due this week</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <!-- Recent Activity -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Recent Activity</div>
+            <span class="wf-note">Live feed</span>
+          </div>
+          <table>
+            <thead><tr><th>User</th><th>Action</th><th>Time</th></tr></thead>
+            <tbody>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:24px;height:24px;font-size:10px">AK</div> Arjun K.</div></td><td><span class="badge badge-blue">Submitted</span> Task 3</td><td style="color:var(--muted)">5m ago</td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:24px;height:24px;font-size:10px;background:var(--accent3)">SL</div> Sara L.</div></td><td><span class="badge badge-green">Evaluated</span> Sprint 1</td><td style="color:var(--muted)">1h ago</td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:24px;height:24px;font-size:10px;background:var(--accent4)">MR</div> Mihir R.</div></td><td><span class="badge badge-yellow">Assigned</span> New task</td><td style="color:var(--muted)">2h ago</td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:24px;height:24px;font-size:10px;background:var(--accent2)">NP</div> Neha P.</div></td><td><span class="badge badge-red">Overdue</span> Task 2</td><td style="color:var(--muted)">3h ago</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Cohort Progress -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Cohort Progress</div>
+          </div>
+          <div style="padding:16px 20px">
+            <div style="margin-bottom:16px">
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Cohort A – InternHub</span><span style="color:var(--accent)">68%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:68%"></div></div>
+            </div>
+            <div style="margin-bottom:16px">
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Cohort B – DataTrack</span><span style="color:var(--accent3)">45%</span></div>
+              <div class="progress-bar"><div class="progress-fill green" style="width:45%"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Cohort C – DevOps</span><span style="color:var(--accent4)">82%</span></div>
+              <div class="progress-bar"><div class="progress-fill yellow" style="width:82%"></div></div>
+            </div>
+
+            <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+              <div class="card-title" style="margin-bottom:12px">Upcoming Deadlines</div>
+              <div style="font-size:13px;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span>Sprint 2 Review</span><span class="badge badge-yellow">In 2 days</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span>Final Demo</span><span class="badge badge-red">In 12 days</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         ADMIN: USER MANAGEMENT
+    ═══════════════════════════════════════ -->
+    <div class="screen" id="screen-admin-users">
+      <div class="page-header">
+        <div>
+          <div class="page-title">User Management <span class="wf-note">Admin View</span></div>
+          <div class="page-subtitle">Manage all system users</div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="showScreen('admin-create-user')">+ Create User</button>
+      </div>
+      <div class="search-row">
+        <input class="search-input" placeholder="🔍  Search users…" style="max-width:300px">
+        <div class="filter-chip active">All</div>
+        <div class="filter-chip">Admin</div>
+        <div class="filter-chip">Trainer</div>
+        <div class="filter-chip">Intern</div>
+      </div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Cohort</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px">PS</div>Priya Sharma</div></td>
+              <td style="color:var(--muted)">priya@company.com</td>
+              <td><span class="badge badge-red">Admin</span></td>
+              <td style="color:var(--muted)">—</td>
+              <td><span class="badge badge-green">Active</span></td>
+              <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:var(--accent3)">RM</div>Rohan Mehta</div></td>
+              <td style="color:var(--muted)">rohan@company.com</td>
+              <td><span class="badge badge-blue">Trainer</span></td>
+              <td style="color:var(--muted)">Cohort A</td>
+              <td><span class="badge badge-green">Active</span></td>
+              <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:var(--accent4)">AK</div>Arjun Kumar</div></td>
+              <td style="color:var(--muted)">arjun@intern.com</td>
+              <td><span class="badge badge-yellow">Intern</span></td>
+              <td style="color:var(--muted)">Cohort A</td>
+              <td><span class="badge badge-green">Active</span></td>
+              <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:var(--accent2)">NP</div>Neha Patil</div></td>
+              <td style="color:var(--muted)">neha@intern.com</td>
+              <td><span class="badge badge-yellow">Intern</span></td>
+              <td style="color:var(--muted)">Cohort B</td>
+              <td><span class="badge badge-gray">Inactive</span></td>
+              <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#8b5cf6">SV</div>Sneha Verma</div></td>
+              <td style="color:var(--muted)">sneha@intern.com</td>
+              <td><span class="badge badge-yellow">Intern</span></td>
+              <td style="color:var(--muted)">Cohort A</td>
+              <td><span class="badge badge-green">Active</span></td>
+              <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ADMIN: CREATE USER FORM -->
+    <div class="screen" id="screen-admin-create-user">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Create User <span class="wf-note">Form</span></div>
+          <div class="page-subtitle">Add a new user to the system</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="showScreen('admin-users')">← Back</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">User Details</div></div>
+        <div style="padding:20px">
+          <div class="form-grid">
+            <div class="form-group"><label>First Name</label><input placeholder="e.g. Arjun"></div>
+            <div class="form-group"><label>Last Name</label><input placeholder="e.g. Kumar"></div>
+            <div class="form-group"><label>Email Address</label><input type="email" placeholder="arjun@company.com"></div>
+            <div class="form-group"><label>Phone</label><input placeholder="+91 xxxxxxxxxx"></div>
+            <div class="form-group"><label>Role</label>
+              <select><option>Select Role</option><option>Admin</option><option>Trainer</option><option>Intern</option></select>
+            </div>
+            <div class="form-group"><label>Assign to Cohort</label>
+              <select><option>Select Cohort</option><option>Cohort A – InternHub</option><option>Cohort B – DataTrack</option><option>Cohort C – DevOps</option></select>
+            </div>
+            <div class="form-group full"><label>Password (temporary)</label><input type="password" placeholder="Will be sent via email"></div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="showScreen('admin-users')">Create User</button>
+            <button class="btn btn-secondary" onclick="showScreen('admin-users')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         ADMIN: COHORT MANAGEMENT
+    ═══════════════════════════════════════ -->
+    <div class="screen" id="screen-admin-cohorts">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Cohort Management <span class="wf-note">Admin View</span></div>
+          <div class="page-subtitle">Training batches and enrollment</div>
+        </div>
+        <button class="btn btn-primary btn-sm">+ New Cohort</button>
+      </div>
+      <div class="three-col">
+        <div class="card" style="margin-bottom:0">
+          <div style="padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start">
+            <div><div class="card-title">Cohort A</div><div style="font-size:12px;color:var(--muted);margin-top:2px">InternHub – Full Stack</div></div>
+            <span class="badge badge-green">Active</span>
+          </div>
+          <div style="padding:16px 20px">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Progress</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:68%"></div></div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">68% — Week 2 of 4</div>
+            <div style="margin-top:14px;display:flex;gap:12px;font-size:12px">
+              <div><span style="color:var(--muted)">Interns</span><br><strong>8</strong></div>
+              <div><span style="color:var(--muted)">Trainer</span><br><strong>Rohan M.</strong></div>
+              <div><span style="color:var(--muted)">Projects</span><br><strong>2</strong></div>
+            </div>
+            <div style="margin-top:14px">
+              <button class="btn btn-secondary btn-sm" style="width:100%">View Details</button>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div style="padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start">
+            <div><div class="card-title">Cohort B</div><div style="font-size:12px;color:var(--muted);margin-top:2px">DataTrack – Data Analysis</div></div>
+            <span class="badge badge-green">Active</span>
+          </div>
+          <div style="padding:16px 20px">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Progress</div>
+            <div class="progress-bar"><div class="progress-fill green" style="width:45%"></div></div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">45% — Week 1 of 4</div>
+            <div style="margin-top:14px;display:flex;gap:12px;font-size:12px">
+              <div><span style="color:var(--muted)">Interns</span><br><strong>10</strong></div>
+              <div><span style="color:var(--muted)">Trainer</span><br><strong>Kavya T.</strong></div>
+              <div><span style="color:var(--muted)">Projects</span><br><strong>3</strong></div>
+            </div>
+            <div style="margin-top:14px">
+              <button class="btn btn-secondary btn-sm" style="width:100%">View Details</button>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div style="padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start">
+            <div><div class="card-title">Cohort C</div><div style="font-size:12px;color:var(--muted);margin-top:2px">DevOps – Cloud & CI/CD</div></div>
+            <span class="badge badge-yellow">Wrapping up</span>
+          </div>
+          <div style="padding:16px 20px">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Progress</div>
+            <div class="progress-bar"><div class="progress-fill yellow" style="width:82%"></div></div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">82% — Week 3 of 4</div>
+            <div style="margin-top:14px;display:flex;gap:12px;font-size:12px">
+              <div><span style="color:var(--muted)">Interns</span><br><strong>6</strong></div>
+              <div><span style="color:var(--muted)">Trainer</span><br><strong>Aditya S.</strong></div>
+              <div><span style="color:var(--muted)">Projects</span><br><strong>1</strong></div>
+            </div>
+            <div style="margin-top:14px">
+              <button class="btn btn-secondary btn-sm" style="width:100%">View Details</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         ADMIN: PROJECT MANAGEMENT
+    ═══════════════════════════════════════ -->
+    <div class="screen" id="screen-admin-projects">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Project Management <span class="wf-note">Admin View</span></div>
+          <div class="page-subtitle">All active and past projects</div>
+        </div>
+        <button class="btn btn-primary btn-sm">+ New Project</button>
+      </div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Project Name</th><th>Cohort</th><th>Tasks</th><th>Submissions</th><th>Deadline</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>InternHub Platform</strong></td>
+              <td style="color:var(--muted)">Cohort A</td>
+              <td>8 / 12</td>
+              <td>6</td>
+              <td style="color:var(--accent4)">Jun 30</td>
+              <td><span class="badge badge-blue">In Progress</span></td>
+              <td><button class="btn btn-secondary btn-sm">View</button></td>
+            </tr>
+            <tr>
+              <td><strong>Sales Dashboard</strong></td>
+              <td style="color:var(--muted)">Cohort A</td>
+              <td>4 / 6</td>
+              <td>3</td>
+              <td style="color:var(--accent2)">Jun 20</td>
+              <td><span class="badge badge-yellow">At Risk</span></td>
+              <td><button class="btn btn-secondary btn-sm">View</button></td>
+            </tr>
+            <tr>
+              <td><strong>Data Pipeline</strong></td>
+              <td style="color:var(--muted)">Cohort B</td>
+              <td>2 / 8</td>
+              <td>1</td>
+              <td style="color:var(--muted)">Jul 15</td>
+              <td><span class="badge badge-gray">Planning</span></td>
+              <td><button class="btn btn-secondary btn-sm">View</button></td>
+            </tr>
+            <tr>
+              <td><strong>CI/CD Setup</strong></td>
+              <td style="color:var(--muted)">Cohort C</td>
+              <td>10 / 10</td>
+              <td>9</td>
+              <td style="color:var(--muted)">Jun 15</td>
+              <td><span class="badge badge-green">Completed</span></td>
+              <td><button class="btn btn-secondary btn-sm">View</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         ADMIN: TASK ASSIGNMENT
+    ═══════════════════════════════════════ -->
+    <div class="screen" id="screen-admin-tasks">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Task Assignment <span class="wf-note">Admin View</span></div>
+          <div class="page-subtitle">Create and assign tasks to interns</div>
+        </div>
+        <button class="btn btn-primary btn-sm">+ New Task</button>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-header"><div class="card-title">Create Task</div></div>
+            <div style="padding:16px 20px">
+              <div class="form-grid" style="grid-template-columns:1fr">
+                <div class="form-group"><label>Task Title</label><input placeholder="e.g. Build Login API"></div>
+                <div class="form-group"><label>Project</label>
+                  <select><option>Select Project</option><option>InternHub Platform</option><option>Sales Dashboard</option></select>
+                </div>
+                <div class="form-group"><label>Assign To</label>
+                  <select><option>Select Intern</option><option>Arjun Kumar</option><option>Sneha Verma</option><option>Mihir Rao</option></select>
+                </div>
+                <div class="form-group"><label>Due Date</label><input type="date"></div>
+                <div class="form-group"><label>Description</label><textarea placeholder="Task details and requirements…"></textarea></div>
+              </div>
+              <div style="margin-top:12px"><button class="btn btn-primary" style="width:100%">Assign Task</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div class="card-header"><div class="card-title">All Tasks</div></div>
+          <table>
+            <thead><tr><th>Task</th><th>Assignee</th><th>Due</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Build Login API</td><td>Arjun K.</td><td style="color:var(--accent4)">Jun 18</td><td><span class="badge badge-blue">In Progress</span></td></tr>
+              <tr><td>Design DB Schema</td><td>Sneha V.</td><td style="color:var(--muted)">Jun 20</td><td><span class="badge badge-green">Done</span></td></tr>
+              <tr><td>React Dashboard</td><td>Mihir R.</td><td style="color:var(--accent2)">Jun 17</td><td><span class="badge badge-red">Overdue</span></td></tr>
+              <tr><td>Write API Docs</td><td>Neha P.</td><td style="color:var(--muted)">Jun 25</td><td><span class="badge badge-gray">Not Started</span></td></tr>
+              <tr><td>Setup CI Pipeline</td><td>Arjun K.</td><td style="color:var(--muted)">Jun 28</td><td><span class="badge badge-gray">Not Started</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         ADMIN: ANALYTICS
+    ═══════════════════════════════════════ -->
+    <div class="screen" id="screen-admin-analytics">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Analytics <span class="wf-note">Admin View</span></div>
+          <div class="page-subtitle">Program performance at a glance</div>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card blue"><div class="stat-label">Avg. Score</div><div class="stat-value">74<span style="font-size:16px">/100</span></div><div class="stat-delta">↑ 6 pts from last cohort</div></div>
+        <div class="stat-card green"><div class="stat-label">On-Time Submissions</div><div class="stat-value">81<span style="font-size:16px">%</span></div><div class="stat-delta">↑ 5% improvement</div></div>
+        <div class="stat-card yellow"><div class="stat-label">Tasks Completed</div><div class="stat-value">48</div><div class="stat-delta">of 72 total tasks</div></div>
+        <div class="stat-card red"><div class="stat-label">Overdue Tasks</div><div class="stat-value">5</div><div class="stat-delta">Needs attention</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Weekly Submissions</div><span class="wf-note">Bar chart</span></div>
+          <div style="padding:20px">
+            <div class="bar-chart">
+              <div class="bar" style="height:40%"></div>
+              <div class="bar" style="height:65%"></div>
+              <div class="bar" style="height:30%"></div>
+              <div class="bar" style="height:80%"></div>
+              <div class="bar" style="height:55%"></div>
+              <div class="bar" style="height:90%"></div>
+              <div class="bar" style="height:72%"></div>
+            </div>
+            <div class="bar-labels">
+              <div class="bar-label">Mon</div><div class="bar-label">Tue</div><div class="bar-label">Wed</div>
+              <div class="bar-label">Thu</div><div class="bar-label">Fri</div><div class="bar-label">Sat</div><div class="bar-label">Sun</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Top Performing Interns</div></div>
+          <table>
+            <thead><tr><th>Intern</th><th>Score</th><th>Tasks Done</th></tr></thead>
+            <tbody>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:24px;height:24px;font-size:10px">AK</div>Arjun K.</div></td><td><span class="badge badge-green">92/100</span></td><td>8/8</td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:24px;height:24px;font-size:10px;background:#8b5cf6">SV</div>Sneha V.</div></td><td><span class="badge badge-green">88/100</span></td><td>7/8</td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:24px;height:24px;font-size:10px;background:var(--accent4)">MR</div>Mihir R.</div></td><td><span class="badge badge-blue">79/100</span></td><td>6/8</td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:24px;height:24px;font-size:10px;background:var(--accent2)">NP</div>Neha P.</div></td><td><span class="badge badge-yellow">62/100</span></td><td>4/8</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         TRAINER: DASHBOARD
+    ═══════════════════════════════════════ -->
+    <div class="screen" id="screen-trainer-dashboard">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Trainer Dashboard <span class="wf-note">Trainer View</span></div>
+          <div class="page-subtitle">Cohort A — 8 interns</div>
+        </div>
+      </div>
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-card blue"><div class="stat-label">Pending Reviews</div><div class="stat-value">5</div><div class="stat-delta">3 submitted today</div></div>
+        <div class="stat-card green"><div class="stat-label">Evaluated</div><div class="stat-value">18</div><div class="stat-delta">This sprint</div></div>
+        <div class="stat-card yellow"><div class="stat-label">Avg. Score Given</div><div class="stat-value">76</div><div class="stat-delta">Out of 100</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Intern Progress — Cohort A</div></div>
+          <div style="padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Arjun Kumar</span><span style="color:var(--accent3)">92%</span></div><div class="progress-bar"><div class="progress-fill" style="width:92%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Sneha Verma</span><span style="color:var(--accent)">88%</span></div><div class="progress-bar"><div class="progress-fill" style="width:88%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Mihir Rao</span><span style="color:var(--accent4)">71%</span></div><div class="progress-bar"><div class="progress-fill yellow" style="width:71%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Neha Patil</span><span style="color:var(--accent2)">48%</span></div><div class="progress-bar"><div class="progress-fill" style="width:48%;background:var(--accent2)"></div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Recent Submissions</div><button class="btn btn-secondary btn-sm" onclick="showScreen('trainer-submissions')">View All</button></div>
+          <table>
+            <thead><tr><th>Intern</th><th>Task</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Arjun K.</td><td>Build Login API</td><td><span class="badge badge-yellow">Pending</span></td></tr>
+              <tr><td>Sneha V.</td><td>DB Schema</td><td><span class="badge badge-yellow">Pending</span></td></tr>
+              <tr><td>Mihir R.</td><td>React Dashboard</td><td><span class="badge badge-green">Reviewed</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         TRAINER: SUBMISSION REVIEW
+    ═══════════════════════════════════════ -->
+    <div class="screen" id="screen-trainer-submissions">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Submission Review <span class="wf-note">Trainer View</span></div>
+          <div class="page-subtitle">Pending intern submissions</div>
+        </div>
+      </div>
+      <div class="search-row">
+        <input class="search-input" placeholder="🔍  Search submissions…" style="max-width:300px">
+        <div class="filter-chip active">All</div>
+        <div class="filter-chip">Pending</div>
+        <div class="filter-chip">Reviewed</div>
+      </div>
+
+      <div class="sub-card">
+        <div class="sub-card-header">
+          <div>
+            <div class="sub-card-title">Build Login API</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px">Arjun Kumar · Submitted Jun 17, 9:42 AM</div>
+          </div>
+          <span class="badge badge-yellow">Pending Review</span>
+        </div>
+        <div style="font-size:13px;color:var(--muted)">Submission includes JWT authentication with role-based middleware. Link to GitHub repo provided.</div>
+        <div class="sub-link">🔗 github.com/arjun/internhub-auth</div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn btn-primary btn-sm" onclick="showScreen('trainer-evaluation')">Review & Score</button>
+          <button class="btn btn-secondary btn-sm">Request Revision</button>
+        </div>
+      </div>
+
+      <div class="sub-card">
+        <div class="sub-card-header">
+          <div>
+            <div class="sub-card-title">Database Schema Design</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px">Sneha Verma · Submitted Jun 16, 3:10 PM</div>
+          </div>
+          <span class="badge badge-yellow">Pending Review</span>
+        </div>
+        <div style="font-size:13px;color:var(--muted)">ER diagram and SQL schema file. Includes 6 tables with proper foreign key constraints.</div>
+        <div class="sub-link">🔗 drive.google.com/schema-diagram</div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn btn-primary btn-sm" onclick="showScreen('trainer-evaluation')">Review & Score</button>
+          <button class="btn btn-secondary btn-sm">Request Revision</button>
+        </div>
+      </div>
+
+      <div class="sub-card" style="opacity:.6">
+        <div class="sub-card-header">
+          <div>
+            <div class="sub-card-title">React Dashboard UI</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px">Mihir Rao · Submitted Jun 15, 11:00 AM</div>
+          </div>
+          <span class="badge badge-green">Reviewed — 79/100</span>
+        </div>
+        <div style="font-size:13px;color:var(--muted)">Evaluation complete. Feedback provided on component structure.</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         TRAINER: EVALUATION FORM
+    ═══════════════════════════════════════ -->
+    <div class="screen" id="screen-trainer-evaluation">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Evaluation Form <span class="wf-note">Trainer View</span></div>
+          <div class="page-subtitle">Build Login API — Arjun Kumar</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="showScreen('trainer-submissions')">← Back</button>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Submission Details</div></div>
+          <div style="padding:16px 20px;font-size:13px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;color:var(--muted)">
+              <div><div style="font-size:11px;margin-bottom:2px">Intern</div><div style="color:var(--text)">Arjun Kumar</div></div>
+              <div><div style="font-size:11px;margin-bottom:2px">Project</div><div style="color:var(--text)">InternHub Platform</div></div>
+              <div><div style="font-size:11px;margin-bottom:2px">Task</div><div style="color:var(--text)">Build Login API</div></div>
+              <div><div style="font-size:11px;margin-bottom:2px">Submitted</div><div style="color:var(--text)">Jun 17, 2025</div></div>
+            </div>
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Submission Link</div>
+              <div class="sub-link" style="margin-top:0">🔗 github.com/arjun/internhub-auth</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Scoring Criteria</div><span class="wf-note">Rate each</span></div>
+          <div style="padding:16px 20px;display:flex;flex-direction:column;gap:14px">
+            <div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Code Quality (1–10)</div>
+              <div class="eval-score">
+                <div class="score-dot">1</div><div class="score-dot">2</div><div class="score-dot">3</div><div class="score-dot">4</div>
+                <div class="score-dot">5</div><div class="score-dot">6</div><div class="score-dot">7</div>
+                <div class="score-dot selected">8</div><div class="score-dot">9</div><div class="score-dot">10</div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Functionality (1–10)</div>
+              <div class="eval-score">
+                <div class="score-dot">1</div><div class="score-dot">2</div><div class="score-dot">3</div><div class="score-dot">4</div>
+                <div class="score-dot">5</div><div class="score-dot">6</div><div class="score-dot">7</div>
+                <div class="score-dot">8</div><div class="score-dot selected">9</div><div class="score-dot">10</div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Documentation (1–10)</div>
+              <div class="eval-score">
+                <div class="score-dot">1</div><div class="score-dot">2</div><div class="score-dot">3</div><div class="score-dot">4</div>
+                <div class="score-dot">5</div><div class="score-dot selected">6</div><div class="score-dot">7</div>
+                <div class="score-dot">8</div><div class="score-dot">9</div><div class="score-dot">10</div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Timeliness (1–10)</div>
+              <div class="eval-score">
+                <div class="score-dot">1</div><div class="score-dot">2</div><div class="score-dot">3</div><div class="score-dot">4</div>
+                <div class="score-dot">5</div><div class="score-dot">6</div><div class="score-dot">7</div>
+                <div class="score-dot">8</div><div class="score-dot">9</div><div class="score-dot selected">10</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Written Feedback</div></div>
+        <div style="padding:16px 20px">
+          <div class="form-group" style="margin-bottom:12px">
+            <label>Strengths</label>
+            <textarea placeholder="What did the intern do well?">Clean code structure, good use of middleware pattern. JWT implementation is solid and follows best practices.</textarea>
+          </div>
+          <div class="form-group" style="margin-bottom:12px">
+            <label>Areas for Improvement</label>
+            <textarea placeholder="What could be improved?">Error handling could be more comprehensive. Consider adding input validation with a library like Joi.</textarea>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid var(--border)">
+            <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700">Final Score: <span style="color:var(--accent)">82 / 100</span></div>
+            <div class="btn-group">
+              <button class="btn btn-secondary">Save Draft</button>
+              <button class="btn btn-primary" onclick="showScreen('trainer-submissions')">Submit Evaluation</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         INTERN: DASHBOARD
+    ═══════════════════════════════════════ -->
+    <div class="screen" id="screen-intern-dashboard">
+      <div class="page-header">
+        <div>
+          <div class="page-title">My Dashboard <span class="wf-note">Intern View</span></div>
+          <div class="page-subtitle">Welcome back, Arjun 👋 · Cohort A</div>
+        </div>
+      </div>
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-card blue"><div class="stat-label">Tasks Assigned</div><div class="stat-value">8</div><div class="stat-delta">2 due this week</div></div>
+        <div class="stat-card green"><div class="stat-label">Submitted</div><div class="stat-value">5</div><div class="stat-delta">3 evaluated</div></div>
+        <div class="stat-card yellow"><div class="stat-label">Avg. Score</div><div class="stat-value">82</div><div class="stat-delta">↑ 4 pts vs Sprint 1</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Upcoming Tasks</div><button class="btn btn-secondary btn-sm" onclick="showScreen('intern-tasks')">View All</button></div>
+          <div style="padding:0 20px">
+            <div class="task-item">
+              <div class="task-check"></div>
+              <div class="task-body">
+                <div class="task-name">Setup CI Pipeline</div>
+                <div class="task-meta">InternHub Platform</div>
+              </div>
+              <div class="task-due">Due Jun 28</div>
+            </div>
+            <div class="task-item">
+              <div class="task-check"></div>
+              <div class="task-body">
+                <div class="task-name">Write API Documentation</div>
+                <div class="task-meta">InternHub Platform</div>
+              </div>
+              <div class="task-due">Due Jun 25</div>
+            </div>
+            <div class="task-item">
+              <div class="task-check done"></div>
+              <div class="task-body" style="opacity:.5">
+                <div class="task-name" style="text-decoration:line-through">Build Login API</div>
+                <div class="task-meta">InternHub Platform</div>
+              </div>
+              <span class="badge badge-green">Done</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Recent Feedback</div></div>
+          <div style="padding:16px 20px">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <span style="font-size:13px;font-weight:600">React Dashboard UI</span>
+                <span class="badge badge-blue">79/100</span>
+              </div>
+              <div style="font-size:12px;color:var(--muted)">"Good component structure. Improve state management — consider lifting state or using context."</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:6px">— Rohan M. · Jun 15</div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <span style="font-size:13px;font-weight:600">DB Schema Design</span>
+                <span class="badge badge-green">91/100</span>
+              </div>
+              <div style="font-size:12px;color:var(--muted)">"Excellent normalization. Well thought-out relationships with proper use of foreign keys."</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:6px">— Rohan M. · Jun 12</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         INTERN: TASK DETAILS
+    ═══════════════════════════════════════ -->
+    <div class="screen" id="screen-intern-tasks">
+      <div class="page-header">
+        <div>
+          <div class="page-title">My Tasks <span class="wf-note">Intern View</span></div>
+          <div class="page-subtitle">InternHub Platform — all assigned tasks</div>
+        </div>
+      </div>
+      <div class="kanban">
+        <div class="kanban-col">
+          <div class="kanban-col-title">🔵 To Do <span class="badge badge-gray">2</span></div>
+          <div class="kanban-card">
+            <div class="kanban-card-title">Setup CI Pipeline</div>
+            <div class="kanban-card-meta">Due Jun 28 · InternHub</div>
+            <div style="margin-top:8px"><span class="badge badge-gray">Not Started</span></div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-card-title">Write API Documentation</div>
+            <div class="kanban-card-meta">Due Jun 25 · InternHub</div>
+            <div style="margin-top:8px"><span class="badge badge-gray">Not Started</span></div>
+          </div>
+        </div>
+        <div class="kanban-col">
+          <div class="kanban-col-title">🟡 In Progress <span class="badge badge-yellow">1</span></div>
+          <div class="kanban-card" style="border-color:var(--accent4)">
+            <div class="kanban-card-title">Build Login API</div>
+            <div class="kanban-card-meta">Due Jun 18 · InternHub</div>
+            <div style="margin-top:6px;margin-bottom:6px"><div class="progress-bar"><div class="progress-fill yellow" style="width:70%"></div></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span class="badge badge-yellow">In Progress</span>
+              <button class="btn btn-primary btn-sm" onclick="showScreen('intern-submission')">Submit</button>
+            </div>
+          </div>
+        </div>
+        <div class="kanban-col">
+          <div class="kanban-col-title">🟢 Done <span class="badge badge-green">3</span></div>
+          <div class="kanban-card" style="opacity:.7">
+            <div class="kanban-card-title">DB Schema Design</div>
+            <div class="kanban-card-meta">Submitted Jun 16 · Score: 91/100</div>
+            <div style="margin-top:8px"><span class="badge badge-green">Evaluated</span></div>
+          </div>
+          <div class="kanban-card" style="opacity:.7">
+            <div class="kanban-card-title">React Dashboard UI</div>
+            <div class="kanban-card-meta">Submitted Jun 15 · Score: 79/100</div>
+            <div style="margin-top:8px"><span class="badge badge-green">Evaluated</span></div>
+          </div>
+          <div class="kanban-card" style="opacity:.7">
+            <div class="kanban-card-title">Environment Setup</div>
+            <div class="kanban-card-meta">Submitted Jun 10 · Score: 88/100</div>
+            <div style="margin-top:8px"><span class="badge badge-green">Evaluated</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         INTERN: SUBMISSION PAGE
+    ═══════════════════════════════════════ -->
+    <div class="screen" id="screen-intern-submission">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Submit Work <span class="wf-note">Intern View</span></div>
+          <div class="page-subtitle">Upload your task submission</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="showScreen('intern-tasks')">← Back to Tasks</button>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Task Details</div></div>
+          <div style="padding:16px 20px;font-size:13px;display:flex;flex-direction:column;gap:10px">
+            <div><div style="font-size:11px;color:var(--muted)">Task</div><div style="font-weight:600">Build Login API</div></div>
+            <div><div style="font-size:11px;color:var(--muted)">Project</div><div>InternHub Platform</div></div>
+            <div><div style="font-size:11px;color:var(--muted)">Due Date</div><div style="color:var(--accent4)">June 18, 2025</div></div>
+            <div><div style="font-size:11px;color:var(--muted);margin-bottom:4px">Description</div><div style="color:var(--muted)">Implement a REST API endpoint for user login using JWT tokens. Include role-based middleware, input validation, and proper error handling.</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Submission</div></div>
+          <div style="padding:16px 20px">
+            <div class="form-group" style="margin-bottom:14px">
+              <label>GitHub / Repository URL</label>
+              <input placeholder="https://github.com/your-repo">
+            </div>
+            <div class="form-group" style="margin-bottom:14px">
+              <label>Live Demo URL (optional)</label>
+              <input placeholder="https://your-app.vercel.app">
+            </div>
+            <div class="form-group" style="margin-bottom:14px">
+              <label>Notes to Trainer</label>
+              <textarea placeholder="Any context, challenges faced, or things you'd like feedback on…"></textarea>
+            </div>
+            <div style="border:2px dashed var(--border);border-radius:8px;padding:24px;text-align:center;margin-bottom:14px;cursor:pointer;color:var(--muted);font-size:13px">
+              📎 Drop files here or click to attach<br>
+              <span style="font-size:11px">(PDF, ZIP, images — max 20MB)</span>
+            </div>
+            <button class="btn btn-primary" style="width:100%" onclick="showScreen('intern-tasks')">Submit for Review</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         INTERN: PROGRESS
+    ═══════════════════════════════════════ -->
+    <div class="screen" id="screen-intern-progress">
+      <div class="page-header">
+        <div>
+          <div class="page-title">My Progress <span class="wf-note">Intern View</span></div>
+          <div class="page-subtitle">Track your performance across the program</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Score History</div></div>
+          <div style="padding:20px">
+            <div class="bar-chart">
+              <div class="bar" style="height:88%;background:var(--accent3)"></div>
+              <div class="bar" style="height:79%;background:var(--accent)"></div>
+              <div class="bar" style="height:91%;background:var(--accent3)"></div>
+              <div class="bar" style="height:82%;background:var(--accent)"></div>
+              <div class="bar" style="height:50%;background:var(--border)"></div>
+              <div class="bar" style="height:50%;background:var(--border)"></div>
+            </div>
+            <div class="bar-labels">
+              <div class="bar-label">Env</div><div class="bar-label">UI</div><div class="bar-label">DB</div><div class="bar-label">API</div><div class="bar-label">CI</div><div class="bar-label">Docs</div>
+            </div>
+            <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px">Scores per task · Grey = pending</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Skill Breakdown</div><span class="wf-note">Self-assessment</span></div>
+          <div style="padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Backend / Node.js</span><span style="color:var(--accent3)">90%</span></div><div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Database Design</span><span style="color:var(--accent3)">88%</span></div><div class="progress-bar"><div class="progress-fill green" style="width:88%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Frontend / React</span><span style="color:var(--accent4)">72%</span></div><div class="progress-bar"><div class="progress-fill yellow" style="width:72%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>DevOps / CI</span><span style="color:var(--muted)">40%</span></div><div class="progress-bar"><div class="progress-fill" style="width:40%;background:var(--muted)"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Documentation</span><span style="color:var(--accent4)">65%</span></div><div class="progress-bar"><div class="progress-fill yellow" style="width:65%"></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">All Evaluations</div></div>
+        <table>
+          <thead><tr><th>Task</th><th>Submitted</th><th>Score</th><th>Code</th><th>Functionality</th><th>Docs</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Environment Setup</td><td style="color:var(--muted)">Jun 10</td><td><strong>88</strong>/100</td><td>9</td><td>9</td><td>7</td><td><span class="badge badge-green">Evaluated</span></td></tr>
+            <tr><td>React Dashboard UI</td><td style="color:var(--muted)">Jun 15</td><td><strong>79</strong>/100</td><td>8</td><td>8</td><td>6</td><td><span class="badge badge-green">Evaluated</span></td></tr>
+            <tr><td>DB Schema Design</td><td style="color:var(--muted)">Jun 16</td><td><strong>91</strong>/100</td><td>9</td><td>10</td><td>8</td><td><span class="badge badge-green">Evaluated</span></td></tr>
+            <tr><td>Build Login API</td><td style="color:var(--muted)">Jun 17</td><td style="color:var(--muted)">—</td><td>—</td><td>—</td><td>—</td><td><span class="badge badge-yellow">Pending</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const roleConfig = {
+    admin: {
+      defaultScreen: 'admin-dashboard',
+      nav: 'nav-admin',
+      label: 'Admin',
+      name: 'Priya Sharma',
+      role: 'Administrator',
+      avatarColor: 'var(--accent)',
+      initials: 'PS'
+    },
+    trainer: {
+      defaultScreen: 'trainer-dashboard',
+      nav: 'nav-trainer',
+      label: 'Trainer',
+      name: 'Rohan Mehta',
+      role: 'Trainer · Cohort A',
+      avatarColor: 'var(--accent3)',
+      initials: 'RM'
+    },
+    intern: {
+      defaultScreen: 'intern-dashboard',
+      nav: 'nav-intern',
+      label: 'Intern',
+      name: 'Arjun Kumar',
+      role: 'Intern · Cohort A',
+      avatarColor: 'var(--accent4)',
+      initials: 'AK'
+    }
+  };
+
+  let currentRole = 'admin';
+
+  function switchRole(role) {
+    currentRole = role;
+    const cfg = roleConfig[role];
+
+    // update role buttos
+    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.role-btn').forEach(b => {
+      if (b.textContent.toLowerCase().includes(role)) b.classList.add('active');
+    });
+
+    // show/hidde navs
+    Object.keys(roleConfig).forEach(r => {
+      document.getElementById('nav-' + r).style.display = r === role ? '' : 'none';
+    });
+
+    // update sidebar foooter
+    document.getElementById('userName').textContent = cfg.name;
+    document.getElementById('userRole').textContent = cfg.role;
+    document.getElementById('avatarInitial').textContent = cfg.initials;
+    document.getElementById('avatarInitial').style.background = cfg.avatarColor;
+
+    // show default screenn
+    showScreen(cfg.defaultScreen);
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('visible'));
+    const el = document.getElementById('screen-' + id);
+    if (el) el.classList.add('visible');
+
+    // update nav active
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.getAttribute('onclick') && n.getAttribute('onclick').includes(id)) {
+        n.classList.add('active');
+      }
+    });
+
+    // update label
+    const titles = {
+      'admin-dashboard': 'Admin Dashboard',
+      'admin-users': 'User Management',
+      'admin-create-user': 'Create User',
+      'admin-cohorts': 'Cohort Management',
+      'admin-projects': 'Project Management',
+      'admin-tasks': 'Task Assignment',
+      'admin-analytics': 'Analytics',
+      'trainer-dashboard': 'Trainer Dashboard',
+      'trainer-submissions': 'Submission Review',
+      'trainer-evaluation': 'Evaluation Form',
+      'intern-dashboard': 'Intern Dashboard',
+      'intern-tasks': 'My Tasks',
+      'intern-submission': 'Submit Work',
+      'intern-progress': 'My Progress',
+    };
+    document.getElementById('currentPageLabel').textContent = titles[id] || id;
+  }
+
+  // Score dots interactivity
+  document.querySelectorAll('.eval-score').forEach(row => {
+    row.querySelectorAll('.score-dot').forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        row.querySelectorAll('.score-dot').forEach(d => d.classList.remove('selected'));
+        dot.classList.add('selected');
+      });
+    });
+  });
+</script>
+</body>
+</html>

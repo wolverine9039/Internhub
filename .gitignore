@@ -2,6 +2,10 @@
 Full Stack project.pdf
 report.pdf
 REPO_SETUP_WALKTHROUGH.md
+database/schema_analysis.md
+database/SCHEMA_ANALYSIS1.md
+database/schema_02_analysis.md
+database/schema_02_analysis.md
 
 # === Dependencies ===
 node_modules/
@@ -37,3 +41,6 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# === Agent files ===
+.agent
