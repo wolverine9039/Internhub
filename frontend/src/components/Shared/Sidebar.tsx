@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 import './Sidebar.css';
 
 interface SidebarProps {
@@ -9,6 +11,8 @@ interface SidebarProps {
   userRole: string;
   isOpen?: boolean;
   onToggle?: () => void;
+  collapsed?: boolean;
+  onCollapseToggle?: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -19,7 +23,12 @@ const Sidebar: React.FC<SidebarProps> = ({
   userRole,
   isOpen = true,
   onToggle,
+  collapsed = false,
+  onCollapseToggle,
 }) => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
   const navItems: Record<string, { label: string; icon: string; screen: string }[]> = {
     admin: [
       { label: 'Dashboard', icon: '⬛', screen: 'admin-dashboard' },
@@ -59,14 +68,30 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
     <>
       {/* Mobile backdrop */}
       {isOpen && <div className="sidebar-backdrop" onClick={onToggle} />}
 
-      <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
-        <div className="sidebar-logo">
-          Intern<span>Hub</span>
+      <aside className={`sidebar ${isOpen ? 'open' : ''} ${collapsed ? 'collapsed' : ''}`}>
+        {/* Logo & collapse toggle */}
+        <div className="sidebar-top">
+          <div className="sidebar-logo">
+            Intern<span>Hub</span>
+          </div>
+          <button
+            className="collapse-btn"
+            onClick={onCollapseToggle}
+            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            <span className={`collapse-icon ${collapsed ? 'rotated' : ''}`}>«</span>
+          </button>
         </div>
 
         <nav className="sidebar-nav">
@@ -75,9 +100,10 @@ const Sidebar: React.FC<SidebarProps> = ({
               key={item.screen}
               className={`nav-item ${activeScreen === item.screen ? 'active' : ''}`}
               onClick={() => handleNavClick(item.screen)}
+              title={collapsed ? item.label : undefined}
             >
               <span className="icon">{item.icon}</span>
-              {item.label}
+              <span className="nav-label">{item.label}</span>
             </div>
           ))}
         </nav>
@@ -90,6 +116,10 @@ const Sidebar: React.FC<SidebarProps> = ({
               <div className="user-role">{userRole}</div>
             </div>
           </div>
+          <button className="logout-btn" onClick={handleLogout} title="Sign out">
+            <span className="logout-icon">⏻</span>
+            <span className="nav-label">Sign Out</span>
+          </button>
         </div>
       </aside>
     </>

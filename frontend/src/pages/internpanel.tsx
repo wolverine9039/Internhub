@@ -8,6 +8,7 @@ const InternPanel: React.FC = () => {
     const { user } = useAuth();
     const [activeScreen, setActiveScreen] = useState('intern-dashboard');
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
     const renderScreen = () => {
         switch (activeScreen) {
@@ -34,8 +35,17 @@ const InternPanel: React.FC = () => {
                 userRole="Intern"
                 isOpen={sidebarOpen}
                 onToggle={() => setSidebarOpen(!sidebarOpen)}
+                collapsed={sidebarCollapsed}
+                onCollapseToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
             />
-            <main className="main">{renderScreen()}</main>
+            <main className={`main ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+                {/* Mobile header */}
+                <div className="mobile-header">
+                    <button className="hamburger-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>☰</button>
+                    <div className="mobile-brand">Intern<span>Hub</span></div>
+                </div>
+                {renderScreen()}
+            </main>
         </div>
     );
 };
