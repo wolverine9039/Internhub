@@ -155,7 +155,7 @@
   border: 1px solid var(--border) !important;
   border-radius: 6px;
   padding: 10px 14px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-dropdown);
 }
 
 .analytics-tooltip .label {
@@ -241,7 +241,7 @@
   padding: 12px 16px;
   font-size: 13px;
   color: var(--text);
-  border-bottom: 1px solid rgba(42, 48, 69, 0.5);
+  border-bottom: 1px solid var(--border);
 }
 
 .cohort-perf-table tr:last-child td {
@@ -249,7 +249,7 @@
 }
 
 .cohort-perf-table tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--surface2);
 }
 
 .cohort-status-badge {
@@ -326,7 +326,7 @@
   padding: 12px 16px;
   font-size: 13px;
   color: var(--text);
-  border-bottom: 1px solid rgba(42, 48, 69, 0.5);
+  border-bottom: 1px solid var(--border);
 }
 
 .leaderboard-table tr:last-child td {
@@ -334,7 +334,7 @@
 }
 
 .leaderboard-table tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--surface2);
 }
 
 .rank-badge {
