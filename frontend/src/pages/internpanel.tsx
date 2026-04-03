@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Sidebar from '@/components/Shared/Sidebar';
 import { InternDashboard, InternTasks, InternSubmit, InternProgress } from '@/components/Intern';
+import SettingsPanel from '@/components/Shared/SettingsPanel';
 import '@/pages/AdminPanel.css';
 
 const InternPanel: React.FC = () => {
@@ -20,6 +21,8 @@ const InternPanel: React.FC = () => {
                 return <InternSubmit user={user} onNavigate={setActiveScreen} />;
             case 'intern-progress':
                 return <InternProgress user={user} />;
+            case 'settings':
+                return <SettingsPanel />;
             default:
                 return <InternDashboard user={user} onNavigate={setActiveScreen} />;
         }

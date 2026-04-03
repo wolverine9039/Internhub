@@ -14,10 +14,10 @@ interface EvaluationFormModalProps {
 const EvaluationFormModal: React.FC<EvaluationFormModalProps> = ({ isOpen, editEvaluation, onSubmit, onClose }) => {
   const [submissionId, setSubmissionId] = useState('');
   const [trainerId, setTrainerId] = useState('');
-  const [codeQuality, setCodeQuality] = useState(0);
-  const [functionality, setFunctionality] = useState(0);
-  const [documentation, setDocumentation] = useState(0);
-  const [timeliness, setTimeliness] = useState(0);
+  const [codeQuality, setCodeQuality] = useState(1);
+  const [functionality, setFunctionality] = useState(1);
+  const [documentation, setDocumentation] = useState(1);
+  const [timeliness, setTimeliness] = useState(1);
   const [feedback, setFeedback] = useState('');
   const [strengths, setStrengths] = useState('');
   const [improvements, setImprovements] = useState('');
@@ -38,15 +38,15 @@ const EvaluationFormModal: React.FC<EvaluationFormModalProps> = ({ isOpen, editE
     if (editEvaluation) {
       setSubmissionId(String(editEvaluation.submission_id));
       setTrainerId(String(editEvaluation.trainer_id));
-      setCodeQuality(editEvaluation.code_quality || 0);
-      setFunctionality(editEvaluation.functionality || 0);
-      setDocumentation(editEvaluation.documentation || 0);
-      setTimeliness(editEvaluation.timeliness || 0);
+      setCodeQuality(editEvaluation.code_quality || 1);
+      setFunctionality(editEvaluation.functionality || 1);
+      setDocumentation(editEvaluation.documentation || 1);
+      setTimeliness(editEvaluation.timeliness || 1);
       setFeedback(editEvaluation.feedback || '');
       setStrengths(editEvaluation.strengths || '');
       setImprovements(editEvaluation.improvements || '');
     } else {
-      setSubmissionId(''); setTrainerId(''); setCodeQuality(0); setFunctionality(0); setDocumentation(0); setTimeliness(0);
+      setSubmissionId(''); setTrainerId(''); setCodeQuality(1); setFunctionality(1); setDocumentation(1); setTimeliness(1);
       setFeedback(''); setStrengths(''); setImprovements('');
     }
     setErrors({});
@@ -61,7 +61,7 @@ const EvaluationFormModal: React.FC<EvaluationFormModalProps> = ({ isOpen, editE
   };
 
   const calculateScore = () => {
-    return Math.round((codeQuality + functionality + documentation + timeliness) / 4);
+    return Math.round(((codeQuality + functionality + documentation + timeliness) / 40) * 100);
   };
 
   const handleSubmit = async (evt: React.FormEvent) => {
@@ -83,7 +83,9 @@ const EvaluationFormModal: React.FC<EvaluationFormModalProps> = ({ isOpen, editE
         improvements
       });
     } catch (err: any) {
-      setErrors({ submit: err.response?.data?.error || 'Failed to save evaluation' });
+      const errorData = err.response?.data?.error;
+      const errorMessage = typeof errorData === 'object' && errorData !== null ? errorData.message : errorData || 'Failed to save evaluation';
+      setErrors({ submit: errorMessage });
     } finally {
       setSubmitting(false);
     }
@@ -122,23 +124,23 @@ const EvaluationFormModal: React.FC<EvaluationFormModalProps> = ({ isOpen, editE
             </div>
 
             <div className="form-group">
-              <h4 style={{ margin: '15px 0 5px 0', fontSize: '14px', color: 'var(--text-main)' }}>Scores (0-100)</h4>
+              <h4 style={{ margin: '15px 0 5px 0', fontSize: '14px', color: 'var(--text-main)' }}>Scores (1-10)</h4>
               <div className="two-col" style={{ gap: '10px' }}>
                 <div>
                   <label className="form-label">Code Quality ({codeQuality})</label>
-                  <input type="range" min="0" max="100" value={codeQuality} onChange={e => setCodeQuality(Number(e.target.value))} style={{ width: '100%' }} />
+                  <input type="range" min="1" max="10" value={codeQuality} onChange={e => setCodeQuality(Number(e.target.value))} style={{ width: '100%' }} />
                 </div>
                 <div>
                   <label className="form-label">Functionality ({functionality})</label>
-                  <input type="range" min="0" max="100" value={functionality} onChange={e => setFunctionality(Number(e.target.value))} style={{ width: '100%' }} />
+                  <input type="range" min="1" max="10" value={functionality} onChange={e => setFunctionality(Number(e.target.value))} style={{ width: '100%' }} />
                 </div>
                 <div>
                   <label className="form-label">Documentation ({documentation})</label>
-                  <input type="range" min="0" max="100" value={documentation} onChange={e => setDocumentation(Number(e.target.value))} style={{ width: '100%' }} />
+                  <input type="range" min="1" max="10" value={documentation} onChange={e => setDocumentation(Number(e.target.value))} style={{ width: '100%' }} />
                 </div>
                 <div>
                   <label className="form-label">Timeliness ({timeliness})</label>
-                  <input type="range" min="0" max="100" value={timeliness} onChange={e => setTimeliness(Number(e.target.value))} style={{ width: '100%' }} />
+                  <input type="range" min="1" max="10" value={timeliness} onChange={e => setTimeliness(Number(e.target.value))} style={{ width: '100%' }} />
                 </div>
               </div>
               <div style={{ textAlign: 'right', marginTop: '10px', fontSize: '1rem', fontWeight: 600 }}>

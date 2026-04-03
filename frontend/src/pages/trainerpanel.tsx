@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Sidebar from '@/components/Shared/Sidebar';
+import SettingsPanel from '@/components/Shared/SettingsPanel';
 import '@/pages/AdminPanel.css';
 
 const TrainerPanel: React.FC = () => {
@@ -30,6 +31,8 @@ const TrainerPanel: React.FC = () => {
                         </div>
                     </div>
                 );
+            case 'settings':
+                return <SettingsPanel />;
             default:
                 return null;
         }
