@@ -9,6 +9,7 @@ import AdminTasks from '@/components/Admin/AdminTasks';
 import AdminSubmissions from '@/components/Admin/AdminSubmissions';
 import AdminEvaluations from '@/components/Admin/AdminEvaluations';
 import AdminAnalytics from '@/components/Admin/AdminAnalytics';
+import SettingsPanel from '@/components/Shared/SettingsPanel';
 import './AdminPanel.css';
 
 const AdminPanel: React.FC = () => {
@@ -35,6 +36,8 @@ const AdminPanel: React.FC = () => {
                 return <AdminEvaluations onNavigate={setActiveScreen} />;
             case 'admin-analytics':
                 return <AdminAnalytics onNavigate={setActiveScreen} />;
+            case 'settings':
+                return <SettingsPanel />;
             default:
                 return <AdminDashboard onNavigate={setActiveScreen} />;
         }
