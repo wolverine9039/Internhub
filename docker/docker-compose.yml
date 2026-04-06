@@ -1,0 +1,54 @@
+# ─── InternHub Docker Compose ─────────────────────────────────
+# Orchestrates frontend and backend containers
+# Database is on AWS RDS (external) — not containerized
+
+version: "3.8"
+
+services:
+  # ── Backend: Node.js Express API ────────────────────────────
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/backend.Dockerfile
+    container_name: internhub-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    networks:
+      - internhub-network
+    expose:
+      - "5000"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ── Frontend: Nginx + React Build ───────────────────────────
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/frontend.Dockerfile
+    container_name: internhub-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - internhub-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  internhub-network:
+    driver: bridge
+    name: internhub-network
