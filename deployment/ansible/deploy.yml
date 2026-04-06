@@ -1,0 +1,151 @@
+# ─── InternHub: Deployment Playbook ───────────────────────────
+# Pulls latest code from GitHub, builds Docker images, and deploys
+# Usage: ansible-playbook -i inventory.ini deploy.yml
+---
+- name: Deploy InternHub to App Server
+  hosts: app_server
+  become: true
+  become_user: ubuntu
+
+  vars:
+    project_dir: /home/ubuntu/Internhub
+    docker_dir: "{{ project_dir }}/docker"
+    health_url: http://localhost:5000/health
+    max_health_retries: 10
+    health_retry_delay: 5
+
+  tasks:
+    # ── Step 1: Pull Latest Code from GitHub ──────────────────
+    - name: Pull latest code from GitHub
+      git:
+        repo: "{{ github_repo }}"
+        dest: "{{ project_dir }}"
+        version: master
+        force: yes
+      register: git_result
+
+    - name: Show git pull result
+      debug:
+        msg: "Git updated to: {{ git_result.after }}"
+
+    # ── Step 2: Tag Current Images for Rollback ───────────────
+    - name: Check if current backend image exists
+      command: docker images -q internhub-backend
+      register: existing_backend
+      changed_when: false
+      failed_when: false
+
+    - name: Tag current backend image as rollback
+      command: docker tag internhub-backend:latest internhub-backend:rollback
+      when: existing_backend.stdout != ""
+      failed_when: false
+
+    - name: Check if current frontend image exists
+      command: docker images -q internhub-frontend
+      register: existing_frontend
+      changed_when: false
+      failed_when: false
+
+    - name: Tag current frontend image as rollback
+      command: docker tag internhub-frontend:latest internhub-frontend:rollback
+      when: existing_frontend.stdout != ""
+      failed_when: false
+
+    # ── Step 3: Build New Docker Images ───────────────────────
+    - name: Build Docker images from latest code
+      command: docker compose build --no-cache
+      args:
+        chdir: "{{ docker_dir }}"
+      register: build_result
+
+    - name: Show build result
+      debug:
+        msg: "Docker build completed successfully"
+      when: build_result.rc == 0
+
+    # ── Step 4: Stop Existing Containers ──────────────────────
+    - name: Stop existing containers gracefully
+      command: docker compose down
+      args:
+        chdir: "{{ docker_dir }}"
+      failed_when: false
+
+    # ── Step 5: Start New Containers ──────────────────────────
+    - name: Start new containers in detached mode
+      command: docker compose up -d
+      args:
+        chdir: "{{ docker_dir }}"
+      register: compose_up
+
+    # ── Step 6: Health Check ──────────────────────────────────
+    - name: Wait for backend to be healthy
+      uri:
+        url: "{{ health_url }}"
+        method: GET
+        status_code: 200
+        return_content: yes
+      register: health_check
+      retries: "{{ max_health_retries }}"
+      delay: "{{ health_retry_delay }}"
+      until: health_check.status == 200
+
+    - name: Deployment successful
+      debug:
+        msg:
+          - "═══════════════════════════════════════════"
+          - "   ✅ InternHub Deployment Successful!"
+          - "═══════════════════════════════════════════"
+          - "   Health:  {{ health_check.json.status }}"
+          - "   DB:      {{ health_check.json.database }}"
+          - "   URL:     https://internhub.buildwithmayank.tech"
+          - "═══════════════════════════════════════════"
+
+    # ── Step 7: Cleanup Old Images ────────────────────────────
+    - name: Prune unused Docker images
+      command: docker image prune -f
+      changed_when: false
+
+  # ── Rollback Handler ────────────────────────────────────────
+  rescue:
+    - name: "🚨 Deployment failed — initiating rollback"
+      debug:
+        msg: "Health check failed. Rolling back to previous version..."
+
+    - name: Stop failed containers
+      command: docker compose down
+      args:
+        chdir: "{{ docker_dir }}"
+      failed_when: false
+
+    - name: Restore backend rollback image
+      command: docker tag internhub-backend:rollback internhub-backend:latest
+      failed_when: false
+
+    - name: Restore frontend rollback image
+      command: docker tag internhub-frontend:rollback internhub-frontend:latest
+      failed_when: false
+
+    - name: Start rollback containers
+      command: docker compose up -d
+      args:
+        chdir: "{{ docker_dir }}"
+
+    - name: Verify rollback health
+      uri:
+        url: "{{ health_url }}"
+        method: GET
+        status_code: 200
+      retries: 5
+      delay: 5
+      register: rollback_health
+
+    - name: Rollback result
+      debug:
+        msg:
+          - "⚠️  Rollback completed. Previous version restored."
+          - "Health: {{ rollback_health.json.status | default('unknown') }}"
+          - "Please investigate the failed deployment."
+
+    - name: Fail the playbook after rollback
+      fail:
+        msg: "Deployment failed and was rolled back. Check logs for details."
