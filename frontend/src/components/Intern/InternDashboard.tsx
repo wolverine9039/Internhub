@@ -108,7 +108,16 @@ const InternDashboard: React.FC<InternDashboardProps> = ({ user, onNavigate }) =
   );
 
   if (loading) {
-    return <div className="loading-container"><div className="loading-spinner" /> Loading dashboard...</div>;
+    return (
+      <div className="loader-wrapper">
+        <div className="loading-wave">
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+        </div>
+      </div>
+    );
   }
 
   return (

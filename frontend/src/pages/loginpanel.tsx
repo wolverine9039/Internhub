@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
-import api from "@/services/api";
+import api from '../services/api';
 import "./LoginPanel.css";
 
 const LoginPanel: React.FC = () => {

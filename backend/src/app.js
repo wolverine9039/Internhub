@@ -72,12 +72,17 @@ app.use((req, res) => {
 // ─── Centralized Error Handler (must be last) ────────────────
 app.use(errorHandler);
 
-// ─── Start Server ────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n  ✅ InternHub API Server is running`);
-  console.log(`  ==================================`);
-  console.log(`  Live AWS RDS Database Connected`);
-  console.log(`  Running on: http://localhost:${PORT}`);
-  console.log(`  Health:     http://localhost:${PORT}/health`);
-  console.log(`  API base:   http://localhost:${PORT}/api\n`);
-});
+// ─── Start Server (only when run directly, not when imported by tests) ──
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`\n  ✅ InternHub API Server is running`);
+    console.log(`  ==================================`);
+    console.log(`  Live AWS RDS Database Connected`);
+    console.log(`  Running on: http://localhost:${PORT}`);
+    console.log(`  Health:     http://localhost:${PORT}/health`);
+    console.log(`  API base:   http://localhost:${PORT}/api\n`);
+  });
+}
+
+module.exports = app;
+

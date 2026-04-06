@@ -140,8 +140,13 @@ const AdminTasks: React.FC<AdminTasksProps> = () => {
 
       <div className="admin-card">
         {loading ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div> Loading tasks...
+          <div className="loader-wrapper">
+            <div className="loading-wave">
+              <div className="loading-bar"></div>
+              <div className="loading-bar"></div>
+              <div className="loading-bar"></div>
+              <div className="loading-bar"></div>
+            </div>
           </div>
         ) : tasks.length === 0 ? (
           <div className="empty-state">No tasks found</div>

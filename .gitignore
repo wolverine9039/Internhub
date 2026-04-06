@@ -44,3 +44,19 @@ yarn-error.log*
 
 # === Agent files ===
 .agent
+
+# === Testing generated files ===
+testing/**/test-results.json
+testing/**/coverage/
+testing/selenium/results/
+.pytest_cache/
+
+# === Testing scripts ===
+**/__tests__/
+**/*.test.js
+**/*.test.ts
+**/*.test.tsx
+vitest.config.ts
+testing/selenium/
+
+

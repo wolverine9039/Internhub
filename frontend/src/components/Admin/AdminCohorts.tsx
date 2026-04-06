@@ -63,7 +63,14 @@ const AdminCohorts: React.FC<AdminCohortsProps> = () => {
             {error && <div className="error-banner">{error}</div>}
 
             {loading ? (
-                <div className="loading-container"><div className="loading-spinner" /> Loading cohorts…</div>
+                      <div className="loader-wrapper">
+        <div className="loading-wave">
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+        </div>
+      </div>
             ) : (
                 <div className="admin-card">
                     <div className="table-wrapper">
