@@ -120,11 +120,13 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = () => {
             <p className="page-subtitle">Program-wide performance insights</p>
           </div>
         </div>
-        <div className="kpi-grid">
-          {[1, 2, 3, 4].map(i => <div key={i} className="loading-placeholder" style={{ minHeight: 110 }} />)}
-        </div>
-        <div className="analytics-grid">
-          {[1, 2].map(i => <div key={i} className="loading-placeholder" style={{ minHeight: 300 }} />)}
+        <div className="loader-wrapper">
+          <div className="loading-wave">
+            <div className="loading-bar"></div>
+            <div className="loading-bar"></div>
+            <div className="loading-bar"></div>
+            <div className="loading-bar"></div>
+          </div>
         </div>
       </div>
     );

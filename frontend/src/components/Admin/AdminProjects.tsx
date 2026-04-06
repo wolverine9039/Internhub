@@ -60,7 +60,14 @@ const AdminProjects: React.FC<AdminProjectsProps> = () => {
             {error && <div className="error-banner">{error}</div>}
 
             {loading ? (
-                <div className="loading-container"><div className="loading-spinner" /> Loading projects…</div>
+                      <div className="loader-wrapper">
+        <div className="loading-wave">
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+        </div>
+      </div>
             ) : (
                 <div className="admin-card">
                     <div className="table-wrapper">

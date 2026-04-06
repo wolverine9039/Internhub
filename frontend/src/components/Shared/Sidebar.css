@@ -318,7 +318,7 @@
   color: var(--text);
   white-space: nowrap;
   z-index: 300;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-dropdown);
   pointer-events: none;
 }
 

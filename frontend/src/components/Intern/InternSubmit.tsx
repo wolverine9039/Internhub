@@ -110,7 +110,16 @@ const InternSubmit: React.FC<InternSubmitProps> = ({ user, onNavigate }) => {
   };
 
   if (loading) {
-    return <div className="loading-container"><div className="loading-spinner" /> Loading submit workspace...</div>;
+    return (
+      <div className="loader-wrapper">
+        <div className="loading-wave">
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+        </div>
+      </div>
+    );
   }
 
   return (

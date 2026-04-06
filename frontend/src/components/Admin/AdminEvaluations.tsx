@@ -102,8 +102,13 @@ const AdminEvaluations: React.FC<AdminEvaluationsProps> = () => {
 
       <div className="admin-card">
         {loading ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div> Loading evaluations...
+          <div className="loader-wrapper">
+            <div className="loading-wave">
+              <div className="loading-bar"></div>
+              <div className="loading-bar"></div>
+              <div className="loading-bar"></div>
+              <div className="loading-bar"></div>
+            </div>
           </div>
         ) : evaluations.length === 0 ? (
           <div className="empty-state">No evaluations found</div>
