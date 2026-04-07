@@ -1,151 +1,215 @@
-# ─── InternHub: Deployment Playbook ───────────────────────────
-# Pulls latest code from GitHub, builds Docker images, and deploys
+# ─── InternHub: Build & Deploy with Aggressive Cleanup ────────
+# Ansible Playbook for Jenkins CI/CD Pipeline
+# Copies project from Jenkins workspace, cleans Docker, builds & runs containers
 # Usage: ansible-playbook -i inventory.ini deploy.yml
 ---
-- name: Deploy InternHub to App Server
-  hosts: app_server
-  become: true
-  become_user: ubuntu
-
+- name: Build & Deploy InternHub with Aggressive Cleanup
+  hosts: all
+  gather_facts: false
   vars:
-    project_dir: /home/ubuntu/Internhub
-    docker_dir: "{{ project_dir }}/docker"
-    health_url: http://localhost:5000/health
-    max_health_retries: 10
-    health_retry_delay: 5
+    workspace_path: "{{ workspace_path | default('/var/lib/jenkins/workspace/internhub-pipeline') }}"
+    project_dest: ~/internhub-project
+
+    # ── Docker Image & Container Names ────────────────────────
+    backend_image: internhub-backend
+    backend_container: internhub-backend-container
+    frontend_image: internhub-frontend
+    frontend_container: internhub-frontend-container
+    docker_network: internhub-network
+
+    # ── Database Credentials (AWS RDS) ────────────────────────
+    db_host: "internhub.co96g4i46lwk.us-east-1.rds.amazonaws.com"
+    db_user: "Internhub_admin"
+    db_password: "Interns1234"
+    db_name: "internhub_db"
+    db_port: "3306"
+
+    # ── Authentication ────────────────────────────────────────
+    jwt_secret: "your_super_secret_key"
+    jwt_expires_in: "24h"
+
+    # ── Server Config ─────────────────────────────────────────
+    backend_port: "5000"
+    frontend_port: "80"
 
   tasks:
-    # ── Step 1: Pull Latest Code from GitHub ──────────────────
-    - name: Pull latest code from GitHub
-      git:
-        repo: "{{ github_repo }}"
-        dest: "{{ project_dir }}"
-        version: master
-        force: yes
-      register: git_result
+    # ══════════════════════════════════════════════════════════
+    # Step 1: Copy Project Files to Remote Server
+    # ══════════════════════════════════════════════════════════
+    - name: Copy project files to remote server
+      copy:
+        src: "{{ workspace_path }}/"
+        dest: "{{ project_dest }}/"
 
-    - name: Show git pull result
-      debug:
-        msg: "Git updated to: {{ git_result.after }}"
+    # ══════════════════════════════════════════════════════════
+    # Step 2: Stop & Remove Existing Containers
+    # ══════════════════════════════════════════════════════════
+    - name: Stop and remove frontend container
+      docker_container:
+        name: "{{ frontend_container }}"
+        state: absent
+        force_kill: yes
+      ignore_errors: yes
 
-    # ── Step 2: Tag Current Images for Rollback ───────────────
-    - name: Check if current backend image exists
-      command: docker images -q internhub-backend
-      register: existing_backend
+    - name: Stop and remove backend container
+      docker_container:
+        name: "{{ backend_container }}"
+        state: absent
+        force_kill: yes
+      ignore_errors: yes
+
+    # ══════════════════════════════════════════════════════════
+    # Step 3: Remove Old Docker Images
+    # ══════════════════════════════════════════════════════════
+    - name: Remove old frontend image
+      docker_image:
+        name: "{{ frontend_image }}"
+        tag: latest
+        state: absent
+        force_absent: yes
+      ignore_errors: yes
+
+    - name: Remove old backend image
+      docker_image:
+        name: "{{ backend_image }}"
+        tag: latest
+        state: absent
+        force_absent: yes
+      ignore_errors: yes
+
+    # ══════════════════════════════════════════════════════════
+    # Step 4: System-wide Docker Cleanup
+    # ══════════════════════════════════════════════════════════
+    - name: System-wide Docker cleanup
+      command: docker system prune -af --volumes
+      ignore_errors: yes
+      when: true
+
+    # ══════════════════════════════════════════════════════════
+    # Step 5: Create Docker Network
+    # ══════════════════════════════════════════════════════════
+    - name: Create Docker network for InternHub
+      docker_network:
+        name: "{{ docker_network }}"
+        state: present
+
+    # ══════════════════════════════════════════════════════════
+    # Step 6: Build Backend Docker Image
+    # ══════════════════════════════════════════════════════════
+    - name: Build backend Docker image
+      docker_image:
+        name: "{{ backend_image }}"
+        tag: latest
+        build:
+          path: "{{ project_dest }}"
+          dockerfile: docker/backend.Dockerfile
+          pull: yes
+          nocache: yes
+        source: build
+
+    # ══════════════════════════════════════════════════════════
+    # Step 7: Build Frontend Docker Image
+    # ══════════════════════════════════════════════════════════
+    - name: Build frontend Docker image
+      docker_image:
+        name: "{{ frontend_image }}"
+        tag: latest
+        build:
+          path: "{{ project_dest }}"
+          dockerfile: docker/frontend.Dockerfile
+          pull: yes
+          nocache: yes
+        source: build
+
+    # ══════════════════════════════════════════════════════════
+    # Step 8: Run Backend Container
+    # ══════════════════════════════════════════════════════════
+    - name: Run backend container
+      docker_container:
+        name: "{{ backend_container }}"
+        image: "{{ backend_image }}:latest"
+        state: started
+        restart_policy: unless-stopped
+        networks:
+          - name: "{{ docker_network }}"
+        exposed_ports:
+          - "{{ backend_port }}"
+        env:
+          NODE_ENV: "production"
+          PORT: "{{ backend_port }}"
+          DB_HOST: "{{ db_host }}"
+          DB_USER: "{{ db_user }}"
+          DB_PASSWORD: "{{ db_password }}"
+          DB_NAME: "{{ db_name }}"
+          DB_PORT: "{{ db_port }}"
+          JWT_SECRET: "{{ jwt_secret }}"
+          JWT_EXPIRES_IN: "{{ jwt_expires_in }}"
+        healthcheck:
+          test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:{{ backend_port }}/health"]
+          interval: 30s
+          timeout: 5s
+          retries: 3
+          start_period: 10s
+
+    # ══════════════════════════════════════════════════════════
+    # Step 9: Wait for Backend to be Healthy
+    # ══════════════════════════════════════════════════════════
+    - name: Wait for backend container to be healthy
+      command: docker inspect --format='{{ '{{' }}.State.Health.Status{{ '}}' }}' {{ backend_container }}
+      register: health_status
+      retries: 10
+      delay: 5
+      until: health_status.stdout == 'healthy'
       changed_when: false
-      failed_when: false
 
-    - name: Tag current backend image as rollback
-      command: docker tag internhub-backend:latest internhub-backend:rollback
-      when: existing_backend.stdout != ""
-      failed_when: false
+    # ══════════════════════════════════════════════════════════
+    # Step 10: Run Frontend Container
+    # ══════════════════════════════════════════════════════════
+    - name: Run frontend container
+      docker_container:
+        name: "{{ frontend_container }}"
+        image: "{{ frontend_image }}:latest"
+        state: started
+        restart_policy: unless-stopped
+        networks:
+          - name: "{{ docker_network }}"
+        ports:
+          - "{{ frontend_port }}:80"
 
-    - name: Check if current frontend image exists
-      command: docker images -q internhub-frontend
-      register: existing_frontend
-      changed_when: false
-      failed_when: false
-
-    - name: Tag current frontend image as rollback
-      command: docker tag internhub-frontend:latest internhub-frontend:rollback
-      when: existing_frontend.stdout != ""
-      failed_when: false
-
-    # ── Step 3: Build New Docker Images ───────────────────────
-    - name: Build Docker images from latest code
-      command: docker compose build --no-cache
-      args:
-        chdir: "{{ docker_dir }}"
-      register: build_result
-
-    - name: Show build result
-      debug:
-        msg: "Docker build completed successfully"
-      when: build_result.rc == 0
-
-    # ── Step 4: Stop Existing Containers ──────────────────────
-    - name: Stop existing containers gracefully
-      command: docker compose down
-      args:
-        chdir: "{{ docker_dir }}"
-      failed_when: false
-
-    # ── Step 5: Start New Containers ──────────────────────────
-    - name: Start new containers in detached mode
-      command: docker compose up -d
-      args:
-        chdir: "{{ docker_dir }}"
-      register: compose_up
-
-    # ── Step 6: Health Check ──────────────────────────────────
-    - name: Wait for backend to be healthy
+    # ══════════════════════════════════════════════════════════
+    # Step 11: Verify Deployment
+    # ══════════════════════════════════════════════════════════
+    - name: Verify frontend is accessible
       uri:
-        url: "{{ health_url }}"
+        url: "http://localhost:{{ frontend_port }}"
+        method: GET
+        status_code: 200
+      register: frontend_check
+      retries: 5
+      delay: 3
+      until: frontend_check.status == 200
+
+    - name: Verify backend health endpoint
+      uri:
+        url: "http://localhost:{{ frontend_port }}/health"
         method: GET
         status_code: 200
         return_content: yes
-      register: health_check
-      retries: "{{ max_health_retries }}"
-      delay: "{{ health_retry_delay }}"
-      until: health_check.status == 200
-
-    - name: Deployment successful
-      debug:
-        msg:
-          - "═══════════════════════════════════════════"
-          - "   ✅ InternHub Deployment Successful!"
-          - "═══════════════════════════════════════════"
-          - "   Health:  {{ health_check.json.status }}"
-          - "   DB:      {{ health_check.json.database }}"
-          - "   URL:     https://internhub.buildwithmayank.tech"
-          - "═══════════════════════════════════════════"
-
-    # ── Step 7: Cleanup Old Images ────────────────────────────
-    - name: Prune unused Docker images
-      command: docker image prune -f
-      changed_when: false
-
-  # ── Rollback Handler ────────────────────────────────────────
-  rescue:
-    - name: "🚨 Deployment failed — initiating rollback"
-      debug:
-        msg: "Health check failed. Rolling back to previous version..."
-
-    - name: Stop failed containers
-      command: docker compose down
-      args:
-        chdir: "{{ docker_dir }}"
-      failed_when: false
-
-    - name: Restore backend rollback image
-      command: docker tag internhub-backend:rollback internhub-backend:latest
-      failed_when: false
-
-    - name: Restore frontend rollback image
-      command: docker tag internhub-frontend:rollback internhub-frontend:latest
-      failed_when: false
-
-    - name: Start rollback containers
-      command: docker compose up -d
-      args:
-        chdir: "{{ docker_dir }}"
-
-    - name: Verify rollback health
-      uri:
-        url: "{{ health_url }}"
-        method: GET
-        status_code: 200
+      register: backend_check
       retries: 5
-      delay: 5
-      register: rollback_health
+      delay: 3
+      until: backend_check.status == 200
 
-    - name: Rollback result
+    - name: Deployment Summary
       debug:
         msg:
-          - "⚠️  Rollback completed. Previous version restored."
-          - "Health: {{ rollback_health.json.status | default('unknown') }}"
-          - "Please investigate the failed deployment."
-
-    - name: Fail the playbook after rollback
-      fail:
-        msg: "Deployment failed and was rolled back. Check logs for details."
+          - "═══════════════════════════════════════════════════"
+          - "   ✅ InternHub Deployment Successful!"
+          - "═══════════════════════════════════════════════════"
+          - "   Frontend:  {{ frontend_container }} → port {{ frontend_port }}"
+          - "   Backend:   {{ backend_container }} → port {{ backend_port }}"
+          - "   Database:  {{ db_host }}:{{ db_port }}/{{ db_name }}"
+          - "   Health:    {{ backend_check.json.status | default('OK') }}"
+          - "   DB Status: {{ backend_check.json.database | default('connected') }}"
+          - "   URL:       https://internhub.buildwithmayank.tech"
+          - "═══════════════════════════════════════════════════"
