@@ -1,3 +1,3 @@
-// Trainer-specific components
-// Export components here as they are created.
-// Example: export { default as SubmissionReview } from './SubmissionReview';
+export { default as TrainerDashboard } from './TrainerDashboard';
+export { default as TrainerSubmissions } from './TrainerSubmissions';
+export { default as TrainerEvaluationForm } from './TrainerEvaluationForm';
