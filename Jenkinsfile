@@ -25,7 +25,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo '📥 Checking out source code...'
-                checkout scm
+                git branch: 'master',
+                   // credentialsId: 'github-credentials',        // ← your Jenkins credential ID
+                    url: 'https://github.com/wolverine9039/Internhub.git'
             }
         }
 
@@ -85,7 +87,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo '📊 Running SonarQube code analysis...'
-                withSonarQubeEnv('SonarQube') {
+                withSonarQubeEnv('SonarQube') {             // ← must match name in Manage Jenkins > System > SonarQube servers
                     sh """
                         ${SCANNER_HOME}/bin/sonar-scanner \
                             -Dsonar.projectKey=internhub \
@@ -115,7 +117,7 @@ pipeline {
                 ansiblePlaybook(
                     playbook: 'deployment/ansible/deploy.yml',
                     inventory: 'deployment/ansible/inventory.ini',
-                    credentialsId: 'app-server-ssh-key',
+                    credentialsId: 'app-server-ssh-key',     // ← must exist in Manage Jenkins > Credentials
                     colorized: true,
                     extras: '-v'
                 )
