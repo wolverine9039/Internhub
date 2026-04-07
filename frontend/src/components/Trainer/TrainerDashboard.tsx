@@ -1,74 +1,104 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import StatCard from '@/components/Shared/StatCard';
 import Badge from '@/components/Shared/Badge';
+import { trainerService } from '@/services/trainerService';
+import type { TrainerStats, TrainerDeadline } from '@/services/trainerService';
+import type { Submission } from '@/types';
 
 interface TrainerDashboardProps {
   onNavigate: (screen: string) => void;
-  onSelectSubmission: (submissionId: number) => void;
+  onSelectSubmission: (submission: Submission) => void;
 }
 
-const internProgress = [
-  { name: 'Arjun Kumar', progress: 92, variant: 'blue' },
-  { name: 'Sneha Verma', progress: 88, variant: 'green' },
-  { name: 'Mihir Rao', progress: 71, variant: 'yellow' },
-  { name: 'Neha Patil', progress: 48, variant: 'red' },
-];
+function timeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  return `${days}d ago`;
+}
 
-const recentSubmissions = [
-  { id: 1, intern: 'Arjun K.', task: 'Build Login API', status: 'Pending', statusVariant: 'yellow' },
-  { id: 2, intern: 'Sneha V.', task: 'DB Schema', status: 'Pending', statusVariant: 'yellow' },
-  { id: 3, intern: 'Mihir R.', task: 'React Dashboard', status: 'Reviewed', statusVariant: 'green' },
-];
-
-const stats = [
-  { label: 'Pending Reviews', value: 5, subtitle: '3 submitted today', color: 'blue' },
-  { label: 'Evaluated', value: 18, subtitle: 'This sprint', color: 'green' },
-  { label: 'Avg. Score Given', value: 76, subtitle: 'Out of 100', color: 'yellow' },
-];
+function daysUntil(dateStr: string): string {
+  const diff = new Date(dateStr).getTime() - Date.now();
+  const days = Math.ceil(diff / 86400000);
+  if (days <= 0) return 'Today';
+  if (days === 1) return 'Tomorrow';
+  return `In ${days} days`;
+}
 
 const TrainerDashboard: React.FC<TrainerDashboardProps> = ({ onNavigate, onSelectSubmission }) => {
+  const [stats, setStats] = useState<TrainerStats | null>(null);
+  const [recentSubmissions, setRecentSubmissions] = useState<Submission[]>([]);
+  const [deadlines, setDeadlines] = useState<TrainerDeadline[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const [statsData, submissionsData, deadlinesData] = await Promise.all([
+          trainerService.getStats(),
+          trainerService.getMySubmissions().catch(() => []),
+          trainerService.getUpcomingDeadlines().catch(() => []),
+        ]);
+        setStats(statsData);
+        setRecentSubmissions(submissionsData.slice(0, 5));
+        setDeadlines(deadlinesData);
+      } catch {
+        setStats({ pendingReviews: 0, totalEvaluated: 0, avgScore: 0, internCount: 0 });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAll();
+  }, []);
+
+  const statusVariant = (status: string) => {
+    if (status === 'reviewed') return 'green';
+    if (status === 'submitted' || status === 'pending') return 'yellow';
+    if (status === 'revision_requested') return 'red';
+    return 'gray';
+  };
+
+  const statusLabel = (status: string) => {
+    if (status === 'submitted' || status === 'pending') return 'Pending';
+    if (status === 'reviewed') return 'Reviewed';
+    if (status === 'revision_requested') return 'Revision';
+    return status;
+  };
+
   return (
-    <div className="view-container screen-trainer-dashboard">
+    <div className="screen-admin-dashboard fade-in">
       <div className="page-header">
         <div>
-          <h1 className="page-title">Trainer Dashboard</h1>
-          <p className="page-subtitle">Cohort A — 8 interns</p>
+          <div className="page-title">Dashboard <span className="wf-note">Trainer View</span></div>
+          <div className="page-subtitle">Your assignments — live data</div>
         </div>
       </div>
 
+      {/* ── Stats ── */}
       <div className="stat-grid">
-        {stats.map((item) => (
-          <div key={item.label} className="admin-card">
-            <div className="admin-card-body">
-              <div className="admin-card-title">{item.label}</div>
-              <div className="dashboard-metric">
-                <span>{item.value}</span>
-              </div>
-              <div className="stat-note">{item.subtitle}</div>
-            </div>
-          </div>
-        ))}
+        {loading ? (
+          <>
+            <div className="stat-card loading-placeholder" />
+            <div className="stat-card loading-placeholder" />
+            <div className="stat-card loading-placeholder" />
+            <div className="stat-card loading-placeholder" />
+          </>
+        ) : (
+          <>
+            <StatCard color="yellow" label="Pending Reviews" value={stats?.pendingReviews ?? 0} />
+            <StatCard color="green" label="Evaluated" value={stats?.totalEvaluated ?? 0} />
+            <StatCard color="blue" label="Avg. Score" value={stats?.avgScore ?? 0} delta="out of 40" />
+            <StatCard color="red" label="My Interns" value={stats?.internCount ?? 0} />
+          </>
+        )}
       </div>
 
       <div className="two-col">
-        <div className="admin-card">
-          <div className="admin-card-header">
-            <div className="admin-card-title">Intern Progress — Cohort A</div>
-          </div>
-          <div className="admin-card-body">
-            {internProgress.map((row) => (
-              <div key={row.name} className="progress-group">
-                <div className="progress-header">
-                  <span>{row.name}</span>
-                  <span className={`progress-value ${row.variant}`}>{row.progress}%</span>
-                </div>
-                <div className="progress-bar">
-                  <div className={`progress-fill ${row.variant}`} style={{ width: `${row.progress}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
+        {/* ── Recent Submissions ── */}
         <div className="admin-card">
           <div className="admin-card-header">
             <div className="admin-card-title">Recent Submissions</div>
@@ -76,23 +106,76 @@ const TrainerDashboard: React.FC<TrainerDashboardProps> = ({ onNavigate, onSelec
               View All
             </button>
           </div>
-          <div className="admin-card-body">
-            <div className="recent-list">
-              {recentSubmissions.map((submission) => (
-                <div key={submission.id} className="recent-row">
-                  <div>
-                    <div className="recent-title">{submission.task}</div>
-                    <div className="time-muted">{submission.intern}</div>
-                  </div>
-                  <div className="recent-actions">
-                    <Badge variant={submission.statusVariant as any}>{submission.status}</Badge>
-                    <button className="link-button" onClick={() => onSelectSubmission(submission.id)}>
-                      Review
-                    </button>
-                  </div>
-                </div>
-              ))}
+          {loading ? (
+            <div className="loader-wrapper">
+              <div className="loading-wave">
+                <div className="loading-bar"></div>
+                <div className="loading-bar"></div>
+                <div className="loading-bar"></div>
+                <div className="loading-bar"></div>
+              </div>
             </div>
+          ) : recentSubmissions.length === 0 ? (
+            <div className="empty-state">No submissions yet</div>
+          ) : (
+            <div className="admin-card-body">
+              <div className="recent-list">
+                {recentSubmissions.map((sub) => (
+                  <div key={sub.id} className="recent-row">
+                    <div>
+                      <div className="recent-title">{sub.task_title}</div>
+                      <div className="time-muted">{sub.intern_name} · {timeAgo(sub.submitted_at)}</div>
+                    </div>
+                    <div className="recent-actions">
+                      <Badge variant={statusVariant(sub.status) as any}>{statusLabel(sub.status)}</Badge>
+                      {(sub.status === 'submitted' || sub.status === 'pending') && (
+                        <button className="link-button" onClick={() => onSelectSubmission(sub)}>
+                          Review
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ── Upcoming Deadlines ── */}
+        <div className="admin-card">
+          <div className="admin-card-header">
+            <div className="admin-card-title">Upcoming Deadlines</div>
+            <span className="wf-note">{deadlines.length} tasks</span>
+          </div>
+          <div className="admin-card-body">
+            {loading ? (
+              <div className="loader-wrapper">
+                <div className="loading-wave">
+                  <div className="loading-bar"></div>
+                  <div className="loading-bar"></div>
+                  <div className="loading-bar"></div>
+                  <div className="loading-bar"></div>
+                </div>
+              </div>
+            ) : deadlines.length === 0 ? (
+              <div className="empty-state">No upcoming deadlines</div>
+            ) : (
+              <div className="deadline-list">
+                {deadlines.map((dl) => {
+                  const days = Math.ceil((new Date(dl.due_date).getTime() - Date.now()) / 86400000);
+                  const color = days <= 2 ? 'red' : days <= 7 ? 'yellow' : 'green';
+                  return (
+                    <div className="deadline-item" key={dl.id}>
+                      <div>
+                        <span>{dl.title}</span>
+                        <span className="deadline-project"> — {dl.project_title}</span>
+                      </div>
+                      <Badge variant={color}>{daysUntil(dl.due_date)}</Badge>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>

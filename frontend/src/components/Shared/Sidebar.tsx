@@ -43,8 +43,10 @@ const Sidebar: React.FC<SidebarProps> = ({
     ],
     trainer: [
       { label: 'Dashboard', icon: '🏛️', screen: 'trainer-dashboard' },
+      { label: 'My Interns', icon: '👥', screen: 'trainer-interns' },
       { label: 'Submissions', icon: '📬', screen: 'trainer-submissions' },
-      { label: 'Evaluation Form', icon: '⭐', screen: 'trainer-evaluation' },
+      { label: 'Evaluate', icon: '⭐', screen: 'trainer-evaluation' },
+      { label: 'My Evaluations', icon: '📋', screen: 'trainer-evaluations' },
       { label: 'Settings', icon: '⚙️', screen: 'settings' },
     ],
     intern: [

@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Badge from '@/components/Shared/Badge';
+import { trainerService } from '@/services/trainerService';
 import type { Submission } from '@/types';
 
 interface TrainerSubmissionsProps {
@@ -7,89 +8,80 @@ interface TrainerSubmissionsProps {
   onSelectSubmission: (submission: Submission) => void;
 }
 
-const initialSubmissions: Submission[] = [
-  {
-    id: 1,
-    task_id: 1,
-    intern_id: 11,
-    attempt_no: 1,
-    github_url: 'https://github.com/arjun/internhub-auth',
-    demo_url: undefined,
-    file_url: undefined,
-    notes: 'Includes JWT authentication with role-based middleware.',
-    status: 'submitted',
-    submitted_at: '2025-06-17T09:42:00Z',
-    reviewed_at: undefined,
-    updated_at: '2025-06-17T09:42:00Z',
-    task_title: 'Build Login API',
-    intern_name: 'Arjun Kumar',
-  },
-  {
-    id: 2,
-    task_id: 2,
-    intern_id: 12,
-    attempt_no: 1,
-    github_url: 'https://drive.google.com/schema-diagram',
-    demo_url: undefined,
-    file_url: undefined,
-    notes: 'ER diagram and SQL schema file. Includes 6 tables with constraints.',
-    status: 'submitted',
-    submitted_at: '2025-06-16T15:10:00Z',
-    reviewed_at: undefined,
-    updated_at: '2025-06-16T15:10:00Z',
-    task_title: 'Database Schema Design',
-    intern_name: 'Sneha Verma',
-  },
-  {
-    id: 3,
-    task_id: 3,
-    intern_id: 13,
-    attempt_no: 1,
-    github_url: 'https://github.com/mihir/react-dashboard',
-    demo_url: undefined,
-    file_url: undefined,
-    notes: 'Evaluation complete. Feedback provided on component structure.',
-    status: 'reviewed',
-    submitted_at: '2025-06-15T11:00:00Z',
-    reviewed_at: '2025-06-16T09:00:00Z',
-    updated_at: '2025-06-16T09:00:00Z',
-    task_title: 'React Dashboard UI',
-    intern_name: 'Mihir Rao',
-  },
-];
-
 const statusOptions: Array<{ label: string; value: string }> = [
   { label: 'All', value: '' },
   { label: 'Pending', value: 'submitted' },
   { label: 'Reviewed', value: 'reviewed' },
+  { label: 'Revision', value: 'revision_requested' },
 ];
 
 const variantForStatus = (status: string) => {
   if (status === 'reviewed') return 'green';
-  if (status === 'submitted') return 'yellow';
+  if (status === 'submitted' || status === 'pending') return 'yellow';
+  if (status === 'revision_requested') return 'red';
   return 'gray';
 };
 
+const labelForStatus = (status: string) => {
+  if (status === 'submitted' || status === 'pending') return 'Pending Review';
+  if (status === 'reviewed') return 'Reviewed';
+  if (status === 'revision_requested') return 'Revision Requested';
+  return status;
+};
+
 const TrainerSubmissions: React.FC<TrainerSubmissionsProps> = ({ onNavigate, onSelectSubmission }) => {
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
 
-  const filteredSubmissions = useMemo(
-    () => initialSubmissions.filter((item) => {
-      const searchText = `${item.task_title ?? ''} ${item.intern_name ?? ''} ${item.notes ?? ''}`.toLowerCase();
-      const matchesSearch = searchText.includes(search.toLowerCase());
-      const matchesStatus = status ? item.status === status : true;
-      return matchesSearch && matchesStatus;
-    }),
-    [search, status]
-  );
+  const fetchSubmissions = async () => {
+    setLoading(true);
+    try {
+      const data = await trainerService.getMySubmissions(status || undefined, search || undefined);
+      setSubmissions(data);
+    } catch {
+      setSubmissions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubmissions();
+  }, [status]);
+
+  // Client-side search filtering on top of server results
+  const filtered = useMemo(() => {
+    if (!search) return submissions;
+    const q = search.toLowerCase();
+    return submissions.filter(s => {
+      const text = `${s.task_title ?? ''} ${s.intern_name ?? ''} ${s.notes ?? ''}`.toLowerCase();
+      return text.includes(q);
+    });
+  }, [submissions, search]);
+
+  const handleRequestRevision = async (submission: Submission) => {
+    setUpdatingId(submission.id);
+    try {
+      await trainerService.updateSubmissionStatus(submission.id, 'revision_requested');
+      // Refresh list
+      await fetchSubmissions();
+    } catch (err) {
+      console.error('Failed to request revision', err);
+      alert('Failed to request revision. Please try again.');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
   return (
-    <div className="view-container">
+    <div className="view-container fade-in">
       <div className="page-header">
         <div>
           <h1 className="page-title">Submission Review</h1>
-          <p className="page-subtitle">Pending intern submissions</p>
+          <p className="page-subtitle">Review and evaluate intern submissions</p>
         </div>
       </div>
 
@@ -97,7 +89,7 @@ const TrainerSubmissions: React.FC<TrainerSubmissionsProps> = ({ onNavigate, onS
         <input
           type="text"
           className="search-input"
-          placeholder="Search submissions..."
+          placeholder="Search by task or intern name..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -117,37 +109,67 @@ const TrainerSubmissions: React.FC<TrainerSubmissionsProps> = ({ onNavigate, onS
 
       <div className="admin-card">
         <div className="admin-card-body">
-          {filteredSubmissions.length === 0 ? (
+          {loading ? (
+            <div className="loader-wrapper">
+              <div className="loading-wave">
+                <div className="loading-bar"></div>
+                <div className="loading-bar"></div>
+                <div className="loading-bar"></div>
+                <div className="loading-bar"></div>
+              </div>
+            </div>
+          ) : filtered.length === 0 ? (
             <div className="empty-state">No submissions match your filters.</div>
           ) : (
             <div className="submission-list">
-              {filteredSubmissions.map((submission) => (
+              {filtered.map((submission) => (
                 <div key={submission.id} className="submission-card">
                   <div className="submission-title">{submission.task_title}</div>
                   <div className="time-muted">
                     {submission.intern_name} · Submitted {new Date(submission.submitted_at).toLocaleString()}
                   </div>
-                  <p className="submission-copy">{submission.notes}</p>
+                  {submission.notes && <p className="submission-copy">{submission.notes}</p>}
                   <div className="submission-meta">
                     <a href={submission.github_url} target="_blank" rel="noreferrer" className="link-button">
                       {submission.github_url}
                     </a>
-                    <Badge variant={variantForStatus(submission.status)}>{submission.status === 'submitted' ? 'Pending Review' : 'Reviewed'}</Badge>
+                    <Badge variant={variantForStatus(submission.status)}>{labelForStatus(submission.status)}</Badge>
                   </div>
                   <div className="submission-actions">
-                    <button
-                      className="btn btn-primary btn-sm"
-                      type="button"
-                      onClick={() => {
-                        onSelectSubmission(submission);
-                        onNavigate('trainer-evaluation');
-                      }}
-                    >
-                      Review & Score
-                    </button>
-                    <button className="btn btn-secondary btn-sm" type="button" onClick={() => alert('Revision request queued')}>
-                      Request Revision
-                    </button>
+                    {(submission.status === 'submitted' || submission.status === 'pending') && (
+                      <>
+                        <button
+                          className="btn btn-primary btn-sm"
+                          type="button"
+                          onClick={() => {
+                            onSelectSubmission(submission);
+                            onNavigate('trainer-evaluation');
+                          }}
+                        >
+                          Review & Score
+                        </button>
+                        <button
+                          className="btn btn-secondary btn-sm"
+                          type="button"
+                          disabled={updatingId === submission.id}
+                          onClick={() => handleRequestRevision(submission)}
+                        >
+                          {updatingId === submission.id ? 'Sending...' : 'Request Revision'}
+                        </button>
+                      </>
+                    )}
+                    {submission.status === 'reviewed' && (
+                      <button
+                        className="btn btn-secondary btn-sm"
+                        type="button"
+                        onClick={() => {
+                          onSelectSubmission(submission);
+                          onNavigate('trainer-evaluation');
+                        }}
+                      >
+                        View Evaluation
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
