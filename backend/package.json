@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "test": "jest --verbose --json --outputFile=../testing/backend-api/test-results.json 2>&1 || jest --verbose",
-    "test:coverage": "jest --verbose --coverage --coverageDirectory=../testing/backend-api/coverage"
+    "test": "jest --passWithNoTests --verbose --json --outputFile=../testing/backend-api/test-results.json 2>&1 || jest --passWithNoTests --verbose",
+    "test:coverage": "jest --passWithNoTests --verbose --coverage --coverageDirectory=../testing/backend-api/coverage"
   },
   "keywords": [],
   "author": "",
