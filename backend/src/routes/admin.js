@@ -260,15 +260,14 @@ router.get('/analytics', authenticate, authorize('admin'), async (req, res, next
       dateParams
     );
 
-    // ── 3) Score Distribution ──
+    // ── 3) Score Distribution (max score = 40: 4 categories × 10 points) ──
     const [scoreDistRows] = await pool.execute(
       `SELECT 
          CASE 
-           WHEN score BETWEEN 0 AND 20 THEN '0-20'
-           WHEN score BETWEEN 21 AND 40 THEN '21-40'
-           WHEN score BETWEEN 41 AND 60 THEN '41-60'
-           WHEN score BETWEEN 61 AND 80 THEN '61-80'
-           WHEN score BETWEEN 81 AND 100 THEN '81-100'
+           WHEN score BETWEEN 0 AND 10 THEN '0-10'
+           WHEN score BETWEEN 11 AND 20 THEN '11-20'
+           WHEN score BETWEEN 21 AND 30 THEN '21-30'
+           WHEN score BETWEEN 31 AND 40 THEN '31-40'
          END AS range_label,
          COUNT(*) AS count
        FROM evaluations e
@@ -278,8 +277,8 @@ router.get('/analytics', authenticate, authorize('admin'), async (req, res, next
       dateParams
     );
 
-    // Ensure all 5 buckets exist
-    const allRanges = ['0-20', '21-40', '41-60', '61-80', '81-100'];
+    // Ensure all 4 buckets exist
+    const allRanges = ['0-10', '11-20', '21-30', '31-40'];
     const scoreDistribution = allRanges.map(r => ({
       range: r,
       count: scoreDistRows.find(row => row.range_label === r)?.count || 0,
@@ -368,6 +367,95 @@ router.get('/analytics', authenticate, authorize('admin'), async (req, res, next
         submissions: t.total_submissions,
       })),
     });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ═══════════════════════════════════════════════════
+// TRAINER ASSIGNMENT ROUTES
+// ═══════════════════════════════════════════════════
+
+/**
+ * GET /admin/trainers — List all trainers (for assignment dropdowns)
+ */
+router.get('/trainers', authenticate, authorize('admin'), async (req, res, next) => {
+  try {
+    const [rows] = await pool.execute(
+      "SELECT id, name, email FROM users WHERE role = 'trainer' AND is_active = 1 ORDER BY name"
+    );
+    res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * GET /admin/users/:id/trainers — Get trainers assigned to a user's cohort
+ */
+router.get('/users/:id/trainers', authenticate, authorize('admin'), async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    
+    // Get user's cohort
+    const [[user]] = await pool.execute('SELECT id, name, cohort_id FROM users WHERE id = ?', [userId]);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    
+    if (!user.cohort_id) {
+      return res.json({ user_id: user.id, cohort_id: null, trainers: [] });
+    }
+    
+    // Get trainers assigned to this cohort
+    const [trainers] = await pool.execute(`
+      SELECT u.id, u.name, u.email, ct.assigned_at
+      FROM cohort_trainers ct
+      JOIN users u ON ct.trainer_id = u.id
+      WHERE ct.cohort_id = ? AND u.is_active = 1
+      ORDER BY u.name
+    `, [user.cohort_id]);
+    
+    res.json({ user_id: user.id, cohort_id: user.cohort_id, trainers });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * POST /admin/assign-trainer — Assign or unassign a trainer to a cohort
+ * Body: { cohort_id, trainer_id, action: 'assign' | 'unassign' }
+ */
+router.post('/assign-trainer', authenticate, authorize('admin'), async (req, res, next) => {
+  try {
+    const { cohort_id, trainer_id, action } = req.body;
+    
+    if (!cohort_id || !trainer_id || !action) {
+      return res.status(400).json({ error: 'cohort_id, trainer_id, and action are required' });
+    }
+    
+    if (action === 'assign') {
+      // Check if already assigned
+      const [[existing]] = await pool.execute(
+        'SELECT * FROM cohort_trainers WHERE cohort_id = ? AND trainer_id = ?',
+        [cohort_id, trainer_id]
+      );
+      if (existing) {
+        return res.json({ message: 'Trainer already assigned to this cohort' });
+      }
+      
+      await pool.execute(
+        'INSERT INTO cohort_trainers (cohort_id, trainer_id) VALUES (?, ?)',
+        [cohort_id, trainer_id]
+      );
+      res.json({ message: 'Trainer assigned successfully' });
+    } else if (action === 'unassign') {
+      await pool.execute(
+        'DELETE FROM cohort_trainers WHERE cohort_id = ? AND trainer_id = ?',
+        [cohort_id, trainer_id]
+      );
+      res.json({ message: 'Trainer unassigned successfully' });
+    } else {
+      return res.status(400).json({ error: 'action must be "assign" or "unassign"' });
+    }
   } catch (err) {
     next(err);
   }

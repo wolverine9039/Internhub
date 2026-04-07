@@ -23,13 +23,24 @@ api.interceptors.request.use(
 );
 
 // Response interceptor — handle auth errors
+let isRedirecting = false;
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/';
+    if (error.response?.status === 401 && !isRedirecting) {
+      // Only redirect for actual auth failures (expired token),
+      // not for in-page API calls that can be handled by components.
+      const isLoginEndpoint = error.config?.url?.includes('/auth/');
+      if (!isLoginEndpoint) {
+        isRedirecting = true;
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        // Use a small delay to prevent redirect storms
+        setTimeout(() => {
+          window.location.href = '/';
+          isRedirecting = false;
+        }, 100);
+      }
     }
     return Promise.reject(error);
   }

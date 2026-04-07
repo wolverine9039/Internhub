@@ -3,6 +3,7 @@ import Badge from '@/components/Shared/Badge';
 import Pagination from '@/components/Shared/Pagination';
 import ConfirmDialog from '@/components/Shared/ConfirmDialog';
 import UserFormModal from './UserFormModal';
+import TrainerAssignModal from './TrainerAssignModal';
 import { userService } from '@/services/userService';
 import type { User, PaginatedResponse } from '@/types';
 
@@ -22,6 +23,7 @@ const AdminUsers: React.FC<AdminUsersProps> = () => {
     const [formOpen, setFormOpen] = useState(false);
     const [editUser, setEditUser] = useState<User | null>(null);
     const [deleteTarget, setDeleteTarget] = useState<User | null>(null);
+    const [assignTarget, setAssignTarget] = useState<User | null>(null);
 
     const fetchUsers = useCallback(async () => {
         setLoading(true);
@@ -148,6 +150,15 @@ const AdminUsers: React.FC<AdminUsersProps> = () => {
                                         <td>
                                             <div className="btn-group">
                                                 <button className="btn btn-secondary btn-sm" onClick={() => { setEditUser(user); setFormOpen(true); }}>Edit</button>
+                                                {user.role === 'intern' && (
+                                                    <button
+                                                        className="btn btn-secondary btn-sm"
+                                                        style={{ color: 'var(--accent3)' }}
+                                                        onClick={() => setAssignTarget(user)}
+                                                    >
+                                                        Assign Trainer
+                                                    </button>
+                                                )}
                                                 <button className="btn btn-secondary btn-sm" style={{ color: 'var(--accent2)' }} onClick={() => setDeleteTarget(user)}>Delete</button>
                                             </div>
                                         </td>
@@ -168,6 +179,13 @@ const AdminUsers: React.FC<AdminUsersProps> = () => {
                 editUser={editUser}
                 onSubmit={editUser ? handleEdit : handleCreate}
                 onClose={() => { setFormOpen(false); setEditUser(null); }}
+            />
+
+            <TrainerAssignModal
+                isOpen={!!assignTarget}
+                user={assignTarget}
+                onClose={() => setAssignTarget(null)}
+                onAssigned={fetchUsers}
             />
 
             <ConfirmDialog

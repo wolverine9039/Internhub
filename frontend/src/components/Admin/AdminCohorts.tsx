@@ -3,6 +3,7 @@ import Badge from '@/components/Shared/Badge';
 import Pagination from '@/components/Shared/Pagination';
 import ConfirmDialog from '@/components/Shared/ConfirmDialog';
 import CohortFormModal from './CohortFormModal';
+import CohortMembersModal from './CohortMembersModal';
 import { cohortService } from '@/services/cohortService';
 import type { Cohort, PaginatedResponse } from '@/types';
 
@@ -18,6 +19,7 @@ const AdminCohorts: React.FC<AdminCohortsProps> = () => {
     const [formOpen, setFormOpen] = useState(false);
     const [editCohort, setEditCohort] = useState<Cohort | null>(null);
     const [deleteTarget, setDeleteTarget] = useState<Cohort | null>(null);
+    const [membersTarget, setMembersTarget] = useState<Cohort | null>(null);
 
     const fetchCohorts = useCallback(async () => {
         setLoading(true); setError('');
@@ -94,6 +96,7 @@ const AdminCohorts: React.FC<AdminCohortsProps> = () => {
                                         <td>
                                             <div className="btn-group">
                                                 <button className="btn btn-secondary btn-sm" onClick={() => { setEditCohort(cohort); setFormOpen(true); }}>Edit</button>
+                                                <button className="btn btn-secondary btn-sm" style={{ color: '#5ba4f5' }} onClick={() => setMembersTarget(cohort)}>Manage Interns</button>
                                                 <button className="btn btn-secondary btn-sm" style={{ color: 'var(--accent2)' }} onClick={() => setDeleteTarget(cohort)}>Delete</button>
                                             </div>
                                         </td>
@@ -110,6 +113,7 @@ const AdminCohorts: React.FC<AdminCohortsProps> = () => {
             )}
 
             <CohortFormModal isOpen={formOpen} editCohort={editCohort} onSubmit={editCohort ? handleEdit : handleCreate} onClose={() => { setFormOpen(false); setEditCohort(null); }} />
+            <CohortMembersModal isOpen={!!membersTarget} cohort={membersTarget} onClose={() => setMembersTarget(null)} />
             <ConfirmDialog isOpen={!!deleteTarget} title="Delete Cohort" message={`Delete "${deleteTarget?.name}"? This cannot be undone.`} confirmLabel="Delete" variant="danger" onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} />
         </div>
     );

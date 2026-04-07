@@ -38,6 +38,19 @@ router.get('/', authenticate, async (req, res, next) => {
 });
 
 /**
+ * GET /cohorts/meta/unassigned-interns — List interns not in any cohort
+ * (Must be before /:id route to avoid Express matching 'meta' as an :id)
+ */
+router.get('/meta/unassigned-interns', authenticate, authorize('admin'), async (req, res, next) => {
+  try {
+    const [interns] = await pool.execute(
+      "SELECT id, name, email FROM users WHERE role = 'intern' AND cohort_id IS NULL AND is_active = 1 ORDER BY name"
+    );
+    res.json(interns);
+  } catch (err) { next(err); }
+});
+
+/**
  * GET /cohorts/:id — Get single cohort
  */
 router.get('/:id', authenticate, async (req, res, next) => {
@@ -91,6 +104,54 @@ router.delete('/:id', authenticate, authorize('admin'), async (req, res, next) =
     const [result] = await pool.execute('DELETE FROM cohorts WHERE id = ?', [req.params.id]);
     if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Cohort not found');
     res.status(204).send();
+  } catch (err) { next(err); }
+});
+
+/**
+ * GET /cohorts/:id/members — List interns assigned to this cohort
+ */
+router.get('/:id/members', authenticate, authorize('admin'), async (req, res, next) => {
+  try {
+    const [members] = await pool.execute(
+      "SELECT id, name, email, is_active, created_at FROM users WHERE cohort_id = ? AND role = 'intern' ORDER BY name",
+      [req.params.id]
+    );
+    res.json(members);
+  } catch (err) { next(err); }
+});
+
+
+
+/**
+ * POST /cohorts/:id/members — Add intern to cohort
+ * Body: { intern_id }
+ */
+router.post('/:id/members', authenticate, authorize('admin'), async (req, res, next) => {
+  try {
+    const { intern_id } = req.body;
+    if (!intern_id) throw new AppError(422, 'VALIDATION_ERROR', 'intern_id is required');
+
+    // Verify intern exists and is actually an intern
+    const [[user]] = await pool.execute('SELECT id, role, cohort_id FROM users WHERE id = ?', [intern_id]);
+    if (!user) throw new AppError(404, 'NOT_FOUND', 'User not found');
+    if (user.role !== 'intern') throw new AppError(400, 'BAD_REQUEST', 'User is not an intern');
+
+    await pool.execute('UPDATE users SET cohort_id = ? WHERE id = ?', [req.params.id, intern_id]);
+    res.json({ message: 'Intern added to cohort' });
+  } catch (err) { next(err); }
+});
+
+/**
+ * DELETE /cohorts/:id/members/:internId — Remove intern from cohort
+ */
+router.delete('/:id/members/:internId', authenticate, authorize('admin'), async (req, res, next) => {
+  try {
+    const [result] = await pool.execute(
+      'UPDATE users SET cohort_id = NULL WHERE id = ? AND cohort_id = ?',
+      [req.params.internId, req.params.id]
+    );
+    if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Intern not in this cohort');
+    res.json({ message: 'Intern removed from cohort' });
   } catch (err) { next(err); }
 });
 
