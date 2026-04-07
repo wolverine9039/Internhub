@@ -1,0 +1,309 @@
+/* ── SETTINGS PANEL ── */
+
+.settings-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg, 12px);
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.settings-card:hover {
+  border-color: var(--accent);
+}
+
+.settings-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px 24px 0;
+}
+
+.settings-icon {
+  font-size: 24px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.settings-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 2px;
+}
+
+.settings-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.settings-card-body {
+  padding: 20px 24px 24px;
+}
+
+/* ── Settings Row (key-value) ── */
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.settings-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settings-row-info strong {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.settings-muted {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.settings-badge {
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+  background: rgba(91, 140, 255, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(91, 140, 255, 0.2);
+}
+
+/* ── Theme Switcher ── */
+.theme-switcher {
+  display: flex;
+  gap: 8px;
+  background: var(--surface2);
+  border-radius: var(--radius-md, 8px);
+  padding: 4px;
+  border: 1px solid var(--border);
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+}
+
+.theme-option:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.theme-option.active {
+  background: var(--surface);
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 1px 4px rgba(91, 140, 255, 0.15);
+}
+
+.theme-option-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.theme-option-label {
+  font-size: 13px;
+}
+
+/* ── Password Form ── */
+.settings-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 16px;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.settings-form-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.settings-form-group input {
+  padding: 10px 14px;
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.settings-form-group input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(91, 140, 255, 0.1);
+}
+
+.settings-form-group input::placeholder {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.settings-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.settings-password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.settings-password-wrapper input {
+  padding-right: 60px;
+}
+
+.settings-pw-toggle {
+  position: absolute;
+  right: 10px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--accent);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  transition: opacity 0.2s;
+}
+
+.settings-pw-toggle:hover {
+  opacity: 0.7;
+}
+
+/* ── Password Strength Bar ── */
+.password-strength {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.strength-bar {
+  height: 4px;
+  border-radius: 4px;
+  flex: 1;
+  transition: all 0.3s ease;
+}
+
+.strength-bar.too-short {
+  width: 15%;
+  background: var(--danger, #ef4444);
+}
+
+.strength-bar.weak {
+  width: 35%;
+  background: var(--accent2, #ff6b6b);
+}
+
+.strength-bar.medium {
+  width: 65%;
+  background: var(--accent4, #fbbf24);
+}
+
+.strength-bar.strong {
+  width: 100%;
+  background: var(--success, #10b981);
+}
+
+.strength-label {
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ── Form Actions ── */
+.settings-form-actions {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: 4px;
+}
+
+/* ── Message Toasts ── */
+.settings-message {
+  padding: 10px 16px;
+  border-radius: var(--radius-md, 8px);
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  animation: settingsFadeIn 0.3s ease;
+}
+
+.settings-message.success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success, #10b981);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.settings-message.error {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger, #ef4444);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+@keyframes settingsFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .settings-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .theme-switcher {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .settings-card-body {
+    padding: 16px;
+  }
+
+  .settings-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

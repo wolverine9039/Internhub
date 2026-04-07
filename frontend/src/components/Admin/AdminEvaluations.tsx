@@ -29,7 +29,9 @@ const AdminEvaluations: React.FC<AdminEvaluationsProps> = () => {
       setEvaluations(res.items);
       setPagination({ page: res.page, pages: res.pages, total: res.total });
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to load evaluations');
+      const errorData = err.response?.data?.error;
+      const errorMessage = typeof errorData === 'object' && errorData !== null ? errorData.message : errorData || 'Failed to load evaluations';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -57,7 +59,9 @@ const AdminEvaluations: React.FC<AdminEvaluationsProps> = () => {
       setDeleteConfirmId(null);
       fetchEvaluations(pagination.page);
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to delete evaluation');
+      const errorData = err.response?.data?.error;
+      const errorMessage = typeof errorData === 'object' && errorData !== null ? errorData.message : errorData || 'Failed to delete evaluation';
+      setError(errorMessage);
       setDeleteConfirmId(null);
     }
   };
@@ -98,8 +102,13 @@ const AdminEvaluations: React.FC<AdminEvaluationsProps> = () => {
 
       <div className="admin-card">
         {loading ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div> Loading evaluations...
+          <div className="loader-wrapper">
+            <div className="loading-wave">
+              <div className="loading-bar"></div>
+              <div className="loading-bar"></div>
+              <div className="loading-bar"></div>
+              <div className="loading-bar"></div>
+            </div>
           </div>
         ) : evaluations.length === 0 ? (
           <div className="empty-state">No evaluations found</div>

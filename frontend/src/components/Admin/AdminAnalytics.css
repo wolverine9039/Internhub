@@ -1,0 +1,513 @@
+/* ── ANALYTICS DASHBOARD ── */
+
+/* ── Date Filter Bar ── */
+.analytics-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.date-filter-chip {
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: var(--font-body);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.date-filter-chip:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.date-filter-chip.active {
+  background: rgba(91, 140, 255, 0.12);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ── KPI Cards ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.kpi-card:hover {
+  border-color: rgba(91, 140, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 8px 8px 0 0;
+}
+
+.kpi-card:nth-child(1)::before { background: var(--accent); }
+.kpi-card:nth-child(2)::before { background: var(--accent3); }
+.kpi-card:nth-child(3)::before { background: var(--accent4); }
+.kpi-card:nth-child(4)::before { background: var(--accent2); }
+
+.kpi-label {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.kpi-value {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+
+.kpi-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.kpi-sub .highlight {
+  color: var(--accent3);
+  font-weight: 600;
+}
+
+/* ── Chart Cards ── */
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.chart-card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chart-card-title {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.chart-card-body {
+  padding: 20px;
+}
+
+/* ── Recharts Overrides ── */
+.chart-card .recharts-cartesian-grid-horizontal line,
+.chart-card .recharts-cartesian-grid-vertical line {
+  stroke: var(--border);
+  stroke-opacity: 0.5;
+}
+
+.chart-card .recharts-text {
+  fill: var(--muted);
+  font-size: 11px;
+  font-family: var(--font-body);
+}
+
+.chart-card .recharts-tooltip-wrapper {
+  outline: none;
+}
+
+/* Custom tooltip */
+.analytics-tooltip {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px;
+  padding: 10px 14px;
+  box-shadow: var(--shadow-dropdown);
+}
+
+.analytics-tooltip .label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.analytics-tooltip .value {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.analytics-tooltip .value span {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ── Score Dimensions (Radar / Bar) ── */
+.dimension-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.dimension-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dimension-label {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: capitalize;
+}
+
+.dimension-bar-track {
+  height: 6px;
+  background: var(--surface2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.dimension-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dimension-value {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  color: var(--text);
+}
+
+.dimension-max {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* ── Cohort Performance Table ── */
+.cohort-perf-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cohort-perf-table th {
+  padding: 10px 16px;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+
+.cohort-perf-table td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+
+.cohort-perf-table tr:last-child td {
+  border-bottom: none;
+}
+
+.cohort-perf-table tr:hover td {
+  background: var(--surface2);
+}
+
+.cohort-status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.cohort-status-badge.active {
+  background: rgba(67, 232, 176, 0.1);
+  color: var(--accent3);
+}
+
+.cohort-status-badge.planned {
+  background: rgba(245, 197, 66, 0.1);
+  color: var(--accent4);
+}
+
+.cohort-status-badge.completed {
+  background: rgba(91, 140, 255, 0.1);
+  color: var(--accent);
+}
+
+.mini-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mini-progress-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--surface2);
+  border-radius: 2px;
+  overflow: hidden;
+  min-width: 60px;
+}
+
+.mini-progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent);
+  transition: width 0.5s ease;
+}
+
+.mini-progress-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  min-width: 32px;
+  text-align: right;
+}
+
+/* ── Leaderboard ── */
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard-table th {
+  padding: 10px 16px;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+
+.leaderboard-table td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+
+.leaderboard-table tr:last-child td {
+  border-bottom: none;
+}
+
+.leaderboard-table tr:hover td {
+  background: var(--surface2);
+}
+
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-heading);
+}
+
+.rank-badge.gold {
+  background: linear-gradient(135deg, #f5c542, #e6a817);
+  color: #1a1a1a;
+}
+
+.rank-badge.silver {
+  background: linear-gradient(135deg, #b8c5d6, #8a9bb5);
+  color: #1a1a1a;
+}
+
+.rank-badge.bronze {
+  background: linear-gradient(135deg, #cd7f32, #a0622e);
+  color: #fff;
+}
+
+.rank-badge.default {
+  background: var(--surface2);
+  color: var(--muted);
+}
+
+.score-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.score-pill.excellent {
+  background: rgba(67, 232, 176, 0.12);
+  color: var(--accent3);
+}
+
+.score-pill.good {
+  background: rgba(91, 140, 255, 0.12);
+  color: var(--accent);
+}
+
+.score-pill.average {
+  background: rgba(245, 197, 66, 0.12);
+  color: var(--accent4);
+}
+
+.score-pill.poor {
+  background: rgba(255, 107, 107, 0.12);
+  color: var(--accent2);
+}
+
+.intern-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.intern-cohort {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ── Full-width card ── */
+.analytics-full {
+  margin-bottom: 24px;
+}
+
+/* ── Empty chart state ── */
+.chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+  .dimension-grid {
+    grid-template-columns: 1fr;
+  }
+  .kpi-value {
+    font-size: 24px;
+  }
+  .analytics-filter-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .leaderboard-table th:nth-child(5),
+  .leaderboard-table td:nth-child(5),
+  .cohort-perf-table th:nth-child(4),
+  .cohort-perf-table td:nth-child(4) {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .leaderboard-table th:nth-child(3),
+  .leaderboard-table td:nth-child(3) {
+    display: none;
+  }
+}
+
+/* ── Loading Animation ── */
+.loading-wave-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  width: 100%;
+}
+
+.loading-wave {
+  width: 300px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.loading-bar {
+  width: 20px;
+  height: 10px;
+  margin: 0 5px;
+  background-color: var(--accent); /* Matches your UI accent color */
+  border-radius: 5px;
+  animation: loading-wave-animation 1s ease-in-out infinite;
+}
+
+.loading-bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.loading-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.loading-bar:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+@keyframes loading-wave-animation {
+  0% {
+    height: 10px;
+  }
+  50% {
+    height: 50px;
+  }
+  100% {
+    height: 10px;
+  }
+}

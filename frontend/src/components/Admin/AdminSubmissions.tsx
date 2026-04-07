@@ -89,8 +89,13 @@ const AdminSubmissions: React.FC<AdminSubmissionsProps> = () => {
 
       <div className="admin-card">
         {loading ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div> Loading submissions...
+          <div className="loader-wrapper">
+            <div className="loading-wave">
+              <div className="loading-bar"></div>
+              <div className="loading-bar"></div>
+              <div className="loading-bar"></div>
+              <div className="loading-bar"></div>
+            </div>
           </div>
         ) : submissions.length === 0 ? (
           <div className="empty-state">No submissions found</div>

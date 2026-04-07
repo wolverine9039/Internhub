@@ -9,6 +9,10 @@
   padding: 28px 32px;
   background: var(--bg);
   min-height: 100vh;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.main.sidebar-collapsed {
+  margin-left: 60px;
 }
 
 /* ── HEADER ── */

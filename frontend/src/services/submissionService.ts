@@ -9,9 +9,23 @@ export interface SubmissionQueryParams {
   status?: string;
 }
 
+export interface CreateSubmissionPayload {
+  task_id: number;
+  intern_id: number;
+  github_url: string;
+  demo_url?: string;
+  file_url?: string;
+  notes?: string;
+}
+
 export const submissionService = {
   getSubmissions: async (params?: SubmissionQueryParams): Promise<PaginatedResponse<Submission>> => {
     const res = await api.get('/submissions', { params });
+    return res.data;
+  },
+
+  createSubmission: async (data: CreateSubmissionPayload): Promise<{ message: string; submissionId: number }> => {
+    const res = await api.post('/submissions', data);
     return res.data;
   },
 
