@@ -5,11 +5,12 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'NodeJS-20'
+    }
+
     environment {
-        NODEJS_HOME     = tool(name: 'NodeJS-20', type: 'nodejs')
-        PATH            = "${NODEJS_HOME}/bin:${env.PATH}"
-        SONAR_SCANNER   = tool(name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation')
-        APP_SERVER_IP   = credentials('app-server-ip')
+        SCANNER_HOME = tool 'SonarScanner'
     }
 
     options {
@@ -17,10 +18,6 @@ pipeline {
         disableConcurrentBuilds()
         buildDiscarder(logRotator(numToKeepStr: '10'))
         timestamps()
-    }
-
-    triggers {
-        githubPush()
     }
 
     stages {
@@ -69,23 +66,7 @@ pipeline {
             steps {
                 dir('backend') {
                     echo '🧪 Running Jest tests with coverage...'
-                    sh 'npm test -- --ci --coverage --reporters=default --reporters=jest-junit'
-                }
-            }
-            post {
-                always {
-                    // Publish test results
-                    junit allowEmptyResults: true, testResults: 'backend/junit.xml'
-
-                    // Publish coverage report
-                    publishHTML(target: [
-                        allowMissing: true,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: 'backend/coverage/lcov-report',
-                        reportFiles: 'index.html',
-                        reportName: 'Backend Coverage Report'
-                    ])
+                    sh 'npm test'
                 }
             }
         }
@@ -104,10 +85,13 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo '📊 Running SonarQube code analysis...'
-                withSonarQubeEnv('InternHub-SonarQube') {
+                withSonarQubeEnv('SonarQube') {
                     sh """
-                        ${SONAR_SCANNER}/bin/sonar-scanner \
-                            -Dproject.settings=deployment/jenkins/sonar-project.properties \
+                        ${SCANNER_HOME}/bin/sonar-scanner \
+                            -Dsonar.projectKey=internhub \
+                            -Dsonar.projectName=InternHub \
+                            -Dsonar.sources=backend/src,frontend/src \
+                            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/** \
                             -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info
                     """
                 }
@@ -126,20 +110,15 @@ pipeline {
 
         // ── Stage 8: Deploy to App Server ───────────────────
         stage('Deploy') {
-            when {
-                branch 'master'
-            }
             steps {
                 echo '🚀 Deploying to App Server via Ansible...'
-                dir('deployment/ansible') {
-                    ansiblePlaybook(
-                        playbook: 'deploy.yml',
-                        inventory: 'inventory.ini',
-                        credentialsId: 'app-server-ssh-key',
-                        colorized: true,
-                        extras: '-v'
-                    )
-                }
+                ansiblePlaybook(
+                    playbook: 'deployment/ansible/deploy.yml',
+                    inventory: 'deployment/ansible/inventory.ini',
+                    credentialsId: 'app-server-ssh-key',
+                    colorized: true,
+                    extras: '-v'
+                )
             }
         }
     }
@@ -147,28 +126,24 @@ pipeline {
     // ── Post-Build Actions ──────────────────────────────────
     post {
         success {
-            echo """
+            echo '''
             ═══════════════════════════════════════════
                ✅ Pipeline Completed Successfully!
             ═══════════════════════════════════════════
-               Build:   #${env.BUILD_NUMBER}
-               Branch:  ${env.BRANCH_NAME}
-               URL:     https://internhub.buildwithmayank.tech
+               URL: https://internhub.buildwithmayank.tech
             ═══════════════════════════════════════════
-            """
+            '''
         }
         failure {
-            echo """
+            echo '''
             ═══════════════════════════════════════════
                ❌ Pipeline Failed!
             ═══════════════════════════════════════════
-               Build:   #${env.BUILD_NUMBER}
-               Branch:  ${env.BRANCH_NAME}
                Check console output for details.
             ═══════════════════════════════════════════
-            """
+            '''
         }
-        cleanup {
+        always {
             cleanWs()
         }
     }
