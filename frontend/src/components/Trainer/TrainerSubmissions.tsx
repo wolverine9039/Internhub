@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import Badge from '@/components/Shared/Badge';
 import { trainerService } from '@/services/trainerService';
 import type { Submission } from '@/types';
@@ -36,7 +36,7 @@ const TrainerSubmissions: React.FC<TrainerSubmissionsProps> = ({ onNavigate, onS
   const [status, setStatus] = useState('');
   const [updatingId, setUpdatingId] = useState<number | null>(null);
 
-  const fetchSubmissions = async () => {
+  const fetchSubmissions = useCallback(async () => {
     setLoading(true);
     try {
       const data = await trainerService.getMySubmissions(status || undefined, search || undefined);
@@ -46,11 +46,11 @@ const TrainerSubmissions: React.FC<TrainerSubmissionsProps> = ({ onNavigate, onS
     } finally {
       setLoading(false);
     }
-  };
+  }, [status, search]);
 
   useEffect(() => {
     fetchSubmissions();
-  }, [status]);
+  }, [fetchSubmissions]);
 
   // Client-side search filtering on top of server results
   const filtered = useMemo(() => {

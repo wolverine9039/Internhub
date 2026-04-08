@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '@/components/Shared/ConfirmDialog.css';
 
 interface Intern {
@@ -24,14 +24,16 @@ const CohortMembersModal: React.FC<CohortMembersModalProps> = ({ isOpen, cohort,
   const token = localStorage.getItem('token');
   const headers = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (!cohort) return;
     setLoading(true);
     setError('');
+    const authToken = localStorage.getItem('token');
+    const authHeaders = { 'Authorization': `Bearer ${authToken}`, 'Content-Type': 'application/json' };
     try {
       const [membersRes, unassignedRes] = await Promise.all([
-        fetch(`/api/cohorts/${cohort.id}/members`, { headers }).then(r => r.json()),
-        fetch('/api/cohorts/meta/unassigned-interns', { headers }).then(r => r.json()),
+        fetch(`/api/cohorts/${cohort.id}/members`, { headers: authHeaders }).then(r => r.json()),
+        fetch('/api/cohorts/meta/unassigned-interns', { headers: authHeaders }).then(r => r.json()),
       ]);
       setMembers(membersRes);
       setUnassigned(unassignedRes);
@@ -40,11 +42,11 @@ const CohortMembersModal: React.FC<CohortMembersModalProps> = ({ isOpen, cohort,
     } finally {
       setLoading(false);
     }
-  };
+  }, [cohort]);
 
   useEffect(() => {
     if (isOpen && cohort) fetchData();
-  }, [isOpen, cohort]);
+  }, [isOpen, cohort, fetchData]);
 
   const handleAdd = async (internId: number) => {
     if (!cohort) return;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Badge from '@/components/Shared/Badge';
+import { getErrorMessage } from '@/utils/errorUtils';
 
 interface TrainerEvaluation {
   id: number;
@@ -46,8 +47,8 @@ const TrainerMyEvaluations: React.FC<TrainerMyEvaluationsProps> = () => {
           const data = await resp.json();
           setEvaluations(data);
         }
-      } catch (err: any) {
-        setError(err.message || 'Failed to load');
+      } catch (err: unknown) {
+        setError(getErrorMessage(err, 'Failed to load'));
         setEvaluations([]);
       } finally {
         setLoading(false);

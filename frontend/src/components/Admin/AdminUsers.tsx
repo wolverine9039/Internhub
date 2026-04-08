@@ -5,7 +5,8 @@ import ConfirmDialog from '@/components/Shared/ConfirmDialog';
 import UserFormModal from './UserFormModal';
 import TrainerAssignModal from './TrainerAssignModal';
 import { userService } from '@/services/userService';
-import type { User, PaginatedResponse } from '@/types';
+import type { User, PaginatedResponse, UserFormData } from '@/types';
+import { getErrorMessage } from '@/utils/errorUtils';
 
 interface AdminUsersProps {
     onNavigate: (screen: string) => void;
@@ -35,8 +36,8 @@ const AdminUsers: React.FC<AdminUsersProps> = () => {
                 ...(search && { search }),
             });
             setData(result);
-        } catch (err: any) {
-            setError(err.response?.data?.error?.message || 'Failed to load users');
+        } catch (err: unknown) {
+            setError(getErrorMessage(err, 'Failed to load users'));
         } finally {
             setLoading(false);
         }
@@ -51,24 +52,24 @@ const AdminUsers: React.FC<AdminUsersProps> = () => {
         return () => clearTimeout(t);
     }, [searchInput]);
 
-    const handleCreate = async (formData: any) => {
+    const handleCreate = async (formData: UserFormData) => {
         try {
             await userService.createUser(formData);
             setFormOpen(false);
             fetchUsers();
-        } catch (err: any) {
-            alert(err.response?.data?.error?.message || 'Failed to create user');
+        } catch (err: unknown) {
+            alert(getErrorMessage(err, 'Failed to create user'));
         }
     };
 
-    const handleEdit = async (formData: any) => {
+    const handleEdit = async (formData: UserFormData) => {
         if (!editUser) return;
         try {
             await userService.updateUser(editUser.id, formData);
             setEditUser(null);
             fetchUsers();
-        } catch (err: any) {
-            alert(err.response?.data?.error?.message || 'Failed to update user');
+        } catch (err: unknown) {
+            alert(getErrorMessage(err, 'Failed to update user'));
         }
     };
 
@@ -78,8 +79,8 @@ const AdminUsers: React.FC<AdminUsersProps> = () => {
             await userService.deleteUser(deleteTarget.id);
             setDeleteTarget(null);
             fetchUsers();
-        } catch (err: any) {
-            alert(err.response?.data?.error?.message || 'Failed to delete user');
+        } catch (err: unknown) {
+            alert(getErrorMessage(err, 'Failed to delete user'));
         }
     };
 

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { projectService } from '@/services/projectService';
 import { userService } from '@/services/userService';
-import type { Project, User, Task } from '@/types';
+import type { Project, User, Task, TaskFormData } from '@/types';
+import { getErrorMessage } from '@/utils/errorUtils';
 import '@/components/Shared/ConfirmDialog.css';
 
 interface TaskFormModalProps {
   isOpen: boolean;
   editTask?: Task | null;
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: TaskFormData) => Promise<void>;
   onClose: () => void;
 }
 
@@ -71,8 +72,8 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({ isOpen, editTask, onSubmi
         status,
         due_date: dueDate || undefined
       });
-    } catch (err: any) {
-      setErrors({ submit: err.response?.data?.error || 'Failed to save task' });
+    } catch (err: unknown) {
+      setErrors({ submit: getErrorMessage(err, 'Failed to save task') });
     } finally {
       setSubmitting(false);
     }

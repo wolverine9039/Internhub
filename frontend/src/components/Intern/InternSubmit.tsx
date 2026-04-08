@@ -1,9 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import type { User, Task, Submission } from '@/types';
 import { taskService } from '@/services/taskService';
 import { submissionService } from '@/services/submissionService';
 import Badge from '@/components/Shared/Badge';
 import './InternModule.css';
+import { getErrorMessage } from '@/utils/errorUtils';
 
 interface InternSubmitProps {
   user: User | null;
@@ -35,7 +36,7 @@ const InternSubmit: React.FC<InternSubmitProps> = ({ user, onNavigate }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const load = async () => {
+  const load = useCallback(async () => {
     if (!user?.id) {
       setTasks([]);
       setSubmissions([]);
@@ -50,7 +51,7 @@ const InternSubmit: React.FC<InternSubmitProps> = ({ user, onNavigate }) => {
 
     setTasks(taskRes.items);
     setSubmissions(subRes.items);
-  };
+  }, [user?.id]);
 
   useEffect(() => {
     const run = async () => {
@@ -62,7 +63,7 @@ const InternSubmit: React.FC<InternSubmitProps> = ({ user, onNavigate }) => {
     };
 
     void run();
-  }, [user?.id]);
+  }, [load]);
 
   const pendingTasks = useMemo(
     () => tasks.filter((task) => task.status === 'pending' || task.status === 'in_progress' || task.status === 'overdue'),
@@ -102,8 +103,8 @@ const InternSubmit: React.FC<InternSubmitProps> = ({ user, onNavigate }) => {
       setSuccess('Work submitted successfully.');
       setForm(initialForm);
       await load();
-    } catch (submissionError: any) {
-      setError(submissionError?.response?.data?.error?.message || submissionError?.message || 'Submission failed.');
+    } catch (submissionError: unknown) {
+      setError(getErrorMessage(submissionError, 'Submission failed.'));
     } finally {
       setSubmitting(false);
     }

@@ -4,6 +4,7 @@ import Badge from '@/components/Shared/Badge';
 import { trainerService } from '@/services/trainerService';
 import type { TrainerStats, TrainerDeadline } from '@/services/trainerService';
 import type { Submission } from '@/types';
+import type { BadgeVariant } from '@/utils/errorUtils';
 
 interface TrainerDashboardProps {
   onNavigate: (screen: string) => void;
@@ -55,7 +56,7 @@ const TrainerDashboard: React.FC<TrainerDashboardProps> = ({ onNavigate, onSelec
     fetchAll();
   }, []);
 
-  const statusVariant = (status: string) => {
+  const statusVariant = (status: string): BadgeVariant => {
     if (status === 'reviewed') return 'green';
     if (status === 'submitted' || status === 'pending') return 'yellow';
     if (status === 'revision_requested') return 'red';
@@ -127,7 +128,7 @@ const TrainerDashboard: React.FC<TrainerDashboardProps> = ({ onNavigate, onSelec
                       <div className="time-muted">{sub.intern_name} · {timeAgo(sub.submitted_at)}</div>
                     </div>
                     <div className="recent-actions">
-                      <Badge variant={statusVariant(sub.status) as any}>{statusLabel(sub.status)}</Badge>
+                      <Badge variant={statusVariant(sub.status)}>{statusLabel(sub.status)}</Badge>
                       {(sub.status === 'submitted' || sub.status === 'pending') && (
                         <button className="link-button" onClick={() => onSelectSubmission(sub)}>
                           Review
