@@ -62,7 +62,18 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   );
 };
 
-const AdminAnalytics: React.FC<AdminAnalyticsProps> = () => {
+const TaskBarShape = (props: any) => {
+  const { x, y, width, height, payload } = props;
+  const fill = STATUS_COLORS[payload?.status] || '#5b8cff';
+  return <rect x={x} y={y} width={width} height={height} fill={fill} rx={4} ry={4} />;
+};
+
+const ScoreBarShape = (props: any) => {
+  const { x, y, width, height, index } = props;
+  return <rect x={x} y={y} width={width} height={height} fill={SCORE_COLORS[index]} rx={4} ry={4} />;
+};
+
+const AdminAnalytics: React.FC<AdminAnalyticsProps> = ({ onNavigate }) => {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -221,11 +232,7 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = () => {
                   <YAxis dataKey="status" type="category" width={90} tickFormatter={formatStatus} />
                   <Tooltip content={<CustomTooltip />} />
                   <Bar dataKey="count" name="Tasks" radius={[0, 4, 4, 0]} barSize={22}
-                    shape={(props: any) => {
-                      const { x, y, width, height, index } = props;
-                      const fill = STATUS_COLORS[data.taskStatusBreakdown[index]?.status] || '#5b8cff';
-                      return <rect x={x} y={y} width={width} height={height} fill={fill} rx={4} ry={4} />;
-                    }}
+                    shape={<TaskBarShape />}
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -249,10 +256,7 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = () => {
                   <YAxis allowDecimals={false} />
                   <Tooltip content={<CustomTooltip />} />
                   <Bar dataKey="count" name="Evaluations" radius={[4, 4, 0, 0]} barSize={40}
-                    shape={(props: any) => {
-                      const { x, y, width, height, index } = props;
-                      return <rect x={x} y={y} width={width} height={height} fill={SCORE_COLORS[index]} rx={4} ry={4} />;
-                    }}
+                    shape={<ScoreBarShape />}
                   />
                 </BarChart>
               </ResponsiveContainer>

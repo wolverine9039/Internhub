@@ -34,7 +34,7 @@ const CohortFormModal: React.FC<CohortFormModalProps> = ({ isOpen, editCohort, o
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (evt: React.SyntheticEvent<HTMLFormElement>) => {
     evt.preventDefault();
     if (!validate()) return;
     onSubmit({ name, description: description || undefined, start_date: startDate || undefined, end_date: endDate || undefined });

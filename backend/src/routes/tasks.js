@@ -50,11 +50,11 @@ router.post('/', authenticate, authorize('admin', 'trainer'), async (req, res, n
   try {
     const { title, description, project_id, assigned_to, created_by, due_date, priority } = req.body;
     if (!title || !project_id || !assigned_to) {
-      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', [
-        ...(!title ? [{ field: 'title', message: 'Title is required' }] : []),
-        ...(!project_id ? [{ field: 'project_id', message: 'Project ID is required' }] : []),
-        ...(!assigned_to ? [{ field: 'assigned_to', message: 'Assigned-to user is required' }] : []),
-      ]);
+      const errorDetails = [];
+      if (!title) errorDetails.push({ field: 'title', message: 'Title is required' });
+      if (!project_id) errorDetails.push({ field: 'project_id', message: 'Project ID is required' });
+      if (!assigned_to) errorDetails.push({ field: 'assigned_to', message: 'Assigned-to user is required' });
+      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', errorDetails);
     }
     const [result] = await pool.execute(
       'INSERT INTO tasks (title, description, project_id, assigned_to, created_by, due_date, priority) VALUES (?, ?, ?, ?, ?, ?, ?)',
