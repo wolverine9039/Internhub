@@ -196,7 +196,11 @@ const TrainerEvaluationForm: React.FC<TrainerEvaluationFormProps> = ({ selectedS
               type="button"
               disabled={submitting || submitted}
             >
-              {submitting ? 'Submitting...' : submitted ? 'Submitted ✓' : 'Submit Evaluation'}
+              {(() => {
+                if (submitting) return 'Submitting...';
+                if (submitted) return 'Submitted ✓';
+                return 'Submit Evaluation';
+              })()}
             </button>
           </div>
           {error && <div className="error-banner" style={{ marginTop: '12px', padding: '12px 16px', borderRadius: '8px', background: 'rgba(255, 99, 99, 0.15)', color: 'var(--accent2)' }}>{error}</div>}

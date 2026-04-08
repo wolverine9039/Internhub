@@ -55,15 +55,8 @@ const TrainerPanel: React.FC = () => {
       case 'settings':
         return <SettingsPanel />;
       default:
-        return (
-          <TrainerDashboard
-            onNavigate={setActiveScreen}
-            onSelectSubmission={(submission) => {
-              setSelectedSubmission(submission);
-              setActiveScreen('trainer-evaluation');
-            }}
-          />
-        );
+        setActiveScreen('trainer-dashboard');
+        return null;
     }
   };
 

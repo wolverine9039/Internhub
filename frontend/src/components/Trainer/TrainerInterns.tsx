@@ -33,12 +33,12 @@ const TrainerInterns: React.FC<TrainerInternsProps> = () => {
             'Content-Type': 'application/json',
           },
         });
-        if (!resp.ok) {
-          setError(`API returned ${resp.status}`);
-          setInterns([]);
-        } else {
+        if (resp.ok) {
           const data = await resp.json();
           setInterns(data);
+        } else {
+          setError(`API returned ${resp.status}`);
+          setInterns([]);
         }
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : 'Failed to load');
@@ -79,7 +79,11 @@ const TrainerInterns: React.FC<TrainerInternsProps> = () => {
         <div>
           <h1 className="page-title">My Interns</h1>
           <p className="page-subtitle">
-            {loading ? 'Loading...' : error ? `Error: ${error}` : `${interns.length} interns across your projects`}
+            {(() => {
+              if (loading) return 'Loading...';
+              if (error) return `Error: ${error}`;
+              return `${interns.length} interns across your projects`;
+            })()}
           </p>
         </div>
       </div>
@@ -96,20 +100,27 @@ const TrainerInterns: React.FC<TrainerInternsProps> = () => {
 
       <div className="admin-card">
         <div className="admin-card-body">
-          {loading ? (
-            <div className="loader-wrapper">
-              <div className="loading-wave">
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-              </div>
-            </div>
-          ) : filtered.length === 0 ? (
-            <div className="empty-state">
-              {search ? 'No interns match your search.' : 'No interns assigned to your projects yet.'}
-            </div>
-          ) : (
+          {(() => {
+            if (loading) {
+              return (
+                <div className="loader-wrapper">
+                  <div className="loading-wave">
+                    <div className="loading-bar"></div>
+                    <div className="loading-bar"></div>
+                    <div className="loading-bar"></div>
+                    <div className="loading-bar"></div>
+                  </div>
+                </div>
+              );
+            }
+            if (filtered.length === 0) {
+              return (
+                <div className="empty-state">
+                  {search ? 'No interns match your search.' : 'No interns assigned to your projects yet.'}
+                </div>
+              );
+            }
+            return (
             <div className="table-wrapper">
               <table className="admin-table">
                 <thead>
@@ -146,10 +157,10 @@ const TrainerInterns: React.FC<TrainerInternsProps> = () => {
                           <span className={`progress-value ${color}`} style={{ fontSize: '11px', marginLeft: '6px' }}>{pct}%</span>
                         </td>
                         <td>
-                          {intern.avg_score !== null ? (
-                            <span style={{ fontWeight: 600 }}>{intern.avg_score}</span>
-                          ) : (
+                          {intern.avg_score === null ? (
                             <span className="time-muted">—</span>
+                          ) : (
+                            <span style={{ fontWeight: 600 }}>{intern.avg_score}</span>
                           )}
                         </td>
                         <td>
@@ -163,7 +174,8 @@ const TrainerInterns: React.FC<TrainerInternsProps> = () => {
                 </tbody>
               </table>
             </div>
-          )}
+            );
+          })()}
         </div>
       </div>
     </div>

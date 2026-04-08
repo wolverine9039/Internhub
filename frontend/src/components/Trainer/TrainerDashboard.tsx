@@ -107,39 +107,45 @@ const TrainerDashboard: React.FC<TrainerDashboardProps> = ({ onNavigate, onSelec
               View All
             </button>
           </div>
-          {loading ? (
-            <div className="loader-wrapper">
-              <div className="loading-wave">
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-              </div>
-            </div>
-          ) : recentSubmissions.length === 0 ? (
-            <div className="empty-state">No submissions yet</div>
-          ) : (
-            <div className="admin-card-body">
-              <div className="recent-list">
-                {recentSubmissions.map((sub) => (
-                  <div key={sub.id} className="recent-row">
-                    <div>
-                      <div className="recent-title">{sub.task_title}</div>
-                      <div className="time-muted">{sub.intern_name} · {timeAgo(sub.submitted_at)}</div>
-                    </div>
-                    <div className="recent-actions">
-                      <Badge variant={statusVariant(sub.status)}>{statusLabel(sub.status)}</Badge>
-                      {(sub.status === 'submitted' || sub.status === 'pending') && (
-                        <button className="link-button" onClick={() => onSelectSubmission(sub)}>
-                          Review
-                        </button>
-                      )}
-                    </div>
+          {(() => {
+            if (loading) {
+              return (
+                <div className="loader-wrapper">
+                  <div className="loading-wave">
+                    <div className="loading-bar"></div>
+                    <div className="loading-bar"></div>
+                    <div className="loading-bar"></div>
+                    <div className="loading-bar"></div>
                   </div>
-                ))}
+                </div>
+              );
+            }
+            if (recentSubmissions.length === 0) {
+              return <div className="empty-state">No submissions yet</div>;
+            }
+            return (
+              <div className="admin-card-body">
+                <div className="recent-list">
+                  {recentSubmissions.map((sub) => (
+                    <div key={sub.id} className="recent-row">
+                      <div>
+                        <div className="recent-title">{sub.task_title}</div>
+                        <div className="time-muted">{sub.intern_name} · {timeAgo(sub.submitted_at)}</div>
+                      </div>
+                      <div className="recent-actions">
+                        <Badge variant={statusVariant(sub.status)}>{statusLabel(sub.status)}</Badge>
+                        {(sub.status === 'submitted' || sub.status === 'pending') && (
+                          <button className="link-button" onClick={() => onSelectSubmission(sub)}>
+                            Review
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
 
         {/* ── Upcoming Deadlines ── */}
@@ -149,34 +155,42 @@ const TrainerDashboard: React.FC<TrainerDashboardProps> = ({ onNavigate, onSelec
             <span className="wf-note">{deadlines.length} tasks</span>
           </div>
           <div className="admin-card-body">
-            {loading ? (
-              <div className="loader-wrapper">
-                <div className="loading-wave">
-                  <div className="loading-bar"></div>
-                  <div className="loading-bar"></div>
-                  <div className="loading-bar"></div>
-                  <div className="loading-bar"></div>
-                </div>
-              </div>
-            ) : deadlines.length === 0 ? (
-              <div className="empty-state">No upcoming deadlines</div>
-            ) : (
-              <div className="deadline-list">
-                {deadlines.map((dl) => {
-                  const days = Math.ceil((new Date(dl.due_date).getTime() - Date.now()) / 86400000);
-                  const color = days <= 2 ? 'red' : days <= 7 ? 'yellow' : 'green';
-                  return (
-                    <div className="deadline-item" key={dl.id}>
-                      <div>
-                        <span>{dl.title}</span>
-                        <span className="deadline-project"> — {dl.project_title}</span>
-                      </div>
-                      <Badge variant={color}>{daysUntil(dl.due_date)}</Badge>
+            {(() => {
+              if (loading) {
+                return (
+                  <div className="loader-wrapper">
+                    <div className="loading-wave">
+                      <div className="loading-bar"></div>
+                      <div className="loading-bar"></div>
+                      <div className="loading-bar"></div>
+                      <div className="loading-bar"></div>
                     </div>
-                  );
-                })}
-              </div>
-            )}
+                  </div>
+                );
+              }
+              if (deadlines.length === 0) {
+                return <div className="empty-state">No upcoming deadlines</div>;
+              }
+              return (
+                <div className="deadline-list">
+                  {deadlines.map((dl) => {
+                    const days = Math.ceil((new Date(dl.due_date).getTime() - Date.now()) / 86400000);
+                    let color: BadgeVariant = 'green';
+                    if (days <= 2) color = 'red';
+                    else if (days <= 7) color = 'yellow';
+                    return (
+                      <div className="deadline-item" key={dl.id}>
+                        <div>
+                          <span>{dl.title}</span>
+                          <span className="deadline-project"> — {dl.project_title}</span>
+                        </div>
+                        <Badge variant={color}>{daysUntil(dl.due_date)}</Badge>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
           </div>
         </div>
       </div>

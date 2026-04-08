@@ -109,72 +109,78 @@ const TrainerSubmissions: React.FC<TrainerSubmissionsProps> = ({ onNavigate, onS
 
       <div className="admin-card">
         <div className="admin-card-body">
-          {loading ? (
-            <div className="loader-wrapper">
-              <div className="loading-wave">
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-              </div>
-            </div>
-          ) : filtered.length === 0 ? (
-            <div className="empty-state">No submissions match your filters.</div>
-          ) : (
-            <div className="submission-list">
-              {filtered.map((submission) => (
-                <div key={submission.id} className="submission-card">
-                  <div className="submission-title">{submission.task_title}</div>
-                  <div className="time-muted">
-                    {submission.intern_name} · Submitted {new Date(submission.submitted_at).toLocaleString()}
+          {(() => {
+            if (loading) {
+              return (
+                <div className="loader-wrapper">
+                  <div className="loading-wave">
+                    <div className="loading-bar"></div>
+                    <div className="loading-bar"></div>
+                    <div className="loading-bar"></div>
+                    <div className="loading-bar"></div>
                   </div>
-                  {submission.notes && <p className="submission-copy">{submission.notes}</p>}
-                  <div className="submission-meta">
-                    <a href={submission.github_url} target="_blank" rel="noreferrer" className="link-button">
-                      {submission.github_url}
-                    </a>
-                    <Badge variant={variantForStatus(submission.status)}>{labelForStatus(submission.status)}</Badge>
-                  </div>
-                  <div className="submission-actions">
-                    {(submission.status === 'submitted' || submission.status === 'pending') && (
-                      <>
+                </div>
+              );
+            }
+            if (filtered.length === 0) {
+              return <div className="empty-state">No submissions match your filters.</div>;
+            }
+            return (
+              <div className="submission-list">
+                {filtered.map((submission) => (
+                  <div key={submission.id} className="submission-card">
+                    <div className="submission-title">{submission.task_title}</div>
+                    <div className="time-muted">
+                      {submission.intern_name} · Submitted {new Date(submission.submitted_at).toLocaleString()}
+                    </div>
+                    {submission.notes && <p className="submission-copy">{submission.notes}</p>}
+                    <div className="submission-meta">
+                      <a href={submission.github_url} target="_blank" rel="noreferrer" className="link-button">
+                        {submission.github_url}
+                      </a>
+                      <Badge variant={variantForStatus(submission.status)}>{labelForStatus(submission.status)}</Badge>
+                    </div>
+                    <div className="submission-actions">
+                      {(submission.status === 'submitted' || submission.status === 'pending') && (
+                        <>
+                          <button
+                            className="btn btn-primary btn-sm"
+                            type="button"
+                            onClick={() => {
+                              onSelectSubmission(submission);
+                              onNavigate('trainer-evaluation');
+                            }}
+                          >
+                            Review & Score
+                          </button>
+                          <button
+                            className="btn btn-secondary btn-sm"
+                            type="button"
+                            disabled={updatingId === submission.id}
+                            onClick={() => handleRequestRevision(submission)}
+                          >
+                            {updatingId === submission.id ? 'Sending...' : 'Request Revision'}
+                          </button>
+                        </>
+                      )}
+                      {submission.status === 'reviewed' && (
                         <button
-                          className="btn btn-primary btn-sm"
+                          className="btn btn-secondary btn-sm"
                           type="button"
                           onClick={() => {
                             onSelectSubmission(submission);
                             onNavigate('trainer-evaluation');
                           }}
                         >
-                          Review & Score
+                          View Evaluation
                         </button>
-                        <button
-                          className="btn btn-secondary btn-sm"
-                          type="button"
-                          disabled={updatingId === submission.id}
-                          onClick={() => handleRequestRevision(submission)}
-                        >
-                          {updatingId === submission.id ? 'Sending...' : 'Request Revision'}
-                        </button>
-                      </>
-                    )}
-                    {submission.status === 'reviewed' && (
-                      <button
-                        className="btn btn-secondary btn-sm"
-                        type="button"
-                        onClick={() => {
-                          onSelectSubmission(submission);
-                          onNavigate('trainer-evaluation');
-                        }}
-                      >
-                        View Evaluation
-                      </button>
-                    )}
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            );
+          })()}
         </div>
       </div>
     </div>
