@@ -54,12 +54,13 @@ router.post('/', authenticate, authorize('intern'), async (req, res, next) => {
   const connection = await pool.getConnection();
   try {
     const { task_id, intern_id, github_url, demo_url, file_url, notes } = req.body;
+    
     if (!task_id || !intern_id || !github_url) {
-      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', [
-        ...(!task_id ? [{ field: 'task_id', message: 'Task ID is required' }] : []),
-        ...(!intern_id ? [{ field: 'intern_id', message: 'Intern ID is required' }] : []),
-        ...(!github_url ? [{ field: 'github_url', message: 'GitHub URL is required' }] : []),
-      ]);
+      const errorDetails = [];
+      if (!task_id) errorDetails.push({ field: 'task_id', message: 'Task ID is required' });
+      if (!intern_id) errorDetails.push({ field: 'intern_id', message: 'Intern ID is required' });
+      if (!github_url) errorDetails.push({ field: 'github_url', message: 'GitHub URL is required' });
+      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', errorDetails);
     }
 
     await connection.beginTransaction();

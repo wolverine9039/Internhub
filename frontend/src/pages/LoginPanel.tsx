@@ -22,7 +22,7 @@ const LoginPanel: React.FC = () => {
     setError("");
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!form.email || !form.password) {
       setError("All fields are required");

@@ -53,11 +53,11 @@ router.get('/:id', authenticate, async (req, res, next) => {
  */
 function validateEvalFields({ submission_id, trainer_id, score }) {
   if (!submission_id || !trainer_id || score === undefined) {
-    throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', [
-      ...(!submission_id ? [{ field: 'submission_id', message: 'Submission ID is required' }] : []),
-      ...(!trainer_id   ? [{ field: 'trainer_id',   message: 'Trainer ID is required' }]   : []),
-      ...(score === undefined ? [{ field: 'score', message: 'Score is required' }] : []),
-    ]);
+    const errorDetails = [];
+    if (!submission_id) errorDetails.push({ field: 'submission_id', message: 'Submission ID is required' });
+    if (!trainer_id) errorDetails.push({ field: 'trainer_id', message: 'Trainer ID is required' });
+    if (score === undefined) errorDetails.push({ field: 'score', message: 'Score is required' });
+    throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', errorDetails);
   }
 }
 

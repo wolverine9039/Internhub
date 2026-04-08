@@ -33,7 +33,7 @@ const ProjectFormModal: React.FC<ProjectFormModalProps> = ({ isOpen, editProject
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (evt: React.SyntheticEvent<HTMLFormElement>) => {
     evt.preventDefault();
     if (!validate()) return;
     onSubmit({ title, description: description || undefined, cohort_id: Number(cohortId) });

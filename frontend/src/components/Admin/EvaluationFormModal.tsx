@@ -65,7 +65,7 @@ const EvaluationFormModal: React.FC<EvaluationFormModalProps> = ({ isOpen, editE
     return Math.round(((codeQuality + functionality + documentation + timeliness) / 40) * 100);
   };
 
-  const handleSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (evt: React.SyntheticEvent<HTMLFormElement>) => {
     evt.preventDefault();
     if (!validate()) return;
     

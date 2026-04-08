@@ -37,7 +37,7 @@ const UserFormModal: React.FC<UserFormModalProps> = ({ isOpen, editUser, onSubmi
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (evt: React.SyntheticEvent<HTMLFormElement>) => {
     evt.preventDefault();
     if (!validate()) return;
     const data: { name: string; email: string; password?: string; role: string } = { name, email, role };

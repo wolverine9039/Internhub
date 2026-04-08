@@ -36,10 +36,10 @@ router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
   try {
     const { title, description, cohort_id, trainer_id } = req.body;
     if (!title || !cohort_id) {
-      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', [
-        ...(!title ? [{ field: 'title', message: 'Title is required' }] : []),
-        ...(!cohort_id ? [{ field: 'cohort_id', message: 'Cohort ID is required' }] : []),
-      ]);
+      const errorDetails = [];
+      if (!title) errorDetails.push({ field: 'title', message: 'Title is required' });
+      if (!cohort_id) errorDetails.push({ field: 'cohort_id', message: 'Cohort ID is required' });
+      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', errorDetails);
     }
     const [result] = await pool.execute(
       'INSERT INTO projects (title, description, cohort_id, trainer_id) VALUES (?, ?, ?, ?)',

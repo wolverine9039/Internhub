@@ -18,10 +18,10 @@ router.post('/login', async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', [
-        ...(!email ? [{ field: 'email', message: 'Email is required' }] : []),
-        ...(!password ? [{ field: 'password', message: 'Password is required' }] : []),
-      ]);
+      const errorDetails = [];
+      if (!email) errorDetails.push({ field: 'email', message: 'Email is required' });
+      if (!password) errorDetails.push({ field: 'password', message: 'Password is required' });
+      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', errorDetails);
     }
 
     // Fetch user by email
@@ -79,10 +79,10 @@ router.put('/change-password', authenticate, async (req, res, next) => {
     const { current_password, new_password } = req.body;
 
     if (!current_password || !new_password) {
-      throw new AppError(422, 'VALIDATION_ERROR', 'Both current and new passwords are required', [
-        ...(!current_password ? [{ field: 'current_password', message: 'Current password is required' }] : []),
-        ...(!new_password ? [{ field: 'new_password', message: 'New password is required' }] : []),
-      ]);
+      const errorDetails = [];
+      if (!current_password) errorDetails.push({ field: 'current_password', message: 'Current password is required' });
+      if (!new_password) errorDetails.push({ field: 'new_password', message: 'New password is required' });
+      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', errorDetails);
     }
 
     if (new_password.length < 6) {

@@ -98,8 +98,8 @@ const CohortMembersModal: React.FC<CohortMembersModalProps> = ({ isOpen, cohort,
   if (!isOpen || !cohort) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose} onKeyDown={e => { if (e.key === 'Escape') onClose(); }} role="presentation">
-      <div className="modal-card" style={{ maxWidth: '580px' }} onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={`Manage Interns — ${cohort.name}`}>
+    <div className="modal-overlay" onClick={onClose} role="presentation" onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}>
+      <div className="modal-card" style={{ maxWidth: '580px' }} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Manage Interns" onKeyDown={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">Manage Interns — {cohort.name}</h3>
         </div>

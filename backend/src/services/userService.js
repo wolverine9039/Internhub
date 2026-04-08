@@ -13,12 +13,12 @@ const AppError = require('../utils/AppError');
  */
 function validateUserFields({ name, email, password, role }) {
   if (!name || !email || !password || !role) {
-    throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', [
-      ...(!name     ? [{ field: 'name',     message: 'Name is required' }]     : []),
-      ...(!email    ? [{ field: 'email',    message: 'Email is required' }]    : []),
-      ...(!password ? [{ field: 'password', message: 'Password is required' }] : []),
-      ...(!role     ? [{ field: 'role',     message: 'Role is required' }]     : []),
-    ]);
+    const errorDetails = [];
+    if (!name) errorDetails.push({ field: 'name', message: 'Name is required' });
+    if (!email) errorDetails.push({ field: 'email', message: 'Email is required' });
+    if (!password) errorDetails.push({ field: 'password', message: 'Password is required' });
+    if (!role) errorDetails.push({ field: 'role', message: 'Role is required' });
+    throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', errorDetails);
   }
 }
 
