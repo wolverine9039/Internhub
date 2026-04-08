@@ -53,8 +53,8 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   return (
     <div className="analytics-tooltip">
       <div className="label">{label}</div>
-      {payload.map((p: TooltipPayloadItem, i: number) => (
-        <div key={i} className="value">
+      {payload.map((p: TooltipPayloadItem) => (
+        <div key={p.name} className="value">
           {p.name}: <span>{p.value}</span>
         </div>
       ))}
@@ -73,7 +73,7 @@ const ScoreBarShape = (props: any) => {
   return <rect x={x} y={y} width={width} height={height} fill={SCORE_COLORS[index]} rx={4} ry={4} />;
 };
 
-const AdminAnalytics: React.FC<AdminAnalyticsProps> = ({ onNavigate }) => {
+const AdminAnalytics: React.FC<AdminAnalyticsProps> = () => {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -87,7 +87,9 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = ({ onNavigate }) => {
       const filters: AnalyticsFilters = {};
       if (preset !== 'all') {
         const now = new Date();
-        const days = preset === '7d' ? 7 : preset === '30d' ? 30 : 90;
+        let days = 90;
+        if (preset === '7d') days = 7;
+        else if (preset === '30d') days = 30;
         const from = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
         filters.from = from.toISOString();
         filters.to = now.toISOString();
@@ -126,6 +128,13 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = ({ onNavigate }) => {
 
   const formatStatus = (status: string) =>
     status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+  const getAvatarColorClass = (rank: number) => {
+    const rankClass = getRankClass(rank);
+    if (rankClass === 'gold') return 'yellow';
+    if (rankClass === 'silver') return 'blue';
+    return 'green';
+  };
 
   // ── Radar data for score dimensions ──
   const radarData = data ? [
@@ -416,7 +425,7 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = ({ onNavigate }) => {
                       </td>
                       <td>
                         <div className="intern-cell">
-                          <div className={`avatar micro ${getRankClass(intern.rank) === 'gold' ? 'yellow' : getRankClass(intern.rank) === 'silver' ? 'blue' : 'green'}`}>
+                          <div className={`avatar micro ${getAvatarColorClass(intern.rank)}`}>
                             {intern.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}
                           </div>
                           <strong>{intern.name}</strong>
