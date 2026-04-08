@@ -107,12 +107,8 @@ router.patch('/:id', authenticate, authorize('admin', 'trainer'), async (req, re
   } catch (err) { next(err); }
 });
 
-router.delete('/:id', authenticate, authorize('admin'), async (req, res, next) => {
-  try {
-    const [result] = await pool.execute('DELETE FROM submissions WHERE id = ?', [req.params.id]);
-    if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Submission not found');
-    res.status(204).send();
-  } catch (err) { next(err); }
-});
+const { deleteById } = require('../utils/crudFactory');
+
+router.delete('/:id', authenticate, authorize('admin'), deleteById('submissions', 'Submission'));
 
 module.exports = router;

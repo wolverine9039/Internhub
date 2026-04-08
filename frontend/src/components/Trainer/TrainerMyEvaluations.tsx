@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Badge from '@/components/Shared/Badge';
 import { getErrorMessage } from '@/utils/errorUtils';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface TrainerEvaluation {
   id: number;
@@ -84,14 +85,7 @@ const TrainerMyEvaluations: React.FC<TrainerMyEvaluationsProps> = () => {
           {(() => {
             if (loading) {
               return (
-                <div className="loader-wrapper">
-                  <div className="loading-wave">
-                    <div className="loading-bar"></div>
-                    <div className="loading-bar"></div>
-                    <div className="loading-bar"></div>
-                    <div className="loading-bar"></div>
-                  </div>
-                </div>
+                <LoadingWave />
               );
             }
             if (evaluations.length === 0) {

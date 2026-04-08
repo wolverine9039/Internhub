@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import '@/components/Shared/ConfirmDialog.css';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface Intern {
   id: number;
@@ -116,14 +117,7 @@ const CohortMembersModal: React.FC<CohortMembersModalProps> = ({ isOpen, cohort,
           )}
 
           {loading ? (
-            <div className="loader-wrapper" style={{ padding: '24px 0' }}>
-              <div className="loading-wave">
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-              </div>
-            </div>
+            <LoadingWave />
           ) : (
             <>
               {/* Current Members */}

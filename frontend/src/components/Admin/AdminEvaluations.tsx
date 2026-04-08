@@ -6,6 +6,7 @@ import Pagination from '@/components/Shared/Pagination';
 import ConfirmDialog from '@/components/Shared/ConfirmDialog';
 import EvaluationFormModal from './EvaluationFormModal';
 import './AdminDashboard.css';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface AdminEvaluationsProps {
   onNavigate?: (screen: string) => void;
@@ -96,14 +97,7 @@ const AdminEvaluations: React.FC<AdminEvaluationsProps> = () => {
 
       <div className="admin-card">
         {loading ? (
-          <div className="loader-wrapper">
-            <div className="loading-wave">
-              <div className="loading-bar"></div>
-              <div className="loading-bar"></div>
-              <div className="loading-bar"></div>
-              <div className="loading-bar"></div>
-            </div>
-          </div>
+          <LoadingWave />
         ) : evaluations.length === 0 ? (
           <div className="empty-state">No evaluations found</div>
         ) : (

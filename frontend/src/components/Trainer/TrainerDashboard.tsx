@@ -5,6 +5,7 @@ import { trainerService } from '@/services/trainerService';
 import type { TrainerStats, TrainerDeadline } from '@/services/trainerService';
 import type { Submission } from '@/types';
 import type { BadgeVariant } from '@/utils/errorUtils';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface TrainerDashboardProps {
   onNavigate: (screen: string) => void;
@@ -110,14 +111,7 @@ const TrainerDashboard: React.FC<TrainerDashboardProps> = ({ onNavigate, onSelec
           {(() => {
             if (loading) {
               return (
-                <div className="loader-wrapper">
-                  <div className="loading-wave">
-                    <div className="loading-bar"></div>
-                    <div className="loading-bar"></div>
-                    <div className="loading-bar"></div>
-                    <div className="loading-bar"></div>
-                  </div>
-                </div>
+                <LoadingWave />
               );
             }
             if (recentSubmissions.length === 0) {
@@ -158,14 +152,7 @@ const TrainerDashboard: React.FC<TrainerDashboardProps> = ({ onNavigate, onSelec
             {(() => {
               if (loading) {
                 return (
-                  <div className="loader-wrapper">
-                    <div className="loading-wave">
-                      <div className="loading-bar"></div>
-                      <div className="loading-bar"></div>
-                      <div className="loading-bar"></div>
-                      <div className="loading-bar"></div>
-                    </div>
-                  </div>
+                  <LoadingWave />
                 );
               }
               if (deadlines.length === 0) {

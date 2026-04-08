@@ -7,7 +7,7 @@
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "test": "jest --passWithNoTests --verbose --json --outputFile=../testing/backend-api/test-results.json 2>&1 || jest --passWithNoTests --verbose",
-    "test:coverage": "jest --passWithNoTests --verbose --coverage --coverageDirectory=../testing/backend-api/coverage"
+    "test:coverage": "jest --passWithNoTests --verbose --coverage --coverageDirectory=coverage --coverageReporters=lcov --coverageReporters=text"
   },
   "keywords": [],
   "author": "",

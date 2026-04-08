@@ -41,16 +41,12 @@ router.get('/meta/unassigned-interns', authenticate, authorize('admin'), async (
   } catch (err) { next(err); }
 });
 
+const { getById, patchById, deleteById } = require('../utils/crudFactory');
+
 /**
  * GET /cohorts/:id — Get single cohort
  */
-router.get('/:id', authenticate, async (req, res, next) => {
-  try {
-    const [rows] = await pool.execute('SELECT * FROM cohorts WHERE id = ?', [req.params.id]);
-    if (rows.length === 0) throw new AppError(404, 'NOT_FOUND', 'Cohort not found');
-    res.status(200).json(rows[0]);
-  } catch (err) { next(err); }
-});
+router.get('/:id', authenticate, getById('cohorts', 'Cohort'));
 
 /**
  * POST /cohorts — Create a new cohort
@@ -71,29 +67,12 @@ router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
 /**
  * PATCH /cohorts/:id — Partial update
  */
-router.patch('/:id', authenticate, authorize('admin'), async (req, res, next) => {
-  try {
-    const { setClauses, params } = buildPatchFields(req.body, ['name', 'description', 'start_date', 'end_date']);
-
-    params.push(req.params.id);
-    const [result] = await pool.execute(`UPDATE cohorts SET ${setClauses.join(', ')} WHERE id = ?`, params);
-    if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Cohort not found');
-
-    const [rows] = await pool.execute('SELECT * FROM cohorts WHERE id = ?', [req.params.id]);
-    res.status(200).json(rows[0]);
-  } catch (err) { next(err); }
-});
+router.patch('/:id', authenticate, authorize('admin'), patchById('cohorts', 'Cohort', ['name', 'description', 'start_date', 'end_date']));
 
 /**
  * DELETE /cohorts/:id
  */
-router.delete('/:id', authenticate, authorize('admin'), async (req, res, next) => {
-  try {
-    const [result] = await pool.execute('DELETE FROM cohorts WHERE id = ?', [req.params.id]);
-    if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Cohort not found');
-    res.status(204).send();
-  } catch (err) { next(err); }
-});
+router.delete('/:id', authenticate, authorize('admin'), deleteById('cohorts', 'Cohort'));
 
 /**
  * GET /cohorts/:id/members — List interns assigned to this cohort

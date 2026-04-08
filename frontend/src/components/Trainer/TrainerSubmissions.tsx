@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import Badge from '@/components/Shared/Badge';
 import { trainerService } from '@/services/trainerService';
 import type { Submission } from '@/types';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface TrainerSubmissionsProps {
   onNavigate: (screen: string) => void;
@@ -112,14 +113,7 @@ const TrainerSubmissions: React.FC<TrainerSubmissionsProps> = ({ onNavigate, onS
           {(() => {
             if (loading) {
               return (
-                <div className="loader-wrapper">
-                  <div className="loading-wave">
-                    <div className="loading-bar"></div>
-                    <div className="loading-bar"></div>
-                    <div className="loading-bar"></div>
-                    <div className="loading-bar"></div>
-                  </div>
-                </div>
+                <LoadingWave />
               );
             }
             if (filtered.length === 0) {

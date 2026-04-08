@@ -4,6 +4,7 @@ import { taskService } from '@/services/taskService';
 import { submissionService } from '@/services/submissionService';
 import { evaluationService } from '@/services/evaluationService';
 import './InternModule.css';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface InternProgressProps {
   user: User | null;
@@ -81,14 +82,7 @@ const InternProgress: React.FC<InternProgressProps> = ({ user }) => {
 
   if (loading) {
     return (
-      <div className="loader-wrapper">
-        <div className="loading-wave">
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-        </div>
-      </div>
+      <LoadingWave />
     );
   }
 

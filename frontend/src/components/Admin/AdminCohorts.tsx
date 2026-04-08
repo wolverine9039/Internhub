@@ -6,6 +6,7 @@ import CohortMembersModal from './CohortMembersModal';
 import { cohortService } from '@/services/cohortService';
 import type { Cohort, PaginatedResponse } from '@/types';
 import { getErrorMessage } from '@/utils/errorUtils';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface CohortFormData {
   name: string;
@@ -71,14 +72,7 @@ const AdminCohorts: React.FC<AdminCohortsProps> = () => {
             {error && <div className="error-banner">{error}</div>}
 
             {loading ? (
-                      <div className="loader-wrapper">
-        <div className="loading-wave">
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-        </div>
-      </div>
+                      <LoadingWave />
             ) : (
                 <div className="admin-card">
                     <div className="table-wrapper">

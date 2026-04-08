@@ -10,8 +10,8 @@ const AppError = require('./AppError');
  * @returns {{ page: number, pageSize: number, offset: number }}
  */
 function parsePagination(query) {
-  const page = Math.max(1, parseInt(query.page) || 1);
-  const pageSize = Math.min(100, Math.max(1, parseInt(query.page_size) || 20));
+  const page = Math.max(1, Number.parseInt(query.page, 10) || 1);
+  const pageSize = Math.min(100, Math.max(1, Number.parseInt(query.page_size, 10) || 20));
   const offset = (page - 1) * pageSize;
   return { page, pageSize, offset };
 }

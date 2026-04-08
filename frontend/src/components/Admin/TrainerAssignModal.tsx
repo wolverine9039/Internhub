@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '@/components/Shared/ConfirmDialog.css';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface Trainer {
   id: number;
@@ -116,14 +117,7 @@ const TrainerAssignModal: React.FC<TrainerAssignModalProps> = ({ isOpen, user, o
             if (cohortId) {
               if (loading) {
                 return (
-                  <div className="loader-wrapper" style={{ padding: '24px 0' }}>
-                    <div className="loading-wave">
-                      <div className="loading-bar"></div>
-                      <div className="loading-bar"></div>
-                      <div className="loading-bar"></div>
-                      <div className="loading-bar"></div>
-                    </div>
-                  </div>
+                  <LoadingWave />
                 );
               }
               return (

@@ -7,6 +7,7 @@ import { internService } from '@/services/internService';
 import type { InternProfile } from '@/services/internService';
 import Badge from '@/components/Shared/Badge';
 import './InternModule.css';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface InternDashboardProps {
   user: User | null;
@@ -109,14 +110,7 @@ const InternDashboard: React.FC<InternDashboardProps> = ({ user, onNavigate }) =
 
   if (loading) {
     return (
-      <div className="loader-wrapper">
-        <div className="loading-wave">
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-        </div>
-      </div>
+      <LoadingWave />
     );
   }
 
