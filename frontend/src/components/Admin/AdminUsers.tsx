@@ -3,8 +3,10 @@ import Badge from '@/components/Shared/Badge';
 import Pagination from '@/components/Shared/Pagination';
 import ConfirmDialog from '@/components/Shared/ConfirmDialog';
 import UserFormModal from './UserFormModal';
+import TrainerAssignModal from './TrainerAssignModal';
 import { userService } from '@/services/userService';
-import type { User, PaginatedResponse } from '@/types';
+import type { User, PaginatedResponse, UserFormData } from '@/types';
+import { getErrorMessage } from '@/utils/errorUtils';
 
 interface AdminUsersProps {
     onNavigate: (screen: string) => void;
@@ -22,6 +24,7 @@ const AdminUsers: React.FC<AdminUsersProps> = () => {
     const [formOpen, setFormOpen] = useState(false);
     const [editUser, setEditUser] = useState<User | null>(null);
     const [deleteTarget, setDeleteTarget] = useState<User | null>(null);
+    const [assignTarget, setAssignTarget] = useState<User | null>(null);
 
     const fetchUsers = useCallback(async () => {
         setLoading(true);
@@ -33,8 +36,8 @@ const AdminUsers: React.FC<AdminUsersProps> = () => {
                 ...(search && { search }),
             });
             setData(result);
-        } catch (err: any) {
-            setError(err.response?.data?.error?.message || 'Failed to load users');
+        } catch (err: unknown) {
+            setError(getErrorMessage(err, 'Failed to load users'));
         } finally {
             setLoading(false);
         }
@@ -49,24 +52,27 @@ const AdminUsers: React.FC<AdminUsersProps> = () => {
         return () => clearTimeout(t);
     }, [searchInput]);
 
-    const handleCreate = async (formData: any) => {
+    const handleCreate = async (formData: UserFormData) => {
         try {
-            await userService.createUser(formData);
+            await userService.createUser({
+                ...formData,
+                password: formData.password || '',
+            });
             setFormOpen(false);
             fetchUsers();
-        } catch (err: any) {
-            alert(err.response?.data?.error?.message || 'Failed to create user');
+        } catch (err: unknown) {
+            alert(getErrorMessage(err, 'Failed to create user'));
         }
     };
 
-    const handleEdit = async (formData: any) => {
+    const handleEdit = async (formData: UserFormData) => {
         if (!editUser) return;
         try {
             await userService.updateUser(editUser.id, formData);
             setEditUser(null);
             fetchUsers();
-        } catch (err: any) {
-            alert(err.response?.data?.error?.message || 'Failed to update user');
+        } catch (err: unknown) {
+            alert(getErrorMessage(err, 'Failed to update user'));
         }
     };
 
@@ -76,8 +82,8 @@ const AdminUsers: React.FC<AdminUsersProps> = () => {
             await userService.deleteUser(deleteTarget.id);
             setDeleteTarget(null);
             fetchUsers();
-        } catch (err: any) {
-            alert(err.response?.data?.error?.message || 'Failed to delete user');
+        } catch (err: unknown) {
+            alert(getErrorMessage(err, 'Failed to delete user'));
         }
     };
 
@@ -112,7 +118,14 @@ const AdminUsers: React.FC<AdminUsersProps> = () => {
             {error && <div className="error-banner">{error}</div>}
 
             {loading ? (
-                <div className="loading-container"><div className="loading-spinner" /> Loading users…</div>
+                      <div className="loader-wrapper">
+        <div className="loading-wave">
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+        </div>
+      </div>
             ) : (
                 <div className="admin-card">
                     <div className="table-wrapper">
@@ -141,6 +154,15 @@ const AdminUsers: React.FC<AdminUsersProps> = () => {
                                         <td>
                                             <div className="btn-group">
                                                 <button className="btn btn-secondary btn-sm" onClick={() => { setEditUser(user); setFormOpen(true); }}>Edit</button>
+                                                {user.role === 'intern' && (
+                                                    <button
+                                                        className="btn btn-secondary btn-sm"
+                                                        style={{ color: 'var(--accent3)' }}
+                                                        onClick={() => setAssignTarget(user)}
+                                                    >
+                                                        Assign Trainer
+                                                    </button>
+                                                )}
                                                 <button className="btn btn-secondary btn-sm" style={{ color: 'var(--accent2)' }} onClick={() => setDeleteTarget(user)}>Delete</button>
                                             </div>
                                         </td>
@@ -161,6 +183,13 @@ const AdminUsers: React.FC<AdminUsersProps> = () => {
                 editUser={editUser}
                 onSubmit={editUser ? handleEdit : handleCreate}
                 onClose={() => { setFormOpen(false); setEditUser(null); }}
+            />
+
+            <TrainerAssignModal
+                isOpen={!!assignTarget}
+                user={assignTarget}
+                onClose={() => setAssignTarget(null)}
+                onAssigned={fetchUsers}
             />
 
             <ConfirmDialog

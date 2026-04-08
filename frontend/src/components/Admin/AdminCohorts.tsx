@@ -1,10 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Badge from '@/components/Shared/Badge';
 import Pagination from '@/components/Shared/Pagination';
 import ConfirmDialog from '@/components/Shared/ConfirmDialog';
 import CohortFormModal from './CohortFormModal';
+import CohortMembersModal from './CohortMembersModal';
 import { cohortService } from '@/services/cohortService';
 import type { Cohort, PaginatedResponse } from '@/types';
+import { getErrorMessage } from '@/utils/errorUtils';
+
+interface CohortFormData {
+  name: string;
+  start_date?: string;
+  end_date?: string;
+}
 
 interface AdminCohortsProps {
     onNavigate: (screen: string) => void;
@@ -18,34 +25,35 @@ const AdminCohorts: React.FC<AdminCohortsProps> = () => {
     const [formOpen, setFormOpen] = useState(false);
     const [editCohort, setEditCohort] = useState<Cohort | null>(null);
     const [deleteTarget, setDeleteTarget] = useState<Cohort | null>(null);
+    const [membersTarget, setMembersTarget] = useState<Cohort | null>(null);
 
     const fetchCohorts = useCallback(async () => {
         setLoading(true); setError('');
         try {
             const result = await cohortService.getCohorts({ page, page_size: 10, sort: '-created_at' });
             setData(result);
-        } catch (err: any) {
-            setError(err.response?.data?.error?.message || 'Failed to load cohorts');
+        } catch (err: unknown) {
+            setError(getErrorMessage(err, 'Failed to load cohorts'));
         } finally { setLoading(false); }
     }, [page]);
 
     useEffect(() => { fetchCohorts(); }, [fetchCohorts]);
 
-    const handleCreate = async (formData: any) => {
+    const handleCreate = async (formData: CohortFormData) => {
         try { await cohortService.createCohort(formData); setFormOpen(false); fetchCohorts(); }
-        catch (err: any) { alert(err.response?.data?.error?.message || 'Failed to create cohort'); }
+        catch (err: unknown) { alert(getErrorMessage(err, 'Failed to create cohort')); }
     };
 
-    const handleEdit = async (formData: any) => {
+    const handleEdit = async (formData: CohortFormData) => {
         if (!editCohort) return;
         try { await cohortService.updateCohort(editCohort.id, formData); setEditCohort(null); setFormOpen(false); fetchCohorts(); }
-        catch (err: any) { alert(err.response?.data?.error?.message || 'Failed to update cohort'); }
+        catch (err: unknown) { alert(getErrorMessage(err, 'Failed to update cohort')); }
     };
 
     const handleDelete = async () => {
         if (!deleteTarget) return;
         try { await cohortService.deleteCohort(deleteTarget.id); setDeleteTarget(null); fetchCohorts(); }
-        catch (err: any) { alert(err.response?.data?.error?.message || 'Failed to delete cohort'); }
+        catch (err: unknown) { alert(getErrorMessage(err, 'Failed to delete cohort')); }
     };
 
     const formatDate = (d: string | null) => d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
@@ -63,7 +71,14 @@ const AdminCohorts: React.FC<AdminCohortsProps> = () => {
             {error && <div className="error-banner">{error}</div>}
 
             {loading ? (
-                <div className="loading-container"><div className="loading-spinner" /> Loading cohorts…</div>
+                      <div className="loader-wrapper">
+        <div className="loading-wave">
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+        </div>
+      </div>
             ) : (
                 <div className="admin-card">
                     <div className="table-wrapper">
@@ -87,6 +102,7 @@ const AdminCohorts: React.FC<AdminCohortsProps> = () => {
                                         <td>
                                             <div className="btn-group">
                                                 <button className="btn btn-secondary btn-sm" onClick={() => { setEditCohort(cohort); setFormOpen(true); }}>Edit</button>
+                                                <button className="btn btn-secondary btn-sm" style={{ color: '#5ba4f5' }} onClick={() => setMembersTarget(cohort)}>Manage Interns</button>
                                                 <button className="btn btn-secondary btn-sm" style={{ color: 'var(--accent2)' }} onClick={() => setDeleteTarget(cohort)}>Delete</button>
                                             </div>
                                         </td>
@@ -103,6 +119,7 @@ const AdminCohorts: React.FC<AdminCohortsProps> = () => {
             )}
 
             <CohortFormModal isOpen={formOpen} editCohort={editCohort} onSubmit={editCohort ? handleEdit : handleCreate} onClose={() => { setFormOpen(false); setEditCohort(null); }} />
+            <CohortMembersModal isOpen={!!membersTarget} cohort={membersTarget} onClose={() => setMembersTarget(null)} />
             <ConfirmDialog isOpen={!!deleteTarget} title="Delete Cohort" message={`Delete "${deleteTarget?.name}"? This cannot be undone.`} confirmLabel="Delete" variant="danger" onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} />
         </div>
     );

@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { getErrorMessage } from '@/utils/errorUtils';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Cell, RadarChart, Radar,
+  ResponsiveContainer, RadarChart, Radar,
   PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 } from 'recharts';
 import { adminService } from '@/services/adminService';
@@ -35,12 +36,23 @@ const STATUS_COLORS: Record<string, string> = {
 const SCORE_COLORS = ['#ff6b6b', '#f5c542', '#6b748a', '#5b8cff', '#43e8b0'];
 
 // ── Custom Tooltip ──
-const CustomTooltip = ({ active, payload, label }: any) => {
+interface TooltipPayloadItem {
+  name: string;
+  value: number;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayloadItem[];
+  label?: string;
+}
+
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (!active || !payload?.length) return null;
   return (
     <div className="analytics-tooltip">
       <div className="label">{label}</div>
-      {payload.map((p: any, i: number) => (
+      {payload.map((p: TooltipPayloadItem, i: number) => (
         <div key={i} className="value">
           {p.name}: <span>{p.value}</span>
         </div>
@@ -71,8 +83,8 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = () => {
 
       const result = await adminService.getAnalytics(filters);
       setData(result);
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to load analytics');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'Failed to load analytics'));
     } finally {
       setLoading(false);
     }
@@ -120,11 +132,13 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = () => {
             <p className="page-subtitle">Program-wide performance insights</p>
           </div>
         </div>
-        <div className="kpi-grid">
-          {[1, 2, 3, 4].map(i => <div key={i} className="loading-placeholder" style={{ minHeight: 110 }} />)}
-        </div>
-        <div className="analytics-grid">
-          {[1, 2].map(i => <div key={i} className="loading-placeholder" style={{ minHeight: 300 }} />)}
+        <div className="loader-wrapper">
+          <div className="loading-wave">
+            <div className="loading-bar"></div>
+            <div className="loading-bar"></div>
+            <div className="loading-bar"></div>
+            <div className="loading-bar"></div>
+          </div>
         </div>
       </div>
     );
@@ -212,11 +226,13 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = () => {
                   <XAxis type="number" />
                   <YAxis dataKey="status" type="category" width={90} tickFormatter={formatStatus} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="count" name="Tasks" radius={[0, 4, 4, 0]} barSize={22}>
-                    {data.taskStatusBreakdown.map((entry, i) => (
-                      <Cell key={i} fill={STATUS_COLORS[entry.status] || '#5b8cff'} />
-                    ))}
-                  </Bar>
+                  <Bar dataKey="count" name="Tasks" radius={[0, 4, 4, 0]} barSize={22}
+                    shape={(props: any) => {
+                      const { x, y, width, height, index } = props;
+                      const fill = STATUS_COLORS[data.taskStatusBreakdown[index]?.status] || '#5b8cff';
+                      return <rect x={x} y={y} width={width} height={height} fill={fill} rx={4} ry={4} />;
+                    }}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -238,11 +254,12 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = () => {
                   <XAxis dataKey="range" />
                   <YAxis allowDecimals={false} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="count" name="Evaluations" radius={[4, 4, 0, 0]} barSize={40}>
-                    {data.scoreDistribution.map((_, i) => (
-                      <Cell key={i} fill={SCORE_COLORS[i]} />
-                    ))}
-                  </Bar>
+                  <Bar dataKey="count" name="Evaluations" radius={[4, 4, 0, 0]} barSize={40}
+                    shape={(props: any) => {
+                      const { x, y, width, height, index } = props;
+                      return <rect x={x} y={y} width={width} height={height} fill={SCORE_COLORS[index]} rx={4} ry={4} />;
+                    }}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             )}

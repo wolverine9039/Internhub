@@ -45,7 +45,16 @@ const InternTasks: React.FC<InternTasksProps> = ({ user }) => {
   }, [tasks]);
 
   if (loading) {
-    return <div className="loading-container"><div className="loading-spinner" /> Loading tasks...</div>;
+    return (
+      <div className="loader-wrapper">
+        <div className="loading-wave">
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+        </div>
+      </div>
+    );
   }
 
   return (

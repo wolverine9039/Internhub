@@ -31,7 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const navItems: Record<string, { label: string; icon: string; screen: string }[]> = {
     admin: [
-      { label: 'Dashboard', icon: '⬛', screen: 'admin-dashboard' },
+      { label: 'Dashboard', icon: '🏛️', screen: 'admin-dashboard' },
       { label: 'Users', icon: '👥', screen: 'admin-users' },
       { label: 'Cohorts', icon: '🗂', screen: 'admin-cohorts' },
       { label: 'Projects', icon: '📁', screen: 'admin-projects' },
@@ -42,13 +42,15 @@ const Sidebar: React.FC<SidebarProps> = ({
       { label: 'Settings', icon: '⚙️', screen: 'settings' },
     ],
     trainer: [
-      { label: 'Dashboard', icon: '⬛', screen: 'trainer-dashboard' },
+      { label: 'Dashboard', icon: '🏛️', screen: 'trainer-dashboard' },
+      { label: 'My Interns', icon: '👥', screen: 'trainer-interns' },
       { label: 'Submissions', icon: '📬', screen: 'trainer-submissions' },
-      { label: 'Evaluation Form', icon: '⭐', screen: 'trainer-evaluation' },
+      { label: 'Evaluate', icon: '⭐', screen: 'trainer-evaluation' },
+      { label: 'My Evaluations', icon: '📋', screen: 'trainer-evaluations' },
       { label: 'Settings', icon: '⚙️', screen: 'settings' },
     ],
     intern: [
-      { label: 'Dashboard', icon: '⬛', screen: 'intern-dashboard' },
+      { label: 'Dashboard', icon: '🏛️', screen: 'intern-dashboard' },
       { label: 'My Tasks', icon: '✅', screen: 'intern-tasks' },
       { label: 'Submit Work', icon: '📤', screen: 'intern-submission' },
       { label: 'My Progress', icon: '📈', screen: 'intern-progress' },
@@ -83,6 +85,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       <aside className={`sidebar ${isOpen ? 'open' : ''} ${collapsed ? 'collapsed' : ''}`}>
         {/* Logo & collapse toggle */}
+
         <div className="sidebar-top">
           <div className="sidebar-logo">
             Intern<span>Hub</span>

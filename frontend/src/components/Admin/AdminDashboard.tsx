@@ -56,8 +56,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
         setExportMenuOpen(false);
         try {
             await adminService.exportData(resource);
-        } catch (error) {
-            console.error('Export failed', error);
+        } catch {
             alert('Export failed. Please try again later.');
         } finally {
             setExporting(null);
@@ -148,7 +147,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                         <span className="wf-note">Live feed</span>
                     </div>
                     {loading ? (
-                        <div className="loading-container"><div className="loading-spinner" /> Loading…</div>
+                        <div className="loader-wrapper">
+                            <div className="loading-wave">
+                                <div className="loading-bar"></div>
+                                <div className="loading-bar"></div>
+                                <div className="loading-bar"></div>
+                                <div className="loading-bar"></div>
+                            </div>
+                        </div>
                     ) : activity.length === 0 ? (
                         <div className="empty-state">No recent activity</div>
                     ) : (
@@ -191,7 +197,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                     </div>
                     <div className="admin-card-body">
                         {loading ? (
-                            <div className="loading-container"><div className="loading-spinner" /> Loading…</div>
+                            <div className="loader-wrapper">
+                                <div className="loading-wave">
+                                    <div className="loading-bar"></div>
+                                    <div className="loading-bar"></div>
+                                    <div className="loading-bar"></div>
+                                    <div className="loading-bar"></div>
+                                </div>
+                            </div>
                         ) : cohorts.length === 0 ? (
                             <div className="empty-state">No cohorts found</div>
                         ) : (

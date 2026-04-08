@@ -39,3 +39,22 @@
   --transition-fast: 0.18s ease;
   --transition-normal: 0.25s ease;
 }
+
+[data-theme="light"] {
+  /* Backgrounds */
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --surface2: #f0f2f5;
+  --border: #e2e5ea;
+
+  /* Accent colors (keep mostly the same or slightly adjust if needed, keeping them exact for simplicity) */
+  /* --accent: #5b8cff;  --accent2: #ff6b6b;  --accent3: #43e8b0;  --accent4: #f5c542; */
+
+  /* Text */
+  --text: #1a1d26;
+  --muted: #6b7280;
+
+  /* Shadows */
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-dropdown: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
