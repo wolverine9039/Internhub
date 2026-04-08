@@ -10,8 +10,12 @@ const AppError = require('./AppError');
  * @returns {{ page: number, pageSize: number, offset: number }}
  */
 function parsePagination(query) {
-  const page = Math.max(1, Number.parseInt(query.page, 10) || 1);
-  const pageSize = Math.min(100, Math.max(1, Number.parseInt(query.page_size, 10) || 20));
+  const parsedPage = Number.parseInt(query.page, 10);
+  const page = Math.max(1, isNaN(parsedPage) ? 1 : parsedPage);
+  
+  const parsedPageSize = Number.parseInt(query.page_size, 10);
+  const pageSize = Math.min(100, Math.max(1, isNaN(parsedPageSize) ? 20 : parsedPageSize));
+  
   const offset = (page - 1) * pageSize;
   return { page, pageSize, offset };
 }
