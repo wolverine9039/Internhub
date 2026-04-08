@@ -54,7 +54,10 @@ const AdminUsers: React.FC<AdminUsersProps> = () => {
 
     const handleCreate = async (formData: UserFormData) => {
         try {
-            await userService.createUser(formData);
+            await userService.createUser({
+                ...formData,
+                password: formData.password || '',
+            });
             setFormOpen(false);
             fetchUsers();
         } catch (err: unknown) {

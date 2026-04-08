@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Badge from '@/components/Shared/Badge';
 import Pagination from '@/components/Shared/Pagination';
 import ConfirmDialog from '@/components/Shared/ConfirmDialog';
 import CohortFormModal from './CohortFormModal';

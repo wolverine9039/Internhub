@@ -69,7 +69,7 @@ pipeline {
             steps {
                 dir('backend') {
                     echo '🧪 Running Jest tests with coverage...'
-                    sh 'npm test'
+                    sh 'npx jest --coverage --coverageReporters=lcov --coverageReporters=text'
                 }
             }
         }
@@ -94,8 +94,8 @@ pipeline {
                             -Dsonar.projectKey=internhub \
                             -Dsonar.projectName=InternHub \
                             -Dsonar.sources=backend/src,frontend/src \
-                            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/** \
-                            -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info
+                            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,**/*.test.js,**/*.test.ts \
+                            -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info
                     """
                 }
             }

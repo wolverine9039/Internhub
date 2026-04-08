@@ -227,9 +227,9 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = () => {
                   <YAxis dataKey="status" type="category" width={90} tickFormatter={formatStatus} />
                   <Tooltip content={<CustomTooltip />} />
                   <Bar dataKey="count" name="Tasks" radius={[0, 4, 4, 0]} barSize={22}
-                    shape={(props: Record<string, unknown>) => {
-                      const { x, y, width, height, index } = props as { x: number; y: number; width: number; height: number; index: number };
-                      const fill = STATUS_COLORS[data.taskStatusBreakdown[index as number]?.status] || '#5b8cff';
+                    shape={(props: any) => {
+                      const { x, y, width, height, index } = props;
+                      const fill = STATUS_COLORS[data.taskStatusBreakdown[index]?.status] || '#5b8cff';
                       return <rect x={x} y={y} width={width} height={height} fill={fill} rx={4} ry={4} />;
                     }}
                   />
@@ -255,9 +255,9 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = () => {
                   <YAxis allowDecimals={false} />
                   <Tooltip content={<CustomTooltip />} />
                   <Bar dataKey="count" name="Evaluations" radius={[4, 4, 0, 0]} barSize={40}
-                    shape={(props: Record<string, unknown>) => {
-                      const { x, y, width, height, index } = props as { x: number; y: number; width: number; height: number; index: number };
-                      return <rect x={x} y={y} width={width} height={height} fill={SCORE_COLORS[index as number]} rx={4} ry={4} />;
+                    shape={(props: any) => {
+                      const { x, y, width, height, index } = props;
+                      return <rect x={x} y={y} width={width} height={height} fill={SCORE_COLORS[index]} rx={4} ry={4} />;
                     }}
                   />
                 </BarChart>

@@ -78,10 +78,14 @@ const AdminTasks: React.FC<AdminTasksProps> = () => {
   };
 
   const onFormSubmit = async (data: TaskFormData) => {
+    const payload = {
+      ...data,
+      priority: data.priority as 'low' | 'medium' | 'high',
+    };
     if (editingTask) {
-      await taskService.updateTask(editingTask.id, data);
+      await taskService.updateTask(editingTask.id, payload);
     } else {
-      await taskService.createTask({ ...data, created_by: user?.id });
+      await taskService.createTask({ ...payload, created_by: user?.id });
     }
     setIsFormOpen(false);
     fetchTasks(pagination.page);
