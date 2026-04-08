@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { getErrorMessage } from '@/utils/errorUtils';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Cell, RadarChart, Radar,
+  ResponsiveContainer, RadarChart, Radar,
   PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 } from 'recharts';
 import { adminService } from '@/services/adminService';
@@ -226,11 +226,13 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = () => {
                   <XAxis type="number" />
                   <YAxis dataKey="status" type="category" width={90} tickFormatter={formatStatus} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="count" name="Tasks" radius={[0, 4, 4, 0]} barSize={22}>
-                    {data.taskStatusBreakdown.map((entry, i) => (
-                      <Cell key={i} fill={STATUS_COLORS[entry.status] || '#5b8cff'} />
-                    ))}
-                  </Bar>
+                  <Bar dataKey="count" name="Tasks" radius={[0, 4, 4, 0]} barSize={22}
+                    shape={(props: Record<string, unknown>) => {
+                      const { x, y, width, height, index } = props as { x: number; y: number; width: number; height: number; index: number };
+                      const fill = STATUS_COLORS[data.taskStatusBreakdown[index as number]?.status] || '#5b8cff';
+                      return <rect x={x} y={y} width={width} height={height} fill={fill} rx={4} ry={4} />;
+                    }}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -252,11 +254,12 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = () => {
                   <XAxis dataKey="range" />
                   <YAxis allowDecimals={false} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="count" name="Evaluations" radius={[4, 4, 0, 0]} barSize={40}>
-                    {data.scoreDistribution.map((_, i) => (
-                      <Cell key={i} fill={SCORE_COLORS[i]} />
-                    ))}
-                  </Bar>
+                  <Bar dataKey="count" name="Evaluations" radius={[4, 4, 0, 0]} barSize={40}
+                    shape={(props: Record<string, unknown>) => {
+                      const { x, y, width, height, index } = props as { x: number; y: number; width: number; height: number; index: number };
+                      return <rect x={x} y={y} width={width} height={height} fill={SCORE_COLORS[index as number]} rx={4} ry={4} />;
+                    }}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             )}

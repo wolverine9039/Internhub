@@ -40,12 +40,12 @@ const TrainerMyEvaluations: React.FC<TrainerMyEvaluationsProps> = () => {
             'Content-Type': 'application/json',
           },
         });
-        if (!resp.ok) {
-          setError(`API returned ${resp.status}`);
-          setEvaluations([]);
-        } else {
+        if (resp.ok) {
           const data = await resp.json();
           setEvaluations(data);
+        } else {
+          setError(`API returned ${resp.status}`);
+          setEvaluations([]);
         }
       } catch (err: unknown) {
         setError(getErrorMessage(err, 'Failed to load'));
@@ -70,25 +70,34 @@ const TrainerMyEvaluations: React.FC<TrainerMyEvaluationsProps> = () => {
         <div>
           <h1 className="page-title">My Evaluations</h1>
           <p className="page-subtitle">
-            {loading ? 'Loading...' : error ? `Error: ${error}` : `${evaluations.length} evaluations submitted`}
+            {(() => {
+              if (loading) return 'Loading...';
+              if (error) return `Error: ${error}`;
+              return `${evaluations.length} evaluations submitted`;
+            })()}
           </p>
         </div>
       </div>
 
       <div className="admin-card">
         <div className="admin-card-body">
-          {loading ? (
-            <div className="loader-wrapper">
-              <div className="loading-wave">
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-              </div>
-            </div>
-          ) : evaluations.length === 0 ? (
-            <div className="empty-state">You haven't submitted any evaluations yet.</div>
-          ) : (
+          {(() => {
+            if (loading) {
+              return (
+                <div className="loader-wrapper">
+                  <div className="loading-wave">
+                    <div className="loading-bar"></div>
+                    <div className="loading-bar"></div>
+                    <div className="loading-bar"></div>
+                    <div className="loading-bar"></div>
+                  </div>
+                </div>
+              );
+            }
+            if (evaluations.length === 0) {
+              return <div className="empty-state">You haven't submitted any evaluations yet.</div>;
+            }
+            return (
             <div className="table-wrapper">
               <table className="admin-table">
                 <thead>
@@ -171,7 +180,8 @@ const TrainerMyEvaluations: React.FC<TrainerMyEvaluationsProps> = () => {
                 </tbody>
               </table>
             </div>
-          )}
+            );
+          })()}
         </div>
       </div>
     </div>

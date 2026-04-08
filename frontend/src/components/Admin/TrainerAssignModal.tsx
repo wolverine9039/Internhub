@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Badge from '@/components/Shared/Badge';
 import '@/components/Shared/ConfirmDialog.css';
 
 interface Trainer {
@@ -101,8 +100,8 @@ const TrainerAssignModal: React.FC<TrainerAssignModalProps> = ({ isOpen, user, o
   const availableTrainers = allTrainers.filter(t => !assignedIds.has(t.id));
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-card" style={{ maxWidth: '560px' }} onClick={e => e.stopPropagation()}>
+    <div className="modal-overlay" onClick={onClose} onKeyDown={e => { if (e.key === 'Escape') onClose(); }} role="presentation">
+      <div className="modal-card" style={{ maxWidth: '560px' }} onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Assign Trainer">
         <div className="modal-header">
           <h3 className="modal-title">Assign Trainer</h3>
         </div>
@@ -113,28 +112,21 @@ const TrainerAssignModal: React.FC<TrainerAssignModalProps> = ({ isOpen, user, o
             <div style={{ fontSize: '12px', color: 'var(--muted)' }}>{user.email}</div>
           </div>
 
-          {!cohortId ? (
-            <div style={{
-              padding: '20px',
-              background: 'rgba(255, 199, 0, 0.08)',
-              border: '1px solid rgba(255, 199, 0, 0.3)',
-              borderRadius: '6px',
-              color: 'var(--accent4)',
-              fontSize: '13px',
-              textAlign: 'center',
-            }}>
-              ⚠ This intern is not assigned to any cohort. Please assign a cohort first before assigning trainers.
-            </div>
-          ) : loading ? (
-            <div className="loader-wrapper" style={{ padding: '24px 0' }}>
-              <div className="loading-wave">
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-                <div className="loading-bar"></div>
-              </div>
-            </div>
-          ) : (
+          {(() => {
+            if (cohortId) {
+              if (loading) {
+                return (
+                  <div className="loader-wrapper" style={{ padding: '24px 0' }}>
+                    <div className="loading-wave">
+                      <div className="loading-bar"></div>
+                      <div className="loading-bar"></div>
+                      <div className="loading-bar"></div>
+                      <div className="loading-bar"></div>
+                    </div>
+                  </div>
+                );
+              }
+              return (
             <>
               {error && (
                 <div style={{
@@ -261,7 +253,22 @@ const TrainerAssignModal: React.FC<TrainerAssignModalProps> = ({ isOpen, user, o
                 </div>
               )}
             </>
-          )}
+              );
+            }
+            return (
+              <div style={{
+                padding: '20px',
+                background: 'rgba(255, 199, 0, 0.08)',
+                border: '1px solid rgba(255, 199, 0, 0.3)',
+                borderRadius: '6px',
+                color: 'var(--accent4)',
+                fontSize: '13px',
+                textAlign: 'center',
+              }}>
+                ⚠ This intern is not assigned to any cohort. Please assign a cohort first before assigning trainers.
+              </div>
+            );
+          })()}
         </div>
         <div className="modal-footer">
           <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>Close</button>

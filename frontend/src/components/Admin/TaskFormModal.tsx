@@ -57,7 +57,7 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({ isOpen, editTask, onSubmi
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = async (evt: React.FormEvent) => {
+  const handleSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     if (!validate()) return;
     

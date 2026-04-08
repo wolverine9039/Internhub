@@ -78,5 +78,5 @@ export const trainerService = {
     api.put(`/evaluations/${id}`, data).then(r => r.data),
 
   updateSubmissionStatus: (id: number, status: string, notes?: string) =>
-    api.patch(`/submissions/${id}`, { status, ...(notes !== undefined ? { notes } : {}) }).then(r => r.data),
+    api.patch(`/submissions/${id}`, { status, ...(notes === undefined ? {} : { notes }) }).then(r => r.data),
 };

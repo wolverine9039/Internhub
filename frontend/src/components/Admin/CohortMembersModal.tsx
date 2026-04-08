@@ -58,7 +58,7 @@ const CohortMembersModal: React.FC<CohortMembersModalProps> = ({ isOpen, cohort,
         headers,
         body: JSON.stringify({ intern_id: internId }),
       });
-      if (!resp.ok) throw new Error();
+      if (!resp.ok) throw new Error('Failed to add intern');
       // Move from unassigned to members
       const intern = unassigned.find(u => u.id === internId);
       if (intern) {
@@ -81,7 +81,7 @@ const CohortMembersModal: React.FC<CohortMembersModalProps> = ({ isOpen, cohort,
         method: 'DELETE',
         headers,
       });
-      if (!resp.ok) throw new Error();
+      if (!resp.ok) throw new Error('Failed to remove intern');
       // Move from members to unassigned
       const intern = members.find(m => m.id === internId);
       if (intern) {
@@ -98,8 +98,8 @@ const CohortMembersModal: React.FC<CohortMembersModalProps> = ({ isOpen, cohort,
   if (!isOpen || !cohort) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-card" style={{ maxWidth: '580px' }} onClick={e => e.stopPropagation()}>
+    <div className="modal-overlay" onClick={onClose} onKeyDown={e => { if (e.key === 'Escape') onClose(); }} role="presentation">
+      <div className="modal-card" style={{ maxWidth: '580px' }} onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={`Manage Interns — ${cohort.name}`}>
         <div className="modal-header">
           <h3 className="modal-title">Manage Interns — {cohort.name}</h3>
         </div>
