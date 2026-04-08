@@ -101,8 +101,8 @@ const TrainerAssignModal: React.FC<TrainerAssignModalProps> = ({ isOpen, user, o
   const availableTrainers = allTrainers.filter(t => !assignedIds.has(t.id));
 
   return (
-    <div className="modal-overlay" onClick={onClose} role="presentation" onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}>
-      <div className="modal-card" style={{ maxWidth: '560px' }} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Assign Trainer" onKeyDown={(e) => e.stopPropagation()}>
+    <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} aria-hidden="true">
+      <dialog open className="modal-card" style={{ maxWidth: '560px', padding: 0, margin: 0 }} aria-modal="true" aria-label="Assign Trainer">
         <div className="modal-header">
           <h3 className="modal-title">Assign Trainer</h3>
         </div>
@@ -208,7 +208,7 @@ const TrainerAssignModal: React.FC<TrainerAssignModalProps> = ({ isOpen, user, o
         <div className="modal-footer">
           <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>Close</button>
         </div>
-      </div>
+      </dialog>
     </div>
   );
 };
