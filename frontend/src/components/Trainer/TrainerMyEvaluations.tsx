@@ -33,7 +33,7 @@ const TrainerMyEvaluations: React.FC<TrainerMyEvaluationsProps> = () => {
     const fetchEvals = async () => {
       try {
         const token = localStorage.getItem('token');
-        const resp = await fetch('http://localhost:5000/api/trainer/my-evaluations', {
+        const resp = await fetch('/api/trainer/my-evaluations', {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',

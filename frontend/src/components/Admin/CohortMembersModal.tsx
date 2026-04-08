@@ -30,8 +30,8 @@ const CohortMembersModal: React.FC<CohortMembersModalProps> = ({ isOpen, cohort,
     setError('');
     try {
       const [membersRes, unassignedRes] = await Promise.all([
-        fetch(`http://localhost:5000/api/cohorts/${cohort.id}/members`, { headers }).then(r => r.json()),
-        fetch('http://localhost:5000/api/cohorts/meta/unassigned-interns', { headers }).then(r => r.json()),
+        fetch(`/api/cohorts/${cohort.id}/members`, { headers }).then(r => r.json()),
+        fetch('/api/cohorts/meta/unassigned-interns', { headers }).then(r => r.json()),
       ]);
       setMembers(membersRes);
       setUnassigned(unassignedRes);
@@ -51,7 +51,7 @@ const CohortMembersModal: React.FC<CohortMembersModalProps> = ({ isOpen, cohort,
     setActing(internId);
     setError('');
     try {
-      const resp = await fetch(`http://localhost:5000/api/cohorts/${cohort.id}/members`, {
+      const resp = await fetch(`/api/cohorts/${cohort.id}/members`, {
         method: 'POST',
         headers,
         body: JSON.stringify({ intern_id: internId }),
@@ -75,7 +75,7 @@ const CohortMembersModal: React.FC<CohortMembersModalProps> = ({ isOpen, cohort,
     setActing(internId);
     setError('');
     try {
-      const resp = await fetch(`http://localhost:5000/api/cohorts/${cohort.id}/members/${internId}`, {
+      const resp = await fetch(`/api/cohorts/${cohort.id}/members/${internId}`, {
         method: 'DELETE',
         headers,
       });

@@ -27,7 +27,7 @@ const TrainerInterns: React.FC<TrainerInternsProps> = () => {
     const fetchInterns = async () => {
       try {
         const token = localStorage.getItem('token');
-        const resp = await fetch('http://localhost:5000/api/trainer/my-interns', {
+        const resp = await fetch('/api/trainer/my-interns', {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',

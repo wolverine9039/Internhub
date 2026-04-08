@@ -33,8 +33,8 @@ const TrainerAssignModal: React.FC<TrainerAssignModalProps> = ({ isOpen, user, o
     const headers = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
 
     Promise.all([
-      fetch('http://localhost:5000/api/admin/trainers', { headers }).then(r => r.json()),
-      fetch(`http://localhost:5000/api/admin/users/${user.id}/trainers`, { headers }).then(r => r.json()),
+      fetch('/api/admin/trainers', { headers }).then(r => r.json()),
+      fetch(`/api/admin/users/${user.id}/trainers`, { headers }).then(r => r.json()),
     ])
       .then(([trainers, assignmentData]) => {
         setAllTrainers(trainers);
@@ -52,7 +52,7 @@ const TrainerAssignModal: React.FC<TrainerAssignModalProps> = ({ isOpen, user, o
 
     try {
       const token = localStorage.getItem('token');
-      const resp = await fetch('http://localhost:5000/api/admin/assign-trainer', {
+      const resp = await fetch('/api/admin/assign-trainer', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ cohort_id: cohortId, trainer_id: trainerId, action: 'assign' }),
@@ -79,7 +79,7 @@ const TrainerAssignModal: React.FC<TrainerAssignModalProps> = ({ isOpen, user, o
 
     try {
       const token = localStorage.getItem('token');
-      const resp = await fetch('http://localhost:5000/api/admin/assign-trainer', {
+      const resp = await fetch('/api/admin/assign-trainer', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ cohort_id: cohortId, trainer_id: trainerId, action: 'unassign' }),
