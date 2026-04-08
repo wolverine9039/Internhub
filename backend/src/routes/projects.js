@@ -28,13 +28,9 @@ router.get('/', authenticate, async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-router.get('/:id', authenticate, async (req, res, next) => {
-  try {
-    const [rows] = await pool.execute('SELECT * FROM projects WHERE id = ?', [req.params.id]);
-    if (rows.length === 0) throw new AppError(404, 'NOT_FOUND', 'Project not found');
-    res.status(200).json(rows[0]);
-  } catch (err) { next(err); }
-});
+const { getById, patchById, deleteById } = require('../utils/crudFactory');
+
+router.get('/:id', authenticate, getById('projects', 'Project'));
 
 router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
   try {
@@ -53,25 +49,8 @@ router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-router.patch('/:id', authenticate, authorize('admin'), async (req, res, next) => {
-  try {
-    const { setClauses, params } = buildPatchFields(req.body, ['title', 'description', 'cohort_id', 'trainer_id']);
+router.patch('/:id', authenticate, authorize('admin'), patchById('projects', 'Project', ['title', 'description', 'cohort_id', 'trainer_id']));
 
-    params.push(req.params.id);
-    const [result] = await pool.execute(`UPDATE projects SET ${setClauses.join(', ')} WHERE id = ?`, params);
-    if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Project not found');
-
-    const [rows] = await pool.execute('SELECT * FROM projects WHERE id = ?', [req.params.id]);
-    res.status(200).json(rows[0]);
-  } catch (err) { next(err); }
-});
-
-router.delete('/:id', authenticate, authorize('admin'), async (req, res, next) => {
-  try {
-    const [result] = await pool.execute('DELETE FROM projects WHERE id = ?', [req.params.id]);
-    if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Project not found');
-    res.status(204).send();
-  } catch (err) { next(err); }
-});
+router.delete('/:id', authenticate, authorize('admin'), deleteById('projects', 'Project'));
 
 module.exports = router;

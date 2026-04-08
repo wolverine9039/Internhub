@@ -5,6 +5,7 @@ import { adminService } from '@/services/adminService';
 import type { DashboardStats } from '@/types';
 import type { ActivityItem, CohortProgress, UpcomingDeadline } from '@/services/adminService';
 import './AdminDashboard.css';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface AdminDashboardProps {
     onNavigate: (screen: string) => void;
@@ -147,14 +148,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                         <span className="wf-note">Live feed</span>
                     </div>
                     {loading ? (
-                        <div className="loader-wrapper">
-                            <div className="loading-wave">
-                                <div className="loading-bar"></div>
-                                <div className="loading-bar"></div>
-                                <div className="loading-bar"></div>
-                                <div className="loading-bar"></div>
-                            </div>
-                        </div>
+                        <LoadingWave />
                     ) : activity.length === 0 ? (
                         <div className="empty-state">No recent activity</div>
                     ) : (
@@ -197,14 +191,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                     </div>
                     <div className="admin-card-body">
                         {loading ? (
-                            <div className="loader-wrapper">
-                                <div className="loading-wave">
-                                    <div className="loading-bar"></div>
-                                    <div className="loading-bar"></div>
-                                    <div className="loading-bar"></div>
-                                    <div className="loading-bar"></div>
-                                </div>
-                            </div>
+                            <LoadingWave />
                         ) : cohorts.length === 0 ? (
                             <div className="empty-state">No cohorts found</div>
                         ) : (

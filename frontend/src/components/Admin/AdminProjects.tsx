@@ -5,6 +5,7 @@ import ProjectFormModal from './ProjectFormModal';
 import { projectService } from '@/services/projectService';
 import type { Project, PaginatedResponse, ProjectFormData } from '@/types';
 import { getErrorMessage } from '@/utils/errorUtils';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface AdminProjectsProps {
     onNavigate: (screen: string) => void;
@@ -61,14 +62,7 @@ const AdminProjects: React.FC<AdminProjectsProps> = () => {
             {error && <div className="error-banner">{error}</div>}
 
             {loading ? (
-                      <div className="loader-wrapper">
-        <div className="loading-wave">
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-        </div>
-      </div>
+                      <LoadingWave />
             ) : (
                 <div className="admin-card">
                     <div className="table-wrapper">

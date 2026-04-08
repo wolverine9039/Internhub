@@ -9,6 +9,7 @@ import ConfirmDialog from '@/components/Shared/ConfirmDialog';
 import Badge from '@/components/Shared/Badge';
 import { useAuth } from '@/context/AuthContext';
 import './AdminDashboard.css'; // Reuse dashboard table styles
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface AdminTasksProps {
   onNavigate?: (screen: string) => void;
@@ -140,14 +141,7 @@ const AdminTasks: React.FC<AdminTasksProps> = () => {
 
       <div className="admin-card">
         {loading ? (
-          <div className="loader-wrapper">
-            <div className="loading-wave">
-              <div className="loading-bar"></div>
-              <div className="loading-bar"></div>
-              <div className="loading-bar"></div>
-              <div className="loading-bar"></div>
-            </div>
-          </div>
+          <LoadingWave />
         ) : tasks.length === 0 ? (
           <div className="empty-state">No tasks found</div>
         ) : (

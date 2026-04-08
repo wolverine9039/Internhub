@@ -68,8 +68,18 @@ pipeline {
         stage('Backend Tests') {
             steps {
                 dir('backend') {
-                    echo '🧪 Running Jest tests with coverage...'
-                    sh 'npx jest --coverage --coverageReporters=lcov --coverageReporters=text'
+                    echo '🧪 Running Jest backend tests with coverage...'
+                    sh 'npm run test:coverage'
+                }
+            }
+        }
+
+        // ── Stage 4.5: Frontend Tests ───────────────────────
+        stage('Frontend Tests') {
+            steps {
+                dir('frontend') {
+                    echo '🧪 Running Vitest frontend tests with coverage...'
+                    sh 'npm run test:coverage'
                 }
             }
         }

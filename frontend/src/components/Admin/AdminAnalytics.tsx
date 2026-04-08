@@ -11,6 +11,7 @@ import type {
 } from '@/services/adminService';
 import './AdminAnalytics.css';
 import './AdminDashboard.css';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface AdminAnalyticsProps {
   onNavigate?: (screen: string) => void;
@@ -132,14 +133,7 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = () => {
             <p className="page-subtitle">Program-wide performance insights</p>
           </div>
         </div>
-        <div className="loader-wrapper">
-          <div className="loading-wave">
-            <div className="loading-bar"></div>
-            <div className="loading-bar"></div>
-            <div className="loading-bar"></div>
-            <div className="loading-bar"></div>
-          </div>
-        </div>
+        <LoadingWave />
       </div>
     );
   }

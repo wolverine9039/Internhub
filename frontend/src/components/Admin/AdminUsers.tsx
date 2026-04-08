@@ -7,6 +7,7 @@ import TrainerAssignModal from './TrainerAssignModal';
 import { userService } from '@/services/userService';
 import type { User, PaginatedResponse, UserFormData } from '@/types';
 import { getErrorMessage } from '@/utils/errorUtils';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface AdminUsersProps {
     onNavigate: (screen: string) => void;
@@ -118,14 +119,7 @@ const AdminUsers: React.FC<AdminUsersProps> = () => {
             {error && <div className="error-banner">{error}</div>}
 
             {loading ? (
-                      <div className="loader-wrapper">
-        <div className="loading-wave">
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-        </div>
-      </div>
+                      <LoadingWave />
             ) : (
                 <div className="admin-card">
                     <div className="table-wrapper">

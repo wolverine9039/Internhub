@@ -3,6 +3,7 @@ import type { User, Task } from '@/types';
 import { taskService } from '@/services/taskService';
 import Badge from '@/components/Shared/Badge';
 import './InternModule.css';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface InternTasksProps {
   user: User | null;
@@ -46,14 +47,7 @@ const InternTasks: React.FC<InternTasksProps> = ({ user }) => {
 
   if (loading) {
     return (
-      <div className="loader-wrapper">
-        <div className="loading-wave">
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-        </div>
-      </div>
+      <LoadingWave />
     );
   }
 

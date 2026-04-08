@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Sidebar from '@/components/Shared/Sidebar';
+import DashboardLayout from '@/components/Shared/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
 import AdminDashboard from '@/components/Admin/AdminDashboard';
 import AdminUsers from '@/components/Admin/AdminUsers';
@@ -15,8 +15,6 @@ import './AdminPanel.css';
 const AdminPanel: React.FC = () => {
     const { user } = useAuth();
     const [activeScreen, setActiveScreen] = useState('admin-dashboard');
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
     const renderScreen = () => {
         switch (activeScreen) {
@@ -44,27 +42,15 @@ const AdminPanel: React.FC = () => {
     };
 
     return (
-        <div className="app fade-in">
-            <Sidebar 
-                role="admin" 
-                activeScreen={activeScreen} 
-                onNavigate={setActiveScreen} 
-                userName={user?.name || 'Administrator'} 
-                userRole="Admin" 
-                isOpen={sidebarOpen}
-                onToggle={() => setSidebarOpen(!sidebarOpen)}
-                collapsed={sidebarCollapsed}
-                onCollapseToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
-            />
-            <main className={`main ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
-                {/* Mobile header */}
-                <div className="mobile-header">
-                    <button className="hamburger-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>☰</button>
-                    <div className="mobile-brand">Intern<span>Hub</span></div>
-                </div>
-                {renderScreen()}
-            </main>
-        </div>
+        <DashboardLayout
+            role="admin"
+            activeScreen={activeScreen}
+            onNavigate={setActiveScreen}
+            userName={user?.name || 'Administrator'}
+            userRole="Admin"
+        >
+            {renderScreen()}
+        </DashboardLayout>
     );
 };
 

@@ -5,6 +5,7 @@ import { submissionService } from '@/services/submissionService';
 import Badge from '@/components/Shared/Badge';
 import './InternModule.css';
 import { getErrorMessage } from '@/utils/errorUtils';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface InternSubmitProps {
   user: User | null;
@@ -112,14 +113,7 @@ const InternSubmit: React.FC<InternSubmitProps> = ({ user, onNavigate }) => {
 
   if (loading) {
     return (
-      <div className="loader-wrapper">
-        <div className="loading-wave">
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-          <div className="loading-bar"></div>
-        </div>
-      </div>
+      <LoadingWave />
     );
   }
 

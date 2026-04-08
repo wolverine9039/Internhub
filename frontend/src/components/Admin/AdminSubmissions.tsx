@@ -6,6 +6,7 @@ import { getErrorMessage } from '@/utils/errorUtils';
 import Pagination from '@/components/Shared/Pagination';
 import Badge from '@/components/Shared/Badge';
 import './AdminDashboard.css';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface AdminSubmissionsProps {
   onNavigate?: (screen: string) => void;
@@ -90,14 +91,7 @@ const AdminSubmissions: React.FC<AdminSubmissionsProps> = () => {
 
       <div className="admin-card">
         {loading ? (
-          <div className="loader-wrapper">
-            <div className="loading-wave">
-              <div className="loading-bar"></div>
-              <div className="loading-bar"></div>
-              <div className="loading-bar"></div>
-              <div className="loading-bar"></div>
-            </div>
-          </div>
+          <LoadingWave />
         ) : submissions.length === 0 ? (
           <div className="empty-state">No submissions found</div>
         ) : (
