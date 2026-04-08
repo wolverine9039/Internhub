@@ -3,25 +3,15 @@ const router = express.Router();
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
+const { parsePagination, parseSorting, buildPatchFields, paginatedResponse } = require('../utils/queryHelpers');
 
 /**
  * GET /projects — List with pagination, sorting, and cohort_id filter
  */
 router.get('/', authenticate, async (req, res, next) => {
   try {
-    const page = Math.max(1, parseInt(req.query.page) || 1);
-    const page_size = Math.min(100, Math.max(1, parseInt(req.query.page_size) || 20));
-    const offset = (page - 1) * page_size;
-
-    const ALLOWED_SORT = ['id', 'title', 'cohort_id', 'created_at'];
-    let sortField = 'created_at';
-    let sortOrder = 'DESC';
-    if (req.query.sort) {
-      const raw = req.query.sort;
-      sortField = raw.startsWith('-') ? raw.slice(1) : raw;
-      sortOrder = raw.startsWith('-') ? 'DESC' : 'ASC';
-      if (!ALLOWED_SORT.includes(sortField)) sortField = 'created_at';
-    }
+    const { page, pageSize, offset } = parsePagination(req.query);
+    const { sortField, sortOrder } = parseSorting(req.query, ['id', 'title', 'cohort_id', 'created_at']);
 
     const conditions = []; const params = [];
     if (req.query.cohort_id) { conditions.push('cohort_id = ?'); params.push(req.query.cohort_id); }
@@ -31,10 +21,10 @@ router.get('/', authenticate, async (req, res, next) => {
 
     const [[countResult], [projects]] = await Promise.all([
       pool.execute(`SELECT COUNT(*) AS total FROM projects ${where}`, params),
-      pool.execute(`SELECT * FROM projects ${where} ORDER BY ${sortField} ${sortOrder} LIMIT ? OFFSET ?`, [...params, String(page_size), String(offset)]),
+      pool.execute(`SELECT * FROM projects ${where} ORDER BY ${sortField} ${sortOrder} LIMIT ? OFFSET ?`, [...params, String(pageSize), String(offset)]),
     ]);
 
-    res.status(200).json({ items: projects, page, page_size, total: countResult[0].total, pages: Math.ceil(countResult[0].total / page_size) });
+    res.status(200).json(paginatedResponse(projects, page, pageSize, countResult[0].total));
   } catch (err) { next(err); }
 });
 
@@ -65,13 +55,10 @@ router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
 
 router.patch('/:id', authenticate, authorize('admin'), async (req, res, next) => {
   try {
-    const ALLOWED = ['title', 'description', 'cohort_id', 'trainer_id'];
-    const updates = []; const params = [];
-    for (const f of ALLOWED) { if (req.body[f] !== undefined) { updates.push(`${f} = ?`); params.push(req.body[f]); } }
-    if (updates.length === 0) throw new AppError(422, 'VALIDATION_ERROR', 'No valid fields provided');
+    const { setClauses, params } = buildPatchFields(req.body, ['title', 'description', 'cohort_id', 'trainer_id']);
 
     params.push(req.params.id);
-    const [result] = await pool.execute(`UPDATE projects SET ${updates.join(', ')} WHERE id = ?`, params);
+    const [result] = await pool.execute(`UPDATE projects SET ${setClauses.join(', ')} WHERE id = ?`, params);
     if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Project not found');
 
     const [rows] = await pool.execute('SELECT * FROM projects WHERE id = ?', [req.params.id]);

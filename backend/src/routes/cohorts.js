@@ -3,25 +3,16 @@ const router = express.Router();
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
+const { parsePagination, parseSorting, buildPatchFields, paginatedResponse } = require('../utils/queryHelpers');
 
 /**
  * GET /cohorts — List cohorts with pagination and sorting
  */
 router.get('/', authenticate, async (req, res, next) => {
   try {
-    const page = Math.max(1, parseInt(req.query.page) || 1);
-    const page_size = Math.min(100, Math.max(1, parseInt(req.query.page_size) || 20));
-    const offset = (page - 1) * page_size;
-
+    const { page, pageSize, offset } = parsePagination(req.query);
     const ALLOWED_FIELDS = ['id', 'name', 'description', 'start_date', 'end_date', 'created_at'];
-    let sortField = 'created_at';
-    let sortOrder = 'DESC';
-    if (req.query.sort) {
-      const raw = req.query.sort;
-      sortField = raw.startsWith('-') ? raw.slice(1) : raw;
-      sortOrder = raw.startsWith('-') ? 'DESC' : 'ASC';
-      if (!ALLOWED_FIELDS.includes(sortField)) sortField = 'created_at';
-    }
+    const { sortField, sortOrder } = parseSorting(req.query, ALLOWED_FIELDS);
 
     const conditions = [];
     const params = [];
@@ -30,10 +21,10 @@ router.get('/', authenticate, async (req, res, next) => {
 
     const [[countResult], [cohorts]] = await Promise.all([
       pool.execute(`SELECT COUNT(*) AS total FROM cohorts ${whereClause}`, params),
-      pool.execute(`SELECT * FROM cohorts ${whereClause} ORDER BY ${sortField} ${sortOrder} LIMIT ? OFFSET ?`, [...params, String(page_size), String(offset)]),
+      pool.execute(`SELECT * FROM cohorts ${whereClause} ORDER BY ${sortField} ${sortOrder} LIMIT ? OFFSET ?`, [...params, String(pageSize), String(offset)]),
     ]);
 
-    res.status(200).json({ items: cohorts, page, page_size, total: countResult[0].total, pages: Math.ceil(countResult[0].total / page_size) });
+    res.status(200).json(paginatedResponse(cohorts, page, pageSize, countResult[0].total));
   } catch (err) { next(err); }
 });
 
@@ -82,13 +73,10 @@ router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
  */
 router.patch('/:id', authenticate, authorize('admin'), async (req, res, next) => {
   try {
-    const ALLOWED = ['name', 'description', 'start_date', 'end_date'];
-    const updates = []; const params = [];
-    for (const f of ALLOWED) { if (req.body[f] !== undefined) { updates.push(`${f} = ?`); params.push(req.body[f]); } }
-    if (updates.length === 0) throw new AppError(422, 'VALIDATION_ERROR', 'No valid fields provided');
+    const { setClauses, params } = buildPatchFields(req.body, ['name', 'description', 'start_date', 'end_date']);
 
     params.push(req.params.id);
-    const [result] = await pool.execute(`UPDATE cohorts SET ${updates.join(', ')} WHERE id = ?`, params);
+    const [result] = await pool.execute(`UPDATE cohorts SET ${setClauses.join(', ')} WHERE id = ?`, params);
     if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Cohort not found');
 
     const [rows] = await pool.execute('SELECT * FROM cohorts WHERE id = ?', [req.params.id]);
@@ -119,8 +107,6 @@ router.get('/:id/members', authenticate, authorize('admin'), async (req, res, ne
     res.json(members);
   } catch (err) { next(err); }
 });
-
-
 
 /**
  * POST /cohorts/:id/members — Add intern to cohort
