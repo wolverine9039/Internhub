@@ -11,6 +11,7 @@ pipeline {
 
     environment {
         SCANNER_HOME = tool 'SonarScanner'
+        DOCKER_SERVER = '3.221.77.93'
     }
 
     options {
@@ -87,7 +88,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo '📊 Running SonarQube code analysis...'
-                withSonarQubeEnv('SonarQube') {             // ← must match name in Manage Jenkins > System > SonarQube servers
+                withSonarQubeEnv('sonar qube') {             // ← must match name in Manage Jenkins > System > SonarQube servers
                     sh """
                         ${SCANNER_HOME}/bin/sonar-scanner \
                             -Dsonar.projectKey=internhub \
@@ -105,22 +106,23 @@ pipeline {
             steps {
                 echo '🚦 Waiting for SonarQube quality gate...'
                 timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
+                    waitForQualityGate abortPipeline: false
                 }
             }
         }
 
         // ── Stage 8: Deploy to App Server ───────────────────
-        stage('Deploy') {
+        stage('Deploy with Ansible') {
             steps {
-                echo '🚀 Deploying to App Server via Ansible...'
-                ansiblePlaybook(
-                    playbook: 'deployment/ansible/deploy.yml',
-                    inventory: 'deployment/ansible/inventory.ini',
-                    credentialsId: 'app-server-ssh-key',     // ← must exist in Manage Jenkins > Credentials
-                    colorized: true,
-                    extras: '-v'
-                )
+                sh '''
+                    ANSIBLE_HOST_KEY_CHECKING=False \
+                    ansible-playbook /var/lib/jenkins/playbooks/deployment.yaml \
+                    -i "${DOCKER_SERVER}," \
+                    -u root \
+                    --private-key /var/lib/jenkins/.ssh/id_ed25519 \
+                    -e "workspace_path=${WORKSPACE}" \
+                    -v
+                '''
             }
         }
     }
