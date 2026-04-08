@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '@/components/Shared/ConfirmDialog.css';
 import LoadingWave from '@/components/Shared/LoadingWave';
+import UserRow from '@/components/Shared/UserRow';
 
 interface Trainer {
   id: number;
@@ -59,7 +60,6 @@ const TrainerAssignModal: React.FC<TrainerAssignModalProps> = ({ isOpen, user, o
       });
       if (!resp.ok) throw new Error('Failed to assign');
 
-      // Refresh assigned list
       const trainer = allTrainers.find(t => t.id === trainerId);
       if (trainer) {
         setAssignedTrainers(prev => [...prev, { ...trainer, assigned_at: new Date().toISOString() }]);
@@ -145,45 +145,16 @@ const TrainerAssignModal: React.FC<TrainerAssignModalProps> = ({ isOpen, user, o
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     {assignedTrainers.map(trainer => (
-                      <div key={trainer.id} style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '8px 12px',
-                        background: 'var(--surface2)',
-                        borderRadius: '6px',
-                        border: '1px solid var(--border)',
-                      }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <div style={{
-                            width: '32px',
-                            height: '32px',
-                            borderRadius: '50%',
-                            background: 'linear-gradient(135deg, var(--accent), #7c3aed)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '12px',
-                            fontWeight: 700,
-                            color: '#fff',
-                          }}>
-                            {trainer.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}
-                          </div>
-                          <div>
-                            <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text)' }}>{trainer.name}</div>
-                            <div style={{ fontSize: '11px', color: 'var(--muted)' }}>{trainer.email}</div>
-                          </div>
-                        </div>
-                        <button
-                          className="btn btn-secondary btn-sm"
-                          style={{ color: 'var(--accent2)', fontSize: '11px' }}
-                          onClick={() => handleUnassign(trainer.id)}
-                          disabled={assigning === trainer.id}
-                          type="button"
-                        >
-                          {assigning === trainer.id ? '...' : 'Remove'}
-                        </button>
-                      </div>
+                      <UserRow
+                        key={trainer.id}
+                        name={trainer.name}
+                        email={trainer.email}
+                        actionLabel="Remove"
+                        isActing={assigning === trainer.id}
+                        onAction={() => handleUnassign(trainer.id)}
+                        variant="assigned"
+                        avatarGradient="linear-gradient(135deg, var(--accent), #7c3aed)"
+                      />
                     ))}
                   </div>
                 )}
@@ -197,45 +168,15 @@ const TrainerAssignModal: React.FC<TrainerAssignModalProps> = ({ isOpen, user, o
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     {availableTrainers.map(trainer => (
-                      <div key={trainer.id} style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '8px 12px',
-                        background: 'var(--surface)',
-                        borderRadius: '6px',
-                        border: '1px dashed var(--border)',
-                      }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <div style={{
-                            width: '32px',
-                            height: '32px',
-                            borderRadius: '50%',
-                            background: 'var(--surface2)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '12px',
-                            fontWeight: 600,
-                            color: 'var(--muted)',
-                          }}>
-                            {trainer.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}
-                          </div>
-                          <div>
-                            <div style={{ fontSize: '13px', color: 'var(--text)' }}>{trainer.name}</div>
-                            <div style={{ fontSize: '11px', color: 'var(--muted)' }}>{trainer.email}</div>
-                          </div>
-                        </div>
-                        <button
-                          className="btn btn-primary btn-sm"
-                          style={{ fontSize: '11px' }}
-                          onClick={() => handleAssign(trainer.id)}
-                          disabled={assigning === trainer.id}
-                          type="button"
-                        >
-                          {assigning === trainer.id ? '...' : '+ Assign'}
-                        </button>
-                      </div>
+                      <UserRow
+                        key={trainer.id}
+                        name={trainer.name}
+                        email={trainer.email}
+                        actionLabel="+ Assign"
+                        isActing={assigning === trainer.id}
+                        onAction={() => handleAssign(trainer.id)}
+                        variant="available"
+                      />
                     ))}
                   </div>
                 </div>

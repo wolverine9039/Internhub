@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import '@/components/Shared/ConfirmDialog.css';
 import LoadingWave from '@/components/Shared/LoadingWave';
+import UserRow from '@/components/Shared/UserRow';
 
 interface Intern {
   id: number;
@@ -60,7 +61,6 @@ const CohortMembersModal: React.FC<CohortMembersModalProps> = ({ isOpen, cohort,
         body: JSON.stringify({ intern_id: internId }),
       });
       if (!resp.ok) throw new Error('Failed to add intern');
-      // Move from unassigned to members
       const intern = unassigned.find(u => u.id === internId);
       if (intern) {
         setMembers(prev => [...prev, intern].sort((a, b) => a.name.localeCompare(b.name)));
@@ -83,7 +83,6 @@ const CohortMembersModal: React.FC<CohortMembersModalProps> = ({ isOpen, cohort,
         headers,
       });
       if (!resp.ok) throw new Error('Failed to remove intern');
-      // Move from members to unassigned
       const intern = members.find(m => m.id === internId);
       if (intern) {
         setUnassigned(prev => [...prev, { id: intern.id, name: intern.name, email: intern.email }].sort((a, b) => a.name.localeCompare(b.name)));
@@ -132,45 +131,16 @@ const CohortMembersModal: React.FC<CohortMembersModalProps> = ({ isOpen, cohort,
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     {members.map(m => (
-                      <div key={m.id} style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '8px 12px',
-                        background: 'var(--surface2)',
-                        borderRadius: '6px',
-                        border: '1px solid var(--border)',
-                      }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <div style={{
-                            width: '30px',
-                            height: '30px',
-                            borderRadius: '50%',
-                            background: 'linear-gradient(135deg, #f5c542, #e67e22)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '11px',
-                            fontWeight: 700,
-                            color: '#fff',
-                          }}>
-                            {m.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}
-                          </div>
-                          <div>
-                            <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text)' }}>{m.name}</div>
-                            <div style={{ fontSize: '11px', color: 'var(--muted)' }}>{m.email}</div>
-                          </div>
-                        </div>
-                        <button
-                          className="btn btn-secondary btn-sm"
-                          style={{ color: 'var(--accent2)', fontSize: '11px' }}
-                          onClick={() => handleRemove(m.id)}
-                          disabled={acting === m.id}
-                          type="button"
-                        >
-                          {acting === m.id ? '...' : 'Remove'}
-                        </button>
-                      </div>
+                      <UserRow
+                        key={m.id}
+                        name={m.name}
+                        email={m.email}
+                        actionLabel="Remove"
+                        isActing={acting === m.id}
+                        onAction={() => handleRemove(m.id)}
+                        variant="assigned"
+                        avatarGradient="linear-gradient(135deg, #f5c542, #e67e22)"
+                      />
                     ))}
                   </div>
                 )}
@@ -184,45 +154,15 @@ const CohortMembersModal: React.FC<CohortMembersModalProps> = ({ isOpen, cohort,
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     {unassigned.map(u => (
-                      <div key={u.id} style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '8px 12px',
-                        background: 'var(--surface)',
-                        borderRadius: '6px',
-                        border: '1px dashed var(--border)',
-                      }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <div style={{
-                            width: '30px',
-                            height: '30px',
-                            borderRadius: '50%',
-                            background: 'var(--surface2)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '11px',
-                            fontWeight: 600,
-                            color: 'var(--muted)',
-                          }}>
-                            {u.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}
-                          </div>
-                          <div>
-                            <div style={{ fontSize: '13px', color: 'var(--text)' }}>{u.name}</div>
-                            <div style={{ fontSize: '11px', color: 'var(--muted)' }}>{u.email}</div>
-                          </div>
-                        </div>
-                        <button
-                          className="btn btn-primary btn-sm"
-                          style={{ fontSize: '11px' }}
-                          onClick={() => handleAdd(u.id)}
-                          disabled={acting === u.id}
-                          type="button"
-                        >
-                          {acting === u.id ? '...' : '+ Add'}
-                        </button>
-                      </div>
+                      <UserRow
+                        key={u.id}
+                        name={u.name}
+                        email={u.email}
+                        actionLabel="+ Add"
+                        isActing={acting === u.id}
+                        onAction={() => handleAdd(u.id)}
+                        variant="available"
+                      />
                     ))}
                   </div>
                 </div>

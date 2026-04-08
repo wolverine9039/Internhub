@@ -5,6 +5,7 @@ import { trainerService } from '@/services/trainerService';
 import type { TrainerStats, TrainerDeadline } from '@/services/trainerService';
 import type { Submission } from '@/types';
 import type { BadgeVariant } from '@/utils/errorUtils';
+import { timeAgo, daysUntil } from '@/utils/dateUtils';
 import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface TrainerDashboardProps {
@@ -12,24 +13,7 @@ interface TrainerDashboardProps {
   onSelectSubmission: (submission: Submission) => void;
 }
 
-function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'just now';
-  if (mins < 60) return `${mins}m ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  const days = Math.floor(hrs / 24);
-  return `${days}d ago`;
-}
 
-function daysUntil(dateStr: string): string {
-  const diff = new Date(dateStr).getTime() - Date.now();
-  const days = Math.ceil(diff / 86400000);
-  if (days <= 0) return 'Today';
-  if (days === 1) return 'Tomorrow';
-  return `In ${days} days`;
-}
 
 const TrainerDashboard: React.FC<TrainerDashboardProps> = ({ onNavigate, onSelectSubmission }) => {
   const [stats, setStats] = useState<TrainerStats | null>(null);
