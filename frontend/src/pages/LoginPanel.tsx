@@ -44,9 +44,16 @@ const LoginPanel: React.FC = () => {
       login(data.user, data.token);
 
       // Role-based navigation
-      if (role === "admin") navigate("/admin");
-      else if (role === "trainer") navigate("/trainer");
-      else navigate("/intern");
+      const returnUrl = searchParams.get("returnUrl");
+      if (returnUrl) {
+        navigate(returnUrl, { replace: true });
+      } else if (role === "admin") {
+        navigate("/admin", { replace: true });
+      } else if (role === "trainer") {
+        navigate("/trainer", { replace: true });
+      } else {
+        navigate("/intern", { replace: true });
+      }
     } catch (err: unknown) {
       setError(getErrorMessage(err, 'Invalid email or password'));
     } finally {
