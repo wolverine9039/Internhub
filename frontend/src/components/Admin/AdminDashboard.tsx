@@ -4,6 +4,7 @@ import Badge from '@/components/Shared/Badge';
 import { adminService } from '@/services/adminService';
 import type { DashboardStats } from '@/types';
 import type { ActivityItem, CohortProgress, UpcomingDeadline } from '@/services/adminService';
+import { timeAgo, daysUntil, getInitials } from '@/utils/dateUtils';
 import './AdminDashboard.css';
 import LoadingWave from '@/components/Shared/LoadingWave';
 
@@ -20,28 +21,7 @@ const ACTIVITY_META: Record<string, { badge: string; color: string }> = {
 
 const PROGRESS_COLORS = ['blue', 'green', 'yellow', 'red'];
 
-function timeAgo(dateStr: string): string {
-    const diff = Date.now() - new Date(dateStr).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 1) return 'just now';
-    if (mins < 60) return `${mins}m ago`;
-    const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return `${hrs}h ago`;
-    const days = Math.floor(hrs / 24);
-    return `${days}d ago`;
-}
 
-function daysUntil(dateStr: string): string {
-    const diff = new Date(dateStr).getTime() - Date.now();
-    const days = Math.ceil(diff / 86400000);
-    if (days <= 0) return 'Today';
-    if (days === 1) return 'Tomorrow';
-    return `In ${days} days`;
-}
-
-function getInitials(name: string): string {
-    return name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
-}
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
     const [stats, setStats] = useState<DashboardStats | null>(null);

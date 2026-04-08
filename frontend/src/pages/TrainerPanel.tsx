@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Sidebar from '@/components/Shared/Sidebar';
+import DashboardLayout from '@/components/Shared/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
 import {
   TrainerDashboard,
@@ -15,8 +15,6 @@ import './TrainerPanel.css';
 const TrainerPanel: React.FC = () => {
   const { user } = useAuth();
   const [activeScreen, setActiveScreen] = useState('trainer-dashboard');
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | undefined>(undefined);
 
   const renderScreen = () => {
@@ -61,27 +59,15 @@ const TrainerPanel: React.FC = () => {
   };
 
   return (
-    <div className="app fade-in">
-      <Sidebar
-        role="trainer"
-        activeScreen={activeScreen}
-        onNavigate={setActiveScreen}
-        userName={user?.name || 'Trainer'}
-        userRole="Trainer"
-        isOpen={sidebarOpen}
-        onToggle={() => setSidebarOpen(!sidebarOpen)}
-        collapsed={sidebarCollapsed}
-        onCollapseToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
-      />
-      <main className={`main ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
-        {/* Mobile header */}
-        <div className="mobile-header">
-          <button className="hamburger-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>☰</button>
-          <div className="mobile-brand">Intern<span>Hub</span></div>
-        </div>
-        {renderScreen()}
-      </main>
-    </div>
+    <DashboardLayout
+      role="trainer"
+      activeScreen={activeScreen}
+      onNavigate={setActiveScreen}
+      userName={user?.name || 'Trainer'}
+      userRole="Trainer"
+    >
+      {renderScreen()}
+    </DashboardLayout>
   );
 };
 
