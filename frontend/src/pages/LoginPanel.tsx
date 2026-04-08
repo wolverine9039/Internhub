@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
 import api from '../services/api';
+import { getErrorMessage } from '@/utils/errorUtils';
 import "./LoginPanel.css";
 
 const LoginPanel: React.FC = () => {
@@ -46,9 +47,8 @@ const LoginPanel: React.FC = () => {
       if (role === "admin") navigate("/admin");
       else if (role === "trainer") navigate("/trainer");
       else navigate("/intern");
-    } catch (err: any) {
-      setError(err.response?.data?.error?.message || "Invalid email or password");
-      console.log(err);
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'Invalid email or password'));
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { getErrorMessage } from '@/utils/errorUtils';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell, RadarChart, Radar,
@@ -35,12 +36,23 @@ const STATUS_COLORS: Record<string, string> = {
 const SCORE_COLORS = ['#ff6b6b', '#f5c542', '#6b748a', '#5b8cff', '#43e8b0'];
 
 // ── Custom Tooltip ──
-const CustomTooltip = ({ active, payload, label }: any) => {
+interface TooltipPayloadItem {
+  name: string;
+  value: number;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayloadItem[];
+  label?: string;
+}
+
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (!active || !payload?.length) return null;
   return (
     <div className="analytics-tooltip">
       <div className="label">{label}</div>
-      {payload.map((p: any, i: number) => (
+      {payload.map((p: TooltipPayloadItem, i: number) => (
         <div key={i} className="value">
           {p.name}: <span>{p.value}</span>
         </div>
@@ -71,8 +83,8 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = () => {
 
       const result = await adminService.getAnalytics(filters);
       setData(result);
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to load analytics');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'Failed to load analytics'));
     } finally {
       setLoading(false);
     }

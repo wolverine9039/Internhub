@@ -3,7 +3,8 @@ import Pagination from '@/components/Shared/Pagination';
 import ConfirmDialog from '@/components/Shared/ConfirmDialog';
 import ProjectFormModal from './ProjectFormModal';
 import { projectService } from '@/services/projectService';
-import type { Project, PaginatedResponse } from '@/types';
+import type { Project, PaginatedResponse, ProjectFormData } from '@/types';
+import { getErrorMessage } from '@/utils/errorUtils';
 
 interface AdminProjectsProps {
     onNavigate: (screen: string) => void;
@@ -23,28 +24,28 @@ const AdminProjects: React.FC<AdminProjectsProps> = () => {
         try {
             const result = await projectService.getProjects({ page, page_size: 10, sort: '-created_at' });
             setData(result);
-        } catch (err: any) {
-            setError(err.response?.data?.error?.message || 'Failed to load projects');
+        } catch (err: unknown) {
+            setError(getErrorMessage(err, 'Failed to load projects'));
         } finally { setLoading(false); }
     }, [page]);
 
     useEffect(() => { fetchProjects(); }, [fetchProjects]);
 
-    const handleCreate = async (formData: any) => {
+    const handleCreate = async (formData: ProjectFormData) => {
         try { await projectService.createProject(formData); setFormOpen(false); fetchProjects(); }
-        catch (err: any) { alert(err.response?.data?.error?.message || 'Failed to create project'); }
+        catch (err: unknown) { alert(getErrorMessage(err, 'Failed to create project')); }
     };
 
-    const handleEdit = async (formData: any) => {
+    const handleEdit = async (formData: ProjectFormData) => {
         if (!editProject) return;
         try { await projectService.updateProject(editProject.id, formData); setEditProject(null); setFormOpen(false); fetchProjects(); }
-        catch (err: any) { alert(err.response?.data?.error?.message || 'Failed to update project'); }
+        catch (err: unknown) { alert(getErrorMessage(err, 'Failed to update project')); }
     };
 
     const handleDelete = async () => {
         if (!deleteTarget) return;
         try { await projectService.deleteProject(deleteTarget.id); setDeleteTarget(null); fetchProjects(); }
-        catch (err: any) { alert(err.response?.data?.error?.message || 'Failed to delete project'); }
+        catch (err: unknown) { alert(getErrorMessage(err, 'Failed to delete project')); }
     };
 
     return (

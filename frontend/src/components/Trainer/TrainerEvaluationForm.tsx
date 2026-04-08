@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { trainerService } from '@/services/trainerService';
 import type { Submission } from '@/types';
+import { getErrorMessage } from '@/utils/errorUtils';
 
 interface TrainerEvaluationFormProps {
   selectedSubmission?: Submission;
@@ -70,9 +71,8 @@ const TrainerEvaluationForm: React.FC<TrainerEvaluationFormProps> = ({ selectedS
         onSubmitted?.();
         onBack();
       }, 1500);
-    } catch (err: any) {
-      console.error('Evaluation submission failed', err);
-      setError(err.response?.data?.message || 'Failed to submit evaluation. Please try again.');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'Failed to submit evaluation. Please try again.'));
     } finally {
       setSubmitting(false);
     }

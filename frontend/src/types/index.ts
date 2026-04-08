@@ -115,3 +115,43 @@ export interface DashboardStats {
   pendingSubmissions: number;
   evaluationsDue: number;
 }
+
+// ─── Form Data Types (used in modals/callbacks) ───
+export interface TaskFormData {
+  title: string;
+  description?: string;
+  project_id: number;
+  assigned_to: number;
+  priority: string;
+  status: string;
+  due_date?: string;
+  created_by?: number;
+}
+
+export interface EvaluationFormData {
+  submission_id: number;
+  trainer_id: number;
+  code_quality: number;
+  functionality: number;
+  documentation: number;
+  timeliness: number;
+  score: number;
+  feedback?: string;
+  strengths?: string;
+  improvements?: string;
+}
+
+export interface UserFormData {
+  name: string;
+  email: string;
+  password?: string;
+  role: string;
+  cohort_id?: number | null;
+}
+
+export interface ProjectFormData {
+  title: string;
+  description?: string;
+  cohort_id: number;
+  trainer_id?: number;
+}

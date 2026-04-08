@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
 import api from '@/services/api';
+import { getErrorMessage } from '@/utils/errorUtils';
 import './SettingsPanel.css';
 
 const getStrengthInfo = (password: string) => {
@@ -92,10 +93,8 @@ const AccountSecuritySection: React.FC = () => {
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
-    } catch (err: any) {
-      const errorData = err.response?.data?.error;
-      const errorMessage = typeof errorData === 'object' && errorData !== null ? errorData.message : errorData || 'Failed to change password';
-      setMessage({ text: errorMessage, type: 'error' });
+    } catch (err: unknown) {
+      setMessage({ text: getErrorMessage(err, 'Failed to change password'), type: 'error' });
     } finally {
       setLoading(false);
     }

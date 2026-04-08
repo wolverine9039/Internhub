@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { submissionService } from '@/services/submissionService';
 import { userService } from '@/services/userService';
-import type { Evaluation, Submission, User } from '@/types';
+import type { Evaluation, Submission, User, EvaluationFormData } from '@/types';
+import { getErrorMessage } from '@/utils/errorUtils';
 import '@/components/Shared/ConfirmDialog.css';
 
 interface EvaluationFormModalProps {
   isOpen: boolean;
   editEvaluation?: Evaluation | null;
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: EvaluationFormData) => Promise<void>;
   onClose: () => void;
 }
 
@@ -82,10 +83,8 @@ const EvaluationFormModal: React.FC<EvaluationFormModalProps> = ({ isOpen, editE
         strengths,
         improvements
       });
-    } catch (err: any) {
-      const errorData = err.response?.data?.error;
-      const errorMessage = typeof errorData === 'object' && errorData !== null ? errorData.message : errorData || 'Failed to save evaluation';
-      setErrors({ submit: errorMessage });
+    } catch (err: unknown) {
+      setErrors({ submit: getErrorMessage(err, 'Failed to save evaluation') });
     } finally {
       setSubmitting(false);
     }

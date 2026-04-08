@@ -40,8 +40,8 @@ const TrainerInterns: React.FC<TrainerInternsProps> = () => {
           const data = await resp.json();
           setInterns(data);
         }
-      } catch (err: any) {
-        setError(err.message || 'Failed to load');
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Failed to load');
         setInterns([]);
       } finally {
         setLoading(false);
