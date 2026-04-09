@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions, jsx-a11y/no-noninteractive-element-interactions */
 import React, { useState, useEffect } from 'react';
 import '@/components/Shared/ConfirmDialog.css';
 
@@ -44,8 +43,8 @@ const CohortFormModal: React.FC<CohortFormModalProps> = ({ isOpen, editCohort, o
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-card" onClick={e => e.stopPropagation()}>
+    <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }} aria-hidden="true">
+      <dialog open className="modal-card" style={{ border: 'none', padding: 0, margin: 0 }} aria-modal="true" aria-label={editCohort ? 'Edit Cohort' : 'New Cohort'}>
         <div className="modal-header">
           <h3 className="modal-title">{editCohort ? 'Edit Cohort' : 'New Cohort'}</h3>
         </div>
@@ -74,7 +73,7 @@ const CohortFormModal: React.FC<CohortFormModalProps> = ({ isOpen, editCohort, o
             <button type="submit" className="btn btn-primary btn-sm">{editCohort ? 'Save' : 'Create'}</button>
           </div>
         </form>
-      </div>
+      </dialog>
     </div>
   );
 };
