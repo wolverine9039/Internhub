@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/9</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/9</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -173,13 +173,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -201,13 +199,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -232,10 +230,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -270,11 +270,11 @@ interface RoleCard {
   color: string;
 }
 &nbsp;
-const <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >HomePage: React.FC = () =&gt; {</span></span>
-  const <span class="cstat-no" title="statement not covered" >navigate = useNavigate();</span>
-  const { isDark, <span class="cstat-no" title="statement not covered" >toggleTheme } = useTheme();</span>
+const HomePage: React.FC = () =&gt; {
+  const navigate = useNavigate();
+  const { isDark, toggleTheme } = useTheme();
 &nbsp;
-  const roles: RoleCard[] = <span class="cstat-no" title="statement not covered" >[</span>
+  const roles: RoleCard[] = [
     {
       id: 'intern',
       title: 'Intern Login',
@@ -298,11 +298,11 @@ const <span class="cstat-no" title="statement not covered" ><span class="fstat-n
     },
   ];
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >handleCardClick = (r</span>oleId: string) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    navigate(`/login?role=${roleId}`);</span>
+  const handleCardClick = (roleId: string) =&gt; {
+    navigate(`/login?role=${roleId}`);
   };
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;div className="home-container"&gt;
       {/* Theme Toggle Switch */}
       &lt;div className="theme-toggle"&gt;
@@ -328,11 +328,11 @@ const <span class="cstat-no" title="statement not covered" ><span class="fstat-n
         &lt;/div&gt;
 &nbsp;
         &lt;div className="cards-container"&gt;
-          {roles.<span class="fstat-no" title="function not covered" >map((r</span>ole) =&gt; (
-<span class="cstat-no" title="statement not covered" >            &lt;div</span>
+          {roles.map((role) =&gt; (
+            &lt;div
               key={role.id}
               className="role-card"
-<span class="fstat-no" title="function not covered" >              onClick={() =&gt; <span class="cstat-no" title="statement not covered" >h</span>andleCardClick(role.id)}</span>
+              onClick={() =&gt; handleCardClick(role.id)}
               style={{ borderTopColor: role.color }}
             &gt;
               &lt;div className="card-icon"&gt;{role.icon}&lt;/div&gt;
@@ -361,7 +361,7 @@ export default HomePage;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-08T13:06:50.119Z
+                at 2026-04-09T05:14:36.400Z
             </div>
         <script src="../prettify.js"></script>
         <script>
