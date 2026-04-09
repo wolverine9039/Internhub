@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.05% </span>
+                <span class="strong">55.88% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>16/34</span>
+                <span class='fraction'>19/34</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">34.61% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/26</span>
+                <span class='fraction'>13/26</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">46.42% </span>
+                <span class="strong">57.14% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/28</span>
+                <span class='fraction'>16/28</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -150,40 +150,40 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -234,10 +234,10 @@ const ProjectFormModal: React.FC&lt;ProjectFormModalProps&gt; = ({ isOpen, editP
   const [errors, setErrors] = useState&lt;Record&lt;string, string&gt;&gt;({});
 &nbsp;
   useEffect(() =&gt; {
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (editProject) {
-<span class="cstat-no" title="statement not covered" >      setTitle(editProject.title);</span>
-<span class="cstat-no" title="statement not covered" >      setDescription(editProject.description || '');</span>
-<span class="cstat-no" title="statement not covered" >      setCohortId(String(editProject.cohort_id));</span>
+    if (editProject) {
+      setTitle(editProject.title);
+      setDescription(editProject.description || <span class="branch-1 cbranch-no" title="branch not covered" >'');</span>
+      setCohortId(String(editProject.cohort_id));
     } else {
       setTitle(''); setDescription(''); setCohortId('');
     }
@@ -264,7 +264,7 @@ const ProjectFormModal: React.FC&lt;ProjectFormModalProps&gt; = ({ isOpen, editP
     &lt;div className="modal-overlay" onClick={onClose}&gt;
       &lt;div className="modal-card" <span class="fstat-no" title="function not covered" >onClick={e</span> =&gt; <span class="cstat-no" title="statement not covered" >e.stopPropagation()}</span>&gt;
         &lt;div className="modal-header"&gt;
-          &lt;h3 className="modal-title"&gt;{editProject ? <span class="branch-0 cbranch-no" title="branch not covered" >'Edit Project' : '</span>New Project'}&lt;/h3&gt;
+          &lt;h3 className="modal-title"&gt;{editProject ? 'Edit Project' : 'New Project'}&lt;/h3&gt;
         &lt;/div&gt;
         &lt;form onSubmit={handleSubmit}&gt;
           &lt;div className="modal-body"&gt;
@@ -285,7 +285,7 @@ const ProjectFormModal: React.FC&lt;ProjectFormModalProps&gt; = ({ isOpen, editP
           &lt;/div&gt;
           &lt;div className="modal-footer"&gt;
             &lt;button type="button" className="btn btn-secondary btn-sm" onClick={onClose}&gt;Cancel&lt;/button&gt;
-            &lt;button type="submit" className="btn btn-primary btn-sm"&gt;{editProject ? <span class="branch-0 cbranch-no" title="branch not covered" >'Save' : '</span>Create'}&lt;/button&gt;
+            &lt;button type="submit" className="btn btn-primary btn-sm"&gt;{editProject ? 'Save' : 'Create'}&lt;/button&gt;
           &lt;/div&gt;
         &lt;/form&gt;
       &lt;/div&gt;
@@ -301,7 +301,7 @@ export default ProjectFormModal;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-08T13:06:50.119Z
+                at 2026-04-09T05:14:36.400Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
