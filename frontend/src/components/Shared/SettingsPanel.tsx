@@ -21,7 +21,7 @@ const AppearanceSection: React.FC = () => {
         <span className="settings-icon">🎨</span>
         <div>
           <h3 className="settings-card-title">Appearance</h3>
-          <p className="settings-card-desc">Customize how InternHub looks for you</p>
+          <p className="settings-card-desc">Customize how Intern Management Tool looks for you</p>
         </div>
       </div>
       <div className="settings-card-body">

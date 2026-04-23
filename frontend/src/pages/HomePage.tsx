@@ -48,7 +48,7 @@ const HomePage: React.FC = () => {
       {/* Theme Toggle Switch */}
       <div className="theme-toggle">
         <span className="toggle-icon">🌙</span>
-        <label className="switch">
+        <label className="switch" aria-label="Toggle theme">
           <input
             type="checkbox"
             checked={!isDark}
@@ -63,7 +63,7 @@ const HomePage: React.FC = () => {
         <div className="logo-section">
           <h1 className="logo-text">
             <span className="logo-intern">Intern</span>
-            <span className="logo-hub">Hub</span>
+            <span className="logo-hub"> Management Tool</span>
           </h1>
           <p className="tagline">Learning Management System</p>
         </div>
@@ -73,7 +73,10 @@ const HomePage: React.FC = () => {
             <div
               key={role.id}
               className="role-card"
+              role="button"
+              tabIndex={0}
               onClick={() => handleCardClick(role.id)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCardClick(role.id); } }}
               style={{ borderTopColor: role.color }}
             >
               <div className="card-icon">{role.icon}</div>
@@ -87,7 +90,7 @@ const HomePage: React.FC = () => {
         </div>
 
         <footer className="home-footer">
-          <p>© 2026 InternHub. All rights reserved.</p>
+          <p>© 2026 Intern Management Tool. All rights reserved.</p>
         </footer>
       </div>
     </div>
