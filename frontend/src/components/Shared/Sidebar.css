@@ -150,11 +150,16 @@
   margin: 1px 8px;
   border-radius: var(--radius-md, 8px);
   font-size: 13.5px;
+  font-family: inherit;
   color: var(--muted);
   cursor: pointer;
   transition: all 0.18s ease;
   white-space: nowrap;
   position: relative;
+  background: transparent;
+  border: none;
+  text-align: left;
+  width: calc(100% - 16px);
 }
 
 .nav-item:hover {

@@ -51,7 +51,7 @@ const ProjectFormModal: React.FC<ProjectFormModalProps> = ({ isOpen, editProject
           <div className="modal-body">
             <div className="form-group">
               <label className="form-label" htmlFor="project-title">Project Title</label>
-              <input id="project-title" className={`form-input ${errors.title ? 'error' : ''}`} value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. InternHub Platform" />
+              <input id="project-title" className={`form-input ${errors.title ? 'error' : ''}`} value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Intern Management Tool" />
               {errors.title && <div className="form-error">{errors.title}</div>}
             </div>
             <div className="form-group">
