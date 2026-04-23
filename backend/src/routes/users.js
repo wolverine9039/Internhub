@@ -3,6 +3,8 @@ const router = express.Router();
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
+const { parsePagination, parseSorting, buildPatchFields, paginatedResponse } = require('../utils/queryHelpers');
+const { createUser } = require('../services/userService');
 
 /**
  * GET /users — List users with pagination, sorting, field selection, and filtering
@@ -10,9 +12,7 @@ const { authenticate, authorize } = require('../middleware/authMiddleware');
  */
 router.get('/', authenticate, async (req, res, next) => {
   try {
-    const page = Math.max(1, parseInt(req.query.page) || 1);
-    const page_size = Math.min(100, Math.max(1, parseInt(req.query.page_size) || 20));
-    const offset = (page - 1) * page_size;
+    const { page, pageSize, offset } = parsePagination(req.query);
 
     // Allowed columns for field selection & sorting (whitelist to prevent injection)
     const ALLOWED_FIELDS = ['id', 'name', 'email', 'role', 'cohort_id', 'is_active', 'created_at'];
@@ -23,18 +23,7 @@ router.get('/', authenticate, async (req, res, next) => {
     const columns = selectedFields.length > 0 ? selectedFields.join(', ') : ALLOWED_FIELDS.join(', ');
 
     // Sorting
-    let sortField = 'created_at';
-    let sortOrder = 'ASC';
-    if (req.query.sort) {
-      const raw = req.query.sort;
-      if (raw.startsWith('-')) {
-        sortField = raw.slice(1);
-        sortOrder = 'DESC';
-      } else {
-        sortField = raw;
-      }
-      if (!ALLOWED_FIELDS.includes(sortField)) sortField = 'created_at';
-    }
+    const { sortField, sortOrder } = parseSorting(req.query, ALLOWED_FIELDS, 'created_at', 'ASC');
 
     // Filters
     const conditions = [];
@@ -46,23 +35,12 @@ router.get('/', authenticate, async (req, res, next) => {
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
     // Count total for pagination (run in parallel with data query)
-    const countQuery = `SELECT COUNT(*) AS total FROM users ${whereClause}`;
-    const dataQuery = `SELECT ${columns} FROM users ${whereClause} ORDER BY ${sortField} ${sortOrder} LIMIT ? OFFSET ?`;
-
     const [[countResult], [users]] = await Promise.all([
-      pool.execute(countQuery, params),
-      pool.execute(dataQuery, [...params, String(page_size), String(offset)]),
+      pool.execute(`SELECT COUNT(*) AS total FROM users ${whereClause}`, params),
+      pool.execute(`SELECT ${columns} FROM users ${whereClause} ORDER BY ${sortField} ${sortOrder} LIMIT ? OFFSET ?`, [...params, String(pageSize), String(offset)]),
     ]);
 
-    const total = countResult[0].total;
-
-    res.status(200).json({
-      items: users,
-      page,
-      page_size,
-      total,
-      pages: Math.ceil(total / page_size),
-    });
+    res.status(200).json(paginatedResponse(users, page, pageSize, countResult[0].total));
   } catch (err) {
     next(err);
   }
@@ -85,27 +63,12 @@ router.get('/:id', authenticate, async (req, res, next) => {
 });
 
 /**
- * POST /users — Create a new user
+ * POST /users — Create a new user (uses shared userService)
  */
 router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
   try {
-    const { name, email, password, role, cohort_id } = req.body;
-
-    if (!name || !email || !password || !role) {
-      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', [
-        ...(!name ? [{ field: 'name', message: 'Name is required' }] : []),
-        ...(!email ? [{ field: 'email', message: 'Email is required' }] : []),
-        ...(!password ? [{ field: 'password', message: 'Password is required' }] : []),
-        ...(!role ? [{ field: 'role', message: 'Role is required' }] : []),
-      ]);
-    }
-
-    const [result] = await pool.execute(
-      'INSERT INTO users (name, email, password_hash, role, cohort_id) VALUES (?, ?, ?, ?, ?)',
-      [name, email, password, role, cohort_id || null]
-    );
-
-    res.status(201).location(`/api/users/${result.insertId}`).json({ message: 'User created', userId: result.insertId });
+    const userId = await createUser(req.body);
+    res.status(201).location(`/api/users/${userId}`).json({ message: 'User created', userId });
   } catch (err) {
     next(err);
   }
@@ -116,23 +79,10 @@ router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
  */
 router.patch('/:id', authenticate, authorize('admin'), async (req, res, next) => {
   try {
-    const ALLOWED_UPDATES = ['name', 'email', 'role', 'cohort_id', 'is_active'];
-    const updates = [];
-    const params = [];
-
-    for (const field of ALLOWED_UPDATES) {
-      if (req.body[field] !== undefined) {
-        updates.push(`${field} = ?`);
-        params.push(req.body[field]);
-      }
-    }
-
-    if (updates.length === 0) {
-      throw new AppError(422, 'VALIDATION_ERROR', 'No valid fields provided for update');
-    }
+    const { setClauses, params } = buildPatchFields(req.body, ['name', 'email', 'role', 'cohort_id', 'is_active']);
 
     params.push(req.params.id);
-    const [result] = await pool.execute(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`, params);
+    const [result] = await pool.execute(`UPDATE users SET ${setClauses.join(', ')} WHERE id = ?`, params);
 
     if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'User not found');
 

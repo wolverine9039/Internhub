@@ -3,25 +3,15 @@ const router = express.Router();
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
+const { parsePagination, parseSorting, buildPatchFields, paginatedResponse } = require('../utils/queryHelpers');
 
 /**
  * GET /projects — List with pagination, sorting, and cohort_id filter
  */
 router.get('/', authenticate, async (req, res, next) => {
   try {
-    const page = Math.max(1, parseInt(req.query.page) || 1);
-    const page_size = Math.min(100, Math.max(1, parseInt(req.query.page_size) || 20));
-    const offset = (page - 1) * page_size;
-
-    const ALLOWED_SORT = ['id', 'title', 'cohort_id', 'created_at'];
-    let sortField = 'created_at';
-    let sortOrder = 'DESC';
-    if (req.query.sort) {
-      const raw = req.query.sort;
-      sortField = raw.startsWith('-') ? raw.slice(1) : raw;
-      sortOrder = raw.startsWith('-') ? 'DESC' : 'ASC';
-      if (!ALLOWED_SORT.includes(sortField)) sortField = 'created_at';
-    }
+    const { page, pageSize, offset } = parsePagination(req.query);
+    const { sortField, sortOrder } = parseSorting(req.query, ['id', 'title', 'cohort_id', 'created_at']);
 
     const conditions = []; const params = [];
     if (req.query.cohort_id) { conditions.push('cohort_id = ?'); params.push(req.query.cohort_id); }
@@ -31,29 +21,25 @@ router.get('/', authenticate, async (req, res, next) => {
 
     const [[countResult], [projects]] = await Promise.all([
       pool.execute(`SELECT COUNT(*) AS total FROM projects ${where}`, params),
-      pool.execute(`SELECT * FROM projects ${where} ORDER BY ${sortField} ${sortOrder} LIMIT ? OFFSET ?`, [...params, String(page_size), String(offset)]),
+      pool.execute(`SELECT * FROM projects ${where} ORDER BY ${sortField} ${sortOrder} LIMIT ? OFFSET ?`, [...params, String(pageSize), String(offset)]),
     ]);
 
-    res.status(200).json({ items: projects, page, page_size, total: countResult[0].total, pages: Math.ceil(countResult[0].total / page_size) });
+    res.status(200).json(paginatedResponse(projects, page, pageSize, countResult[0].total));
   } catch (err) { next(err); }
 });
 
-router.get('/:id', authenticate, async (req, res, next) => {
-  try {
-    const [rows] = await pool.execute('SELECT * FROM projects WHERE id = ?', [req.params.id]);
-    if (rows.length === 0) throw new AppError(404, 'NOT_FOUND', 'Project not found');
-    res.status(200).json(rows[0]);
-  } catch (err) { next(err); }
-});
+const { getById, patchById, deleteById } = require('../utils/crudFactory');
+
+router.get('/:id', authenticate, getById('projects', 'Project'));
 
 router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
   try {
     const { title, description, cohort_id, trainer_id } = req.body;
     if (!title || !cohort_id) {
-      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', [
-        ...(!title ? [{ field: 'title', message: 'Title is required' }] : []),
-        ...(!cohort_id ? [{ field: 'cohort_id', message: 'Cohort ID is required' }] : []),
-      ]);
+      const errorDetails = [];
+      if (!title) errorDetails.push({ field: 'title', message: 'Title is required' });
+      if (!cohort_id) errorDetails.push({ field: 'cohort_id', message: 'Cohort ID is required' });
+      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', errorDetails);
     }
     const [result] = await pool.execute(
       'INSERT INTO projects (title, description, cohort_id, trainer_id) VALUES (?, ?, ?, ?)',
@@ -63,28 +49,8 @@ router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-router.patch('/:id', authenticate, authorize('admin'), async (req, res, next) => {
-  try {
-    const ALLOWED = ['title', 'description', 'cohort_id', 'trainer_id'];
-    const updates = []; const params = [];
-    for (const f of ALLOWED) { if (req.body[f] !== undefined) { updates.push(`${f} = ?`); params.push(req.body[f]); } }
-    if (updates.length === 0) throw new AppError(422, 'VALIDATION_ERROR', 'No valid fields provided');
+router.patch('/:id', authenticate, authorize('admin'), patchById('projects', 'Project', ['title', 'description', 'cohort_id', 'trainer_id']));
 
-    params.push(req.params.id);
-    const [result] = await pool.execute(`UPDATE projects SET ${updates.join(', ')} WHERE id = ?`, params);
-    if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Project not found');
-
-    const [rows] = await pool.execute('SELECT * FROM projects WHERE id = ?', [req.params.id]);
-    res.status(200).json(rows[0]);
-  } catch (err) { next(err); }
-});
-
-router.delete('/:id', authenticate, authorize('admin'), async (req, res, next) => {
-  try {
-    const [result] = await pool.execute('DELETE FROM projects WHERE id = ?', [req.params.id]);
-    if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Project not found');
-    res.status(204).send();
-  } catch (err) { next(err); }
-});
+router.delete('/:id', authenticate, authorize('admin'), deleteById('projects', 'Project'));
 
 module.exports = router;

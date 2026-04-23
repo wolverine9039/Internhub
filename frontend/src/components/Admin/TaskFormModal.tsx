@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { projectService } from '@/services/projectService';
 import { userService } from '@/services/userService';
-import type { Project, User, Task } from '@/types';
+import type { Project, User, Task, TaskFormData } from '@/types';
+import { getErrorMessage } from '@/utils/errorUtils';
 import '@/components/Shared/ConfirmDialog.css';
 
 interface TaskFormModalProps {
   isOpen: boolean;
   editTask?: Task | null;
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: TaskFormData) => Promise<void>;
   onClose: () => void;
 }
 
@@ -56,7 +57,14 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({ isOpen, editTask, onSubmi
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = async (evt: React.FormEvent) => {
+  let submitText = 'Create Task';
+  if (submitting) {
+    submitText = 'Saving...';
+  } else if (editTask) {
+    submitText = 'Save Changes';
+  }
+
+  const handleSubmit = async (evt: React.SyntheticEvent<HTMLFormElement>) => {
     evt.preventDefault();
     if (!validate()) return;
     
@@ -71,8 +79,8 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({ isOpen, editTask, onSubmi
         status,
         due_date: dueDate || undefined
       });
-    } catch (err: any) {
-      setErrors({ submit: err.response?.data?.error || 'Failed to save task' });
+    } catch (err: unknown) {
+      setErrors({ submit: getErrorMessage(err, 'Failed to save task') });
     } finally {
       setSubmitting(false);
     }
@@ -81,8 +89,8 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({ isOpen, editTask, onSubmi
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-card" onClick={e => e.stopPropagation()} style={{ width: '500px' }}>
+    <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }} aria-hidden="true">
+      <dialog open className="modal-card" style={{ width: '500px', border: 'none', padding: 0, margin: 0 }} aria-modal="true" aria-label={editTask ? 'Edit Task' : 'New Task'}>
         <div className="modal-header">
           <h3 className="modal-title">{editTask ? 'Edit Task' : 'New Task'}</h3>
         </div>
@@ -91,20 +99,20 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({ isOpen, editTask, onSubmi
             {errors.submit && <div className="error-banner">{errors.submit}</div>}
             
             <div className="form-group">
-              <label className="form-label">Task Title</label>
-              <input className={`form-input ${errors.title ? 'error' : ''}`} value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Implement Login API" />
+              <label className="form-label" htmlFor="task-title">Task Title</label>
+              <input id="task-title" className={`form-input ${errors.title ? 'error' : ''}`} value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Implement Login API" />
               {errors.title && <div className="form-error">{errors.title}</div>}
             </div>
 
             <div className="form-group">
-              <label className="form-label">Description</label>
-              <textarea className="form-input" style={{ minHeight: '80px', resize: 'vertical' }} value={description} onChange={e => setDescription(e.target.value)} placeholder="Detailed requirements..." />
+              <label className="form-label" htmlFor="task-desc">Description</label>
+              <textarea id="task-desc" className="form-input" style={{ minHeight: '80px', resize: 'vertical' }} value={description} onChange={e => setDescription(e.target.value)} placeholder="Detailed requirements..." />
             </div>
 
             <div className="two-col">
               <div className="form-group">
-                <label className="form-label">Project</label>
-                <select className={`form-input ${errors.project_id ? 'error' : ''}`} value={projectId} onChange={e => setProjectId(e.target.value)}>
+                <label className="form-label" htmlFor="task-project">Project</label>
+                <select id="task-project" className={`form-input ${errors.project_id ? 'error' : ''}`} value={projectId} onChange={e => setProjectId(e.target.value)}>
                   <option value="">Select Project</option>
                   {projects.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
                 </select>
@@ -112,8 +120,8 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({ isOpen, editTask, onSubmi
               </div>
 
               <div className="form-group">
-                <label className="form-label">Assign To</label>
-                <select className={`form-input ${errors.assigned_to ? 'error' : ''}`} value={assignedTo} onChange={e => setAssignedTo(e.target.value)}>
+                <label className="form-label" htmlFor="task-assignee">Assign To</label>
+                <select id="task-assignee" className={`form-input ${errors.assigned_to ? 'error' : ''}`} value={assignedTo} onChange={e => setAssignedTo(e.target.value)}>
                   <option value="">Select Intern</option>
                   {interns.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
                 </select>
@@ -123,8 +131,8 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({ isOpen, editTask, onSubmi
 
             <div className="three-col">
               <div className="form-group">
-                <label className="form-label">Priority</label>
-                <select className="form-input" value={priority} onChange={e => setPriority(e.target.value)}>
+                <label className="form-label" htmlFor="task-priority">Priority</label>
+                <select id="task-priority" className="form-input" value={priority} onChange={e => setPriority(e.target.value)}>
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
@@ -132,8 +140,8 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({ isOpen, editTask, onSubmi
               </div>
               
               <div className="form-group">
-                <label className="form-label">Status</label>
-                <select className="form-input" value={status} onChange={e => setStatus(e.target.value)}>
+                <label className="form-label" htmlFor="task-status">Status</label>
+                <select id="task-status" className="form-input" value={status} onChange={e => setStatus(e.target.value)}>
                   <option value="pending">Pending</option>
                   <option value="in_progress">In Progress</option>
                   <option value="submitted">Submitted</option>
@@ -142,17 +150,17 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({ isOpen, editTask, onSubmi
               </div>
 
               <div className="form-group">
-                <label className="form-label">Due Date</label>
-                <input type="date" className="form-input" value={dueDate} onChange={e => setDueDate(e.target.value)} />
+                <label className="form-label" htmlFor="task-due-date">Due Date</label>
+                <input id="task-due-date" type="date" className="form-input" value={dueDate} onChange={e => setDueDate(e.target.value)} />
               </div>
             </div>
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary btn-sm" onClick={onClose} disabled={submitting}>Cancel</button>
-            <button type="submit" className="btn btn-primary btn-sm" disabled={submitting}>{submitting ? 'Saving...' : (editTask ? 'Save Changes' : 'Create Task')}</button>
+            <button type="submit" className="btn btn-primary btn-sm" disabled={submitting}>{submitText}</button>
           </div>
         </form>
-      </div>
+      </dialog>
     </div>
   );
 };

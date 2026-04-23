@@ -34,7 +34,7 @@ const CohortFormModal: React.FC<CohortFormModalProps> = ({ isOpen, editCohort, o
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (evt: React.FormEvent) => {
+  const handleSubmit = (evt: React.SyntheticEvent<HTMLFormElement>) => {
     evt.preventDefault();
     if (!validate()) return;
     onSubmit({ name, description: description || undefined, start_date: startDate || undefined, end_date: endDate || undefined });
@@ -43,29 +43,29 @@ const CohortFormModal: React.FC<CohortFormModalProps> = ({ isOpen, editCohort, o
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-card" onClick={e => e.stopPropagation()}>
+    <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }} aria-hidden="true">
+      <dialog open className="modal-card" style={{ border: 'none', padding: 0, margin: 0 }} aria-modal="true" aria-label={editCohort ? 'Edit Cohort' : 'New Cohort'}>
         <div className="modal-header">
           <h3 className="modal-title">{editCohort ? 'Edit Cohort' : 'New Cohort'}</h3>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
             <div className="form-group">
-              <label className="form-label">Cohort Name</label>
-              <input className={`form-input ${errors.name ? 'error' : ''}`} value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Cohort D" />
+              <label className="form-label" htmlFor="cohort-name">Cohort Name</label>
+              <input id="cohort-name" className={`form-input ${errors.name ? 'error' : ''}`} value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Cohort D" />
               {errors.name && <div className="form-error">{errors.name}</div>}
             </div>
             <div className="form-group">
-              <label className="form-label">Description</label>
-              <input className="form-input" value={description} onChange={e => setDescription(e.target.value)} placeholder="Track / focus area" />
+              <label className="form-label" htmlFor="cohort-desc">Description</label>
+              <input id="cohort-desc" className="form-input" value={description} onChange={e => setDescription(e.target.value)} placeholder="Track / focus area" />
             </div>
             <div className="form-group">
-              <label className="form-label">Start Date</label>
-              <input className="form-input" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
+              <label className="form-label" htmlFor="cohort-start">Start Date</label>
+              <input id="cohort-start" className="form-input" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
             </div>
             <div className="form-group">
-              <label className="form-label">End Date</label>
-              <input className="form-input" type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+              <label className="form-label" htmlFor="cohort-end">End Date</label>
+              <input id="cohort-end" className="form-input" type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
             </div>
           </div>
           <div className="modal-footer">
@@ -73,7 +73,7 @@ const CohortFormModal: React.FC<CohortFormModalProps> = ({ isOpen, editCohort, o
             <button type="submit" className="btn btn-primary btn-sm">{editCohort ? 'Save' : 'Create'}</button>
           </div>
         </form>
-      </div>
+      </dialog>
     </div>
   );
 };

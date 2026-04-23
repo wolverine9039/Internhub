@@ -3,15 +3,23 @@ const router = express.Router();
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
+const { parsePagination, paginatedResponse } = require('../utils/queryHelpers');
+
+// Shared JOIN fragment for evaluation queries
+const EVAL_JOIN_SQL = `
+  FROM evaluations e 
+  LEFT JOIN users u ON e.trainer_id = u.id 
+  LEFT JOIN submissions s ON e.submission_id = s.id 
+  LEFT JOIN tasks t ON s.task_id = t.id 
+  LEFT JOIN users i ON s.intern_id = i.id
+`;
 
 /**
  * GET /evaluations — List with pagination and filters
  */
 router.get('/', authenticate, async (req, res, next) => {
   try {
-    const page = Math.max(1, parseInt(req.query.page) || 1);
-    const page_size = Math.min(100, Math.max(1, parseInt(req.query.page_size) || 20));
-    const offset = (page - 1) * page_size;
+    const { page, pageSize, offset } = parsePagination(req.query);
 
     const conditions = []; const params = [];
     if (req.query.submission_id) { conditions.push('e.submission_id = ?'); params.push(req.query.submission_id); }
@@ -19,105 +27,103 @@ router.get('/', authenticate, async (req, res, next) => {
     
     const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
-    const countQuery = `SELECT COUNT(*) AS total FROM evaluations e ${where}`;
-    const dataQuery = `
-      SELECT e.*, u.name as trainer_name, t.title as task_title, i.name as intern_name 
-      FROM evaluations e 
-      LEFT JOIN users u ON e.trainer_id = u.id 
-      LEFT JOIN submissions s ON e.submission_id = s.id 
-      LEFT JOIN tasks t ON s.task_id = t.id 
-      LEFT JOIN users i ON s.intern_id = i.id
-      ${where} 
-      ORDER BY e.evaluated_at DESC 
-      LIMIT ? OFFSET ?
-    `;
-
     const [[countResult], [evaluations]] = await Promise.all([
-      pool.execute(countQuery, params),
-      pool.execute(dataQuery, [...params, String(page_size), String(offset)]),
+      pool.execute(`SELECT COUNT(*) AS total FROM evaluations e ${where}`, params),
+      pool.execute(`SELECT e.*, u.name as trainer_name, t.title as task_title, i.name as intern_name ${EVAL_JOIN_SQL} ${where} ORDER BY e.evaluated_at DESC LIMIT ? OFFSET ?`,
+        [...params, String(pageSize), String(offset)]),
     ]);
 
-    res.status(200).json({ items: evaluations, page, page_size, total: countResult[0].total, pages: Math.ceil(countResult[0].total / page_size) });
+    res.status(200).json(paginatedResponse(evaluations, page, pageSize, countResult[0].total));
   } catch (err) { next(err); }
 });
 
 router.get('/:id', authenticate, async (req, res, next) => {
   try {
-    const [rows] = await pool.execute(`
-      SELECT e.*, u.name as trainer_name, t.title as task_title, i.name as intern_name 
-      FROM evaluations e 
-      LEFT JOIN users u ON e.trainer_id = u.id 
-      LEFT JOIN submissions s ON e.submission_id = s.id 
-      LEFT JOIN tasks t ON s.task_id = t.id 
-      LEFT JOIN users i ON s.intern_id = i.id
-      WHERE e.id = ?
-    `, [req.params.id]);
+    const [rows] = await pool.execute(
+      `SELECT e.*, u.name as trainer_name, t.title as task_title, i.name as intern_name ${EVAL_JOIN_SQL} WHERE e.id = ?`,
+      [req.params.id]
+    );
     if (rows.length === 0) throw new AppError(404, 'NOT_FOUND', 'Evaluation not found');
     res.status(200).json(rows[0]);
   } catch (err) { next(err); }
 });
 
-router.post('/', authenticate, authorize('admin', 'trainer'), async (req, res, next) => {
+/**
+ * Validate required evaluation fields.
+ */
+function validateEvalFields({ submission_id, trainer_id, score }) {
+  if (!submission_id || !trainer_id || score === undefined) {
+    const errorDetails = [];
+    if (!submission_id) errorDetails.push({ field: 'submission_id', message: 'Submission ID is required' });
+    if (!trainer_id) errorDetails.push({ field: 'trainer_id', message: 'Trainer ID is required' });
+    if (score === undefined) errorDetails.push({ field: 'score', message: 'Score is required' });
+    throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', errorDetails);
+  }
+}
+
+/**
+ * Extract evaluation column values in a consistent order.
+ */
+function evalColumnValues(body) {
+  const { code_quality, functionality, documentation, timeliness, score, feedback, strengths, improvements } = body;
+  return [code_quality || null, functionality || null, documentation || null, timeliness || null, score, feedback || null, strengths || null, improvements || null];
+}
+
+/**
+ * Run a callback inside a DB transaction with automatic rollback/release.
+ */
+async function withTransaction(callback) {
   const connection = await pool.getConnection();
   try {
-    const { submission_id, trainer_id, code_quality, functionality, documentation, timeliness, score, feedback, strengths, improvements } = req.body;
-    if (!submission_id || !trainer_id || score === undefined) {
-      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', [
-        ...(!submission_id ? [{ field: 'submission_id', message: 'Submission ID is required' }] : []),
-        ...(!trainer_id ? [{ field: 'trainer_id', message: 'Trainer ID is required' }] : []),
-        ...(score === undefined ? [{ field: 'score', message: 'Score is required' }] : []),
-      ]);
-    }
-
     await connection.beginTransaction();
-
-    const [result] = await connection.execute(
-      `INSERT INTO evaluations 
-      (submission_id, trainer_id, code_quality, functionality, documentation, timeliness, score, feedback, strengths, improvements) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [submission_id, trainer_id, code_quality || null, functionality || null, documentation || null, timeliness || null, score, feedback || null, strengths || null, improvements || null]
-    );
-
-    // Also update submission status
-    await connection.execute('UPDATE submissions SET status = ?, reviewed_at = CURRENT_TIMESTAMP WHERE id = ?', ['reviewed', submission_id]);
-
+    const result = await callback(connection);
     await connection.commit();
-    res.status(201).location(`/api/evaluations/${result.insertId}`).json({ message: 'Evaluation recorded', evaluationId: result.insertId });
-  } catch (err) { 
+    return result;
+  } catch (err) {
     await connection.rollback();
-    next(err); 
+    throw err;
   } finally {
     connection.release();
   }
+}
+
+router.post('/', authenticate, authorize('admin', 'trainer'), async (req, res, next) => {
+  try {
+    validateEvalFields(req.body);
+    const { submission_id, trainer_id } = req.body;
+
+    const insertId = await withTransaction(async (conn) => {
+      const [result] = await conn.execute(
+        `INSERT INTO evaluations 
+        (submission_id, trainer_id, code_quality, functionality, documentation, timeliness, score, feedback, strengths, improvements) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [submission_id, trainer_id, ...evalColumnValues(req.body)]
+      );
+      await conn.execute('UPDATE submissions SET status = ?, reviewed_at = CURRENT_TIMESTAMP WHERE id = ?', ['reviewed', submission_id]);
+      return result.insertId;
+    });
+
+    res.status(201).location(`/api/evaluations/${insertId}`).json({ message: 'Evaluation recorded', evaluationId: insertId });
+  } catch (err) { next(err); }
 });
 
 router.put('/:id', authenticate, authorize('admin', 'trainer'), async (req, res, next) => {
-  const connection = await pool.getConnection();
   try {
-    const { submission_id, trainer_id, code_quality, functionality, documentation, timeliness, score, feedback, strengths, improvements } = req.body;
-    if (!submission_id || !trainer_id || score === undefined) {
-      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed');
-    }
+    validateEvalFields(req.body);
+    const { submission_id, trainer_id } = req.body;
 
-    await connection.beginTransaction();
+    await withTransaction(async (conn) => {
+      const [result] = await conn.execute(
+        `UPDATE evaluations 
+         SET submission_id = ?, trainer_id = ?, code_quality = ?, functionality = ?, documentation = ?, timeliness = ?, score = ?, feedback = ?, strengths = ?, improvements = ?, updated_at = CURRENT_TIMESTAMP
+         WHERE id = ?`,
+        [submission_id, trainer_id, ...evalColumnValues(req.body), req.params.id]
+      );
+      if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Evaluation not found');
+    });
 
-    const [result] = await connection.execute(
-      `UPDATE evaluations 
-       SET submission_id = ?, trainer_id = ?, code_quality = ?, functionality = ?, documentation = ?, timeliness = ?, score = ?, feedback = ?, strengths = ?, improvements = ?, updated_at = CURRENT_TIMESTAMP
-       WHERE id = ?`,
-      [submission_id, trainer_id, code_quality || null, functionality || null, documentation || null, timeliness || null, score, feedback || null, strengths || null, improvements || null, req.params.id]
-    );
-
-    if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Evaluation not found');
-
-    await connection.commit();
     res.status(200).json({ message: 'Evaluation updated successfully' });
-  } catch (err) {
-    await connection.rollback();
-    next(err);
-  } finally {
-    connection.release();
-  }
+  } catch (err) { next(err); }
 });
 
 router.delete('/:id', authenticate, authorize('admin'), async (req, res, next) => {

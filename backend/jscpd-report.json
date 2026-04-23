@@ -1,0 +1,2965 @@
+{
+  "statistics": {
+    "detectionDate": "2026-04-08T06:28:17.896Z",
+    "formats": {
+      "javascript": {
+        "sources": {
+          "src/__tests__/users.test.js": {
+            "lines": 129,
+            "tokens": 1295,
+            "sources": 1,
+            "clones": 27,
+            "duplicatedLines": 158,
+            "duplicatedTokens": 1529,
+            "percentage": 122.48,
+            "percentageTokens": 118.07,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/__tests__/middleware.test.js": {
+            "lines": 124,
+            "tokens": 1418,
+            "sources": 1,
+            "clones": 8,
+            "duplicatedLines": 32,
+            "duplicatedTokens": 446,
+            "percentage": 25.81,
+            "percentageTokens": 31.45,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/__tests__/health.test.js": {
+            "lines": 42,
+            "tokens": 468,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 12,
+            "duplicatedTokens": 99,
+            "percentage": 28.57,
+            "percentageTokens": 21.15,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/__tests__/cohorts.test.js": {
+            "lines": 104,
+            "tokens": 1034,
+            "sources": 1,
+            "clones": 12,
+            "duplicatedLines": 73,
+            "duplicatedTokens": 756,
+            "percentage": 70.19,
+            "percentageTokens": 73.11,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/__tests__/auth.test.js": {
+            "lines": 126,
+            "tokens": 1226,
+            "sources": 1,
+            "clones": 5,
+            "duplicatedLines": 27,
+            "duplicatedTokens": 228,
+            "percentage": 21.43,
+            "percentageTokens": 18.6,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/utils/queryHelpers.js": {
+            "lines": 78,
+            "tokens": 520,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/utils/AppError.js": {
+            "lines": 13,
+            "tokens": 94,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/services/userService.js": {
+            "lines": 48,
+            "tokens": 464,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/routes/users.js": {
+            "lines": 108,
+            "tokens": 1277,
+            "sources": 1,
+            "clones": 32,
+            "duplicatedLines": 171,
+            "duplicatedTokens": 1882,
+            "percentage": 158.33,
+            "percentageTokens": 147.38,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/routes/trainer.js": {
+            "lines": 170,
+            "tokens": 940,
+            "sources": 1,
+            "clones": 3,
+            "duplicatedLines": 18,
+            "duplicatedTokens": 176,
+            "percentage": 10.59,
+            "percentageTokens": 18.72,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/routes/tasks.js": {
+            "lines": 87,
+            "tokens": 1405,
+            "sources": 1,
+            "clones": 17,
+            "duplicatedLines": 83,
+            "duplicatedTokens": 1070,
+            "percentage": 95.4,
+            "percentageTokens": 76.16,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/routes/submissions.js": {
+            "lines": 117,
+            "tokens": 1540,
+            "sources": 1,
+            "clones": 10,
+            "duplicatedLines": 60,
+            "duplicatedTokens": 606,
+            "percentage": 51.28,
+            "percentageTokens": 39.35,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/routes/projects.js": {
+            "lines": 76,
+            "tokens": 1254,
+            "sources": 1,
+            "clones": 10,
+            "duplicatedLines": 48,
+            "duplicatedTokens": 694,
+            "percentage": 63.16,
+            "percentageTokens": 55.34,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/routes/intern.js": {
+            "lines": 70,
+            "tokens": 550,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 8,
+            "duplicatedTokens": 62,
+            "percentage": 11.43,
+            "percentageTokens": 11.27,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/routes/evaluations.js": {
+            "lines": 134,
+            "tokens": 1498,
+            "sources": 1,
+            "clones": 12,
+            "duplicatedLines": 85,
+            "duplicatedTokens": 845,
+            "percentage": 63.43,
+            "percentageTokens": 56.41,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/routes/cohorts.js": {
+            "lines": 143,
+            "tokens": 1725,
+            "sources": 1,
+            "clones": 7,
+            "duplicatedLines": 35,
+            "duplicatedTokens": 399,
+            "percentage": 24.48,
+            "percentageTokens": 23.13,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/routes/auth.js": {
+            "lines": 114,
+            "tokens": 1158,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 3,
+            "duplicatedTokens": 48,
+            "percentage": 2.63,
+            "percentageTokens": 4.15,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/routes/admin.js": {
+            "lines": 463,
+            "tokens": 3567,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 7,
+            "duplicatedTokens": 62,
+            "percentage": 1.51,
+            "percentageTokens": 1.74,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/middleware/errorHandler.js": {
+            "lines": 31,
+            "tokens": 271,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/middleware/authMiddleware.js": {
+            "lines": 41,
+            "tokens": 412,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/config/db.js": {
+            "lines": 46,
+            "tokens": 435,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/app.js": {
+            "lines": 88,
+            "tokens": 864,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 2352,
+          "tokens": 23415,
+          "sources": 22,
+          "clones": 74,
+          "duplicatedLines": 410,
+          "duplicatedTokens": 4451,
+          "percentage": 17.43,
+          "percentageTokens": 19.01,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      }
+    },
+    "total": {
+      "lines": 2352,
+      "tokens": 23415,
+      "sources": 22,
+      "clones": 74,
+      "duplicatedLines": 410,
+      "duplicatedTokens": 4451,
+      "percentage": 17.43,
+      "percentageTokens": 19.01,
+      "newDuplicatedLines": 0,
+      "newClones": 0
+    }
+  },
+  "duplicates": [
+    {
+      "format": "javascript",
+      "lines": 5,
+      "fragment": ")\n      .set('Authorization', `Bearer ${token}`);\n\n    expect(res.status).toBe(200);\n    expect(res.body.",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 44,
+        "end": 48,
+        "startLoc": {
+          "line": 44,
+          "column": 25,
+          "position": 449
+        },
+        "endLoc": {
+          "line": 48,
+          "column": 2,
+          "position": 487
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 28,
+        "end": 32,
+        "startLoc": {
+          "line": 28,
+          "column": 13,
+          "position": 274
+        },
+        "endLoc": {
+          "line": 32,
+          "column": 2,
+          "position": 312
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": ", async () => {\n    const token = await getAdminToken();\n    if (!token) return;\n\n    const res = await request(app)\n      .get('/api/users?role=admin'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 52,
+        "end": 57,
+        "startLoc": {
+          "line": 52,
+          "column": 28,
+          "position": 525
+        },
+        "endLoc": {
+          "line": 57,
+          "column": 24,
+          "position": 580
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 39,
+        "end": 44,
+        "startLoc": {
+          "line": 39,
+          "column": 31,
+          "position": 393
+        },
+        "endLoc": {
+          "line": 44,
+          "column": 25,
+          "position": 448
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": ", async () => {\n    const token = await getAdminToken();\n    if (!token) return;\n\n    const res = await request(app)\n      .post",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 76,
+        "end": 81,
+        "startLoc": {
+          "line": 76,
+          "column": 43,
+          "position": 765
+        },
+        "endLoc": {
+          "line": 81,
+          "column": 5,
+          "position": 818
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 39,
+        "end": 44,
+        "startLoc": {
+          "line": 39,
+          "column": 31,
+          "position": 393
+        },
+        "endLoc": {
+          "line": 44,
+          "column": 4,
+          "position": 446
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": ", async () => {\n    const token = await getAdminToken();\n    if (!token) return;\n\n    const res = await request(app)\n      .get('/api/users/999999'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 96,
+        "end": 101,
+        "startLoc": {
+          "line": 96,
+          "column": 36,
+          "position": 966
+        },
+        "endLoc": {
+          "line": 101,
+          "column": 20,
+          "position": 1021
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 39,
+        "end": 44,
+        "startLoc": {
+          "line": 39,
+          "column": 31,
+          "position": 393
+        },
+        "endLoc": {
+          "line": 44,
+          "column": 25,
+          "position": 448
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 10,
+      "fragment": ");\n    expect(res.status).toBe(401);\n  });\n\n  it('returns 404 for non-existent user', async () => {\n    const token = await getAdminToken();\n    if (!token) return;\n\n    const res = await request(app)\n      .delete",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 111,
+        "end": 120,
+        "startLoc": {
+          "line": 111,
+          "column": 17,
+          "position": 1126
+        },
+        "endLoc": {
+          "line": 120,
+          "column": 7,
+          "position": 1206
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 92,
+        "end": 44,
+        "startLoc": {
+          "line": 92,
+          "column": 15,
+          "position": 939
+        },
+        "endLoc": {
+          "line": 44,
+          "column": 4,
+          "position": 446
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": "},\n    });\n    authenticate(req, res, next);\n\n    expect(next).toHaveBeenCalledWith(expect.any(AppError));\n    expect(next.mock.calls[0][0].code).toBe('INVALID_TOKEN'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\middleware.test.js",
+        "start": 42,
+        "end": 47,
+        "startLoc": {
+          "line": 42,
+          "column": 2,
+          "position": 452
+        },
+        "endLoc": {
+          "line": 47,
+          "column": 16,
+          "position": 511
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\middleware.test.js",
+        "start": 32,
+        "end": 37,
+        "startLoc": {
+          "line": 32,
+          "column": 2,
+          "position": 338
+        },
+        "endLoc": {
+          "line": 37,
+          "column": 15,
+          "position": 397
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 4,
+      "fragment": "authenticate(req, res, next);\n      expect(next).toHaveBeenCalledWith(expect.any(AppError));\n      expect(next.mock.calls[0][0].code).toBe('INVALID_TOKEN');\n    },",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\middleware.test.js",
+        "start": 79,
+        "end": 82,
+        "startLoc": {
+          "line": 79,
+          "column": 7,
+          "position": 847
+        },
+        "endLoc": {
+          "line": 82,
+          "column": 2,
+          "position": 902
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\middleware.test.js",
+        "start": 34,
+        "end": 48,
+        "startLoc": {
+          "line": 34,
+          "column": 5,
+          "position": 347
+        },
+        "endLoc": {
+          "line": 48,
+          "column": 2,
+          "position": 517
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 4,
+      "fragment": ", () => {\n    const middleware = authorize('admin');\n    const { req, res, next } = createMocks();\n    req.user = null",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\middleware.test.js",
+        "start": 107,
+        "end": 110,
+        "startLoc": {
+          "line": 107,
+          "column": 28,
+          "position": 1197
+        },
+        "endLoc": {
+          "line": 110,
+          "column": 5,
+          "position": 1248
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\middleware.test.js",
+        "start": 96,
+        "end": 99,
+        "startLoc": {
+          "line": 96,
+          "column": 42,
+          "position": 1041
+        },
+        "endLoc": {
+          "line": 99,
+          "column": 2,
+          "position": 1092
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": ";\n\n    middleware(req, res, next);\n    expect(next).toHaveBeenCalledWith(expect.any(AppError));\n    expect(next.mock.calls[0][0].statusCode).toBe(403);\n  }",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\middleware.test.js",
+        "start": 110,
+        "end": 115,
+        "startLoc": {
+          "line": 110,
+          "column": 5,
+          "position": 1249
+        },
+        "endLoc": {
+          "line": 115,
+          "column": 2,
+          "position": 1307
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\middleware.test.js",
+        "start": 99,
+        "end": 104,
+        "startLoc": {
+          "line": 99,
+          "column": 2,
+          "position": 1106
+        },
+        "endLoc": {
+          "line": 104,
+          "column": 7,
+          "position": 1164
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": ");\n    expect(res.status).toBe(404);\n    expect(res.body.error.code).toBe('NOT_FOUND');\n  });\n\n  it",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\health.test.js",
+        "start": 28,
+        "end": 33,
+        "startLoc": {
+          "line": 28,
+          "column": 19,
+          "position": 305
+        },
+        "endLoc": {
+          "line": 33,
+          "column": 3,
+          "position": 347
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 102,
+        "end": 107,
+        "startLoc": {
+          "line": 102,
+          "column": 2,
+          "position": 1036
+        },
+        "endLoc": {
+          "line": 107,
+          "column": 2,
+          "position": 1077
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 8,
+      "fragment": ");\n  });\n});\n\nafterAll(async () => {\n  const pool = require('../config/db');\n  if (pool.end) await pool.end();\n});",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\health.test.js",
+        "start": 36,
+        "end": 43,
+        "startLoc": {
+          "line": 36,
+          "column": 20,
+          "position": 411
+        },
+        "endLoc": {
+          "line": 43,
+          "column": 2,
+          "position": 468
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 123,
+        "end": 130,
+        "startLoc": {
+          "line": 123,
+          "column": 4,
+          "position": 1238
+        },
+        "endLoc": {
+          "line": 130,
+          "column": 2,
+          "position": 1295
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 7,
+      "fragment": "let adminToken = null;\nconst getAdminToken = async () => {\n  if (adminToken) return adminToken;\n  const res = await request(app)\n    .post('/api/auth/login')\n    .send({ email: 'admin@internhub.com', password: 'admin123' });\n  if (res.status === 200) adminToken",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\cohorts.test.js",
+        "start": 4,
+        "end": 10,
+        "startLoc": {
+          "line": 4,
+          "column": 1,
+          "position": 25
+        },
+        "endLoc": {
+          "line": 10,
+          "column": 11,
+          "position": 116
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 5,
+        "end": 11,
+        "startLoc": {
+          "line": 5,
+          "column": 1,
+          "position": 27
+        },
+        "endLoc": {
+          "line": 11,
+          "column": 2,
+          "position": 118
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": ", async () => {\n    const token = await getAdminToken();\n    if (!token) return;\n\n    const res = await request(app)\n      .get('/api/cohorts'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\cohorts.test.js",
+        "start": 20,
+        "end": 25,
+        "startLoc": {
+          "line": 20,
+          "column": 33,
+          "position": 208
+        },
+        "endLoc": {
+          "line": 25,
+          "column": 15,
+          "position": 263
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 39,
+        "end": 44,
+        "startLoc": {
+          "line": 39,
+          "column": 31,
+          "position": 393
+        },
+        "endLoc": {
+          "line": 44,
+          "column": 25,
+          "position": 448
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 7,
+      "fragment": ")\n      .set('Authorization', `Bearer ${token}`);\n\n    expect(res.status).toBe(200);\n    expect(res.body).toHaveProperty('items');\n    expect(res.body).toHaveProperty('page');\n    expect(res.body).toHaveProperty('total'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\cohorts.test.js",
+        "start": 25,
+        "end": 31,
+        "startLoc": {
+          "line": 25,
+          "column": 15,
+          "position": 264
+        },
+        "endLoc": {
+          "line": 31,
+          "column": 8,
+          "position": 334
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 28,
+        "end": 34,
+        "startLoc": {
+          "line": 28,
+          "column": 13,
+          "position": 274
+        },
+        "endLoc": {
+          "line": 34,
+          "column": 8,
+          "position": 344
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 5,
+      "fragment": ");\n    expect(res.body).toHaveProperty('total');\n    expect(Array.isArray(res.body.items)).toBe(true);\n  });\n}",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\cohorts.test.js",
+        "start": 30,
+        "end": 34,
+        "startLoc": {
+          "line": 30,
+          "column": 7,
+          "position": 321
+        },
+        "endLoc": {
+          "line": 34,
+          "column": 2,
+          "position": 364
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 34,
+        "end": 39,
+        "startLoc": {
+          "line": 34,
+          "column": 8,
+          "position": 345
+        },
+        "endLoc": {
+          "line": 39,
+          "column": 3,
+          "position": 390
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": ", async () => {\n    const token = await getAdminToken();\n    if (!token) return;\n\n    const res = await request(app)\n      .post('/api/cohorts'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\cohorts.test.js",
+        "start": 37,
+        "end": 42,
+        "startLoc": {
+          "line": 37,
+          "column": 35,
+          "position": 385
+        },
+        "endLoc": {
+          "line": 42,
+          "column": 15,
+          "position": 440
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 39,
+        "end": 81,
+        "startLoc": {
+          "line": 39,
+          "column": 31,
+          "position": 393
+        },
+        "endLoc": {
+          "line": 81,
+          "column": 13,
+          "position": 820
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 7,
+      "fragment": "});\n\n    expect(res.status).toBe(422);\n    expect(res.body.error.code).toBe('VALIDATION_ERROR');\n  });\n\n  it",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\cohorts.test.js",
+        "start": 44,
+        "end": 50,
+        "startLoc": {
+          "line": 44,
+          "column": 2,
+          "position": 468
+        },
+        "endLoc": {
+          "line": 50,
+          "column": 3,
+          "position": 512
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 83,
+        "end": 88,
+        "startLoc": {
+          "line": 83,
+          "column": 2,
+          "position": 848
+        },
+        "endLoc": {
+          "line": 88,
+          "column": 2,
+          "position": 890
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 9,
+      "fragment": ", async () => {\n    const token = await getAdminToken();\n    if (!token) return;\n\n    const res = await request(app)\n      .post('/api/cohorts')\n      .set('Authorization', `Bearer ${token}`)\n      .send({\n        name",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\cohorts.test.js",
+        "start": 50,
+        "end": 58,
+        "startLoc": {
+          "line": 50,
+          "column": 35,
+          "position": 515
+        },
+        "endLoc": {
+          "line": 58,
+          "column": 5,
+          "position": 594
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 39,
+        "end": 44,
+        "startLoc": {
+          "line": 39,
+          "column": 31,
+          "position": 393
+        },
+        "endLoc": {
+          "line": 44,
+          "column": 12,
+          "position": 463
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": ", async () => {\n    const token = await getAdminToken();\n    if (!token) return;\n\n    const res = await request(app)\n      .get('/api/cohorts/999999'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\cohorts.test.js",
+        "start": 71,
+        "end": 76,
+        "startLoc": {
+          "line": 71,
+          "column": 38,
+          "position": 705
+        },
+        "endLoc": {
+          "line": 76,
+          "column": 22,
+          "position": 760
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 39,
+        "end": 44,
+        "startLoc": {
+          "line": 39,
+          "column": 31,
+          "position": 393
+        },
+        "endLoc": {
+          "line": 44,
+          "column": 25,
+          "position": 448
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 9,
+      "fragment": ")\n      .set('Authorization', `Bearer ${token}`);\n\n    expect(res.status).toBe(404);\n    expect(res.body.error.code).toBe('NOT_FOUND');\n  });\n});\n\ndescribe('Cohorts Routes — DELETE /api/cohorts/:id'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\cohorts.test.js",
+        "start": 76,
+        "end": 84,
+        "startLoc": {
+          "line": 76,
+          "column": 22,
+          "position": 761
+        },
+        "endLoc": {
+          "line": 84,
+          "column": 43,
+          "position": 823
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 101,
+        "end": 109,
+        "startLoc": {
+          "line": 101,
+          "column": 20,
+          "position": 1022
+        },
+        "endLoc": {
+          "line": 109,
+          "column": 39,
+          "position": 1084
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": "it('returns 404 for non-existent cohort', async () => {\n    const token = await getAdminToken();\n    if (!token) return;\n\n    const res = await request(app)\n      .delete('/api/cohorts/999999'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\cohorts.test.js",
+        "start": 90,
+        "end": 95,
+        "startLoc": {
+          "line": 90,
+          "column": 3,
+          "position": 889
+        },
+        "endLoc": {
+          "line": 95,
+          "column": 22,
+          "position": 947
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\cohorts.test.js",
+        "start": 71,
+        "end": 120,
+        "startLoc": {
+          "line": 71,
+          "column": 3,
+          "position": 702
+        },
+        "endLoc": {
+          "line": 120,
+          "column": 20,
+          "position": 1208
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 11,
+      "fragment": ")\n      .set('Authorization', `Bearer ${token}`);\n\n    expect(res.status).toBe(404);\n  });\n});\n\nafterAll(async () => {\n  const pool = require('../config/db');\n  if (pool.end) await pool.end();\n});",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\cohorts.test.js",
+        "start": 95,
+        "end": 105,
+        "startLoc": {
+          "line": 95,
+          "column": 22,
+          "position": 948
+        },
+        "endLoc": {
+          "line": 105,
+          "column": 2,
+          "position": 1034
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 120,
+        "end": 130,
+        "startLoc": {
+          "line": 120,
+          "column": 20,
+          "position": 1209
+        },
+        "endLoc": {
+          "line": 130,
+          "column": 2,
+          "position": 1295
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 7,
+      "fragment": "});\n\n    expect(res.status).toBe(422);\n    expect(res.body.error.code).toBe('VALIDATION_ERROR');\n  });\n\n  it('returns 422 when password is missing'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\auth.test.js",
+        "start": 8,
+        "end": 14,
+        "startLoc": {
+          "line": 8,
+          "column": 2,
+          "position": 84
+        },
+        "endLoc": {
+          "line": 14,
+          "column": 39,
+          "position": 130
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 83,
+        "end": 50,
+        "startLoc": {
+          "line": 83,
+          "column": 2,
+          "position": 848
+        },
+        "endLoc": {
+          "line": 50,
+          "column": 35,
+          "position": 514
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 7,
+      "fragment": "});\n\n    expect(res.status).toBe(422);\n    expect(res.body.error.code).toBe('VALIDATION_ERROR');\n  });\n\n  it('returns 422 when both fields are missing'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\auth.test.js",
+        "start": 17,
+        "end": 23,
+        "startLoc": {
+          "line": 17,
+          "column": 2,
+          "position": 174
+        },
+        "endLoc": {
+          "line": 23,
+          "column": 43,
+          "position": 220
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 83,
+        "end": 50,
+        "startLoc": {
+          "line": 83,
+          "column": 2,
+          "position": 848
+        },
+        "endLoc": {
+          "line": 50,
+          "column": 35,
+          "position": 514
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 7,
+      "fragment": "});\n\n    expect(res.status).toBe(422);\n    expect(res.body.error.code).toBe('VALIDATION_ERROR');\n  });\n\n  it('returns 401 with invalid credentials'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\auth.test.js",
+        "start": 26,
+        "end": 32,
+        "startLoc": {
+          "line": 26,
+          "column": 2,
+          "position": 258
+        },
+        "endLoc": {
+          "line": 32,
+          "column": 39,
+          "position": 304
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 83,
+        "end": 50,
+        "startLoc": {
+          "line": 83,
+          "column": 2,
+          "position": 848
+        },
+        "endLoc": {
+          "line": 50,
+          "column": 35,
+          "position": 514
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 7,
+      "fragment": "});\n\n    expect(res.status).toBe(422);\n    expect(res.body.error.code).toBe('VALIDATION_ERROR');\n  });\n\n  it('registers a new user with valid data'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\auth.test.js",
+        "start": 67,
+        "end": 73,
+        "startLoc": {
+          "line": 67,
+          "column": 2,
+          "position": 693
+        },
+        "endLoc": {
+          "line": 73,
+          "column": 39,
+          "position": 739
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 83,
+        "end": 50,
+        "startLoc": {
+          "line": 83,
+          "column": 2,
+          "position": 848
+        },
+        "endLoc": {
+          "line": 50,
+          "column": 35,
+          "position": 514
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 4,
+      "fragment": "afterAll(async () => {\n  const pool = require('../config/db');\n  if (pool.end) await pool.end();\n});",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\__tests__\\auth.test.js",
+        "start": 124,
+        "end": 127,
+        "startLoc": {
+          "line": 124,
+          "column": 1,
+          "position": 1182
+        },
+        "endLoc": {
+          "line": 127,
+          "column": 2,
+          "position": 1226
+        }
+      },
+      "secondFile": {
+        "name": "src\\__tests__\\users.test.js",
+        "start": 127,
+        "end": 130,
+        "startLoc": {
+          "line": 127,
+          "column": 1,
+          "position": 1251
+        },
+        "endLoc": {
+          "line": 130,
+          "column": 2,
+          "position": 1295
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 10,
+      "fragment": ");\n    res.status(200).json(rows[0]);\n  } catch (err) {\n    next(err);\n  }\n});\n\n/**\n * DELETE /users/:id — Delete a user\n */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\users.js",
+        "start": 89,
+        "end": 98,
+        "startLoc": {
+          "line": 89,
+          "column": 2,
+          "position": 1089
+        },
+        "endLoc": {
+          "line": 98,
+          "column": 4,
+          "position": 1135
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 58,
+        "end": 67,
+        "startLoc": {
+          "line": 58,
+          "column": 17,
+          "position": 749
+        },
+        "endLoc": {
+          "line": 67,
+          "column": 4,
+          "position": 795
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 10,
+      "fragment": "const express = require('express');\nconst router = express.Router();\nconst pool = require('../config/db');\nconst AppError = require('../utils/AppError');\nconst { authenticate, authorize } = require('../middleware/authMiddleware');\nconst { parsePagination, parseSorting, buildPatchFields, paginatedResponse } = require('../utils/queryHelpers');\n\n/**\n * GET /tasks — List with pagination, sorting, and filters (assigned_to, project_id, status, priority)\n */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 1,
+        "end": 10,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 10,
+          "column": 4,
+          "position": 94
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 1,
+        "end": 7,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 7,
+          "column": 6,
+          "position": 93
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 4,
+      "fragment": "router.get('/', authenticate, async (req, res, next) => {\n  try {\n    const { page, pageSize, offset } = parsePagination(req.query);\n    const",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 11,
+        "end": 14,
+        "startLoc": {
+          "line": 11,
+          "column": 1,
+          "position": 96
+        },
+        "endLoc": {
+          "line": 14,
+          "column": 6,
+          "position": 153
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 13,
+        "end": 17,
+        "startLoc": {
+          "line": 13,
+          "column": 1,
+          "position": 112
+        },
+        "endLoc": {
+          "line": 17,
+          "column": 82,
+          "position": 170
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 4,
+      "fragment": "`%${req.query.search}%`); }\n    const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';\n\n    const [[",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 21,
+        "end": 24,
+        "startLoc": {
+          "line": 21,
+          "column": 2,
+          "position": 381
+        },
+        "endLoc": {
+          "line": 24,
+          "column": 2,
+          "position": 433
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\trainer.js",
+        "start": 99,
+        "end": 104,
+        "startLoc": {
+          "line": 99,
+          "column": 2,
+          "position": 594
+        },
+        "endLoc": {
+          "line": 104,
+          "column": 12,
+          "position": 648
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 4,
+      "fragment": ", [...params, String(pageSize), String(offset)]),\n    ]);\n\n    res.status(200).json(paginatedResponse(tasks",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 34,
+        "end": 37,
+        "startLoc": {
+          "line": 34,
+          "column": 8,
+          "position": 487
+        },
+        "endLoc": {
+          "line": 37,
+          "column": 6,
+          "position": 526
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 40,
+        "end": 43,
+        "startLoc": {
+          "line": 40,
+          "column": 19,
+          "position": 573
+        },
+        "endLoc": {
+          "line": 43,
+          "column": 6,
+          "position": 612
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": ");\n    res.status(200).json(rows[0]);\n  } catch (err) { next(err); }\n});\n\nrouter",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 44,
+        "end": 49,
+        "startLoc": {
+          "line": 44,
+          "column": 17,
+          "position": 654
+        },
+        "endLoc": {
+          "line": 49,
+          "column": 7,
+          "position": 698
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 58,
+        "end": 67,
+        "startLoc": {
+          "line": 58,
+          "column": 17,
+          "position": 749
+        },
+        "endLoc": {
+          "line": 67,
+          "column": 4,
+          "position": 795
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": ", [req.params.id]);\n    res.status(200).json(rows[0]);\n  } catch (err) { next(err); }\n});\n\nrouter.delete",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 75,
+        "end": 80,
+        "startLoc": {
+          "line": 75,
+          "column": 35,
+          "position": 1214
+        },
+        "endLoc": {
+          "line": 80,
+          "column": 7,
+          "position": 1269
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 89,
+        "end": 49,
+        "startLoc": {
+          "line": 89,
+          "column": 89,
+          "position": 1080
+        },
+        "endLoc": {
+          "line": 49,
+          "column": 5,
+          "position": 700
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": ");\n    res.status(204).send();\n  } catch (err) { next(err); }\n});\n\nmodule.exports = router;",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 83,
+        "end": 88,
+        "startLoc": {
+          "line": 83,
+          "column": 17,
+          "position": 1358
+        },
+        "endLoc": {
+          "line": 88,
+          "column": 2,
+          "position": 1405
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 102,
+        "end": 109,
+        "startLoc": {
+          "line": 102,
+          "column": 17,
+          "position": 1228
+        },
+        "endLoc": {
+          "line": 109,
+          "column": 2,
+          "position": 1277
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": "const express = require('express');\nconst router = express.Router();\nconst pool = require('../config/db');\nconst AppError = require('../utils/AppError');\nconst { authenticate, authorize } = require('../middleware/authMiddleware');\nconst { parsePagination, paginatedResponse",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\submissions.js",
+        "start": 1,
+        "end": 6,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 6,
+          "column": 18,
+          "position": 75
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 1,
+        "end": 6,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 6,
+          "column": 13,
+          "position": 75
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 5,
+      "fragment": "router.get('/', authenticate, async (req, res, next) => {\n  try {\n    const { page, pageSize, offset } = parsePagination(req.query);\n\n    const conditions",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\submissions.js",
+        "start": 18,
+        "end": 22,
+        "startLoc": {
+          "line": 18,
+          "column": 1,
+          "position": 102
+        },
+        "endLoc": {
+          "line": 22,
+          "column": 11,
+          "position": 162
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 13,
+        "end": 14,
+        "startLoc": {
+          "line": 13,
+          "column": 1,
+          "position": 112
+        },
+        "endLoc": {
+          "line": 14,
+          "column": 2,
+          "position": 155
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 5,
+      "fragment": "); }\n    \n    const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';\n\n    const [[countResult], [submissions",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\submissions.js",
+        "start": 25,
+        "end": 29,
+        "startLoc": {
+          "line": 25,
+          "column": 7,
+          "position": 280
+        },
+        "endLoc": {
+          "line": 29,
+          "column": 12,
+          "position": 331
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 21,
+        "end": 24,
+        "startLoc": {
+          "line": 21,
+          "column": 3,
+          "position": 390
+        },
+        "endLoc": {
+          "line": 24,
+          "column": 6,
+          "position": 439
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 5,
+      "fragment": ",\n        [...params, String(pageSize), String(offset)]),\n    ]);\n\n    res.status(200).json(paginatedResponse(submissions",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\submissions.js",
+        "start": 31,
+        "end": 35,
+        "startLoc": {
+          "line": 31,
+          "column": 48,
+          "position": 375
+        },
+        "endLoc": {
+          "line": 35,
+          "column": 12,
+          "position": 415
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 40,
+        "end": 43,
+        "startLoc": {
+          "line": 40,
+          "column": 19,
+          "position": 573
+        },
+        "endLoc": {
+          "line": 43,
+          "column": 6,
+          "position": 612
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 8,
+      "fragment": ", page, pageSize, countResult[0].total));\n  } catch (err) { next(err); }\n});\n\nrouter.get('/:id', authenticate, async (req, res, next) => {\n  try {\n    const [rows] = await pool.execute(\n      `SELECT s.*, u.name as intern_name, t.title as task_title ",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\submissions.js",
+        "start": 35,
+        "end": 42,
+        "startLoc": {
+          "line": 35,
+          "column": 12,
+          "position": 416
+        },
+        "endLoc": {
+          "line": 42,
+          "column": 59,
+          "position": 506
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 37,
+        "end": 55,
+        "startLoc": {
+          "line": 37,
+          "column": 6,
+          "position": 527
+        },
+        "endLoc": {
+          "line": 55,
+          "column": 89,
+          "position": 707
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 8,
+      "fragment": ");\n    res.status(200).json(rows[0]);\n  } catch (err) { next(err); }\n});\n\n/**\n * POST /submissions — Submit work (intern only)\n */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\submissions.js",
+        "start": 45,
+        "end": 52,
+        "startLoc": {
+          "line": 45,
+          "column": 23,
+          "position": 552
+        },
+        "endLoc": {
+          "line": 52,
+          "column": 4,
+          "position": 596
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 58,
+        "end": 67,
+        "startLoc": {
+          "line": 58,
+          "column": 17,
+          "position": 749
+        },
+        "endLoc": {
+          "line": 67,
+          "column": 4,
+          "position": 795
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 7,
+      "fragment": ");\n  } catch (err) { next(err); }\n});\n\nrouter.delete('/:id', authenticate, authorize('admin'), async (req, res, next) => {\n  try {\n    const [result] = await pool.execute('DELETE FROM submissions WHERE id = ?'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\submissions.js",
+        "start": 106,
+        "end": 112,
+        "startLoc": {
+          "line": 106,
+          "column": 2,
+          "position": 1375
+        },
+        "endLoc": {
+          "line": 112,
+          "column": 39,
+          "position": 1454
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 76,
+        "end": 101,
+        "startLoc": {
+          "line": 76,
+          "column": 2,
+          "position": 1240
+        },
+        "endLoc": {
+          "line": 101,
+          "column": 33,
+          "position": 1189
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": ");\n    res.status(204).send();\n  } catch (err) { next(err); }\n});\n\nmodule.exports = router;",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\submissions.js",
+        "start": 113,
+        "end": 118,
+        "startLoc": {
+          "line": 113,
+          "column": 23,
+          "position": 1493
+        },
+        "endLoc": {
+          "line": 118,
+          "column": 2,
+          "position": 1540
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 102,
+        "end": 109,
+        "startLoc": {
+          "line": 102,
+          "column": 17,
+          "position": 1228
+        },
+        "endLoc": {
+          "line": 109,
+          "column": 2,
+          "position": 1277
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 10,
+      "fragment": "const express = require('express');\nconst router = express.Router();\nconst pool = require('../config/db');\nconst AppError = require('../utils/AppError');\nconst { authenticate, authorize } = require('../middleware/authMiddleware');\nconst { parsePagination, parseSorting, buildPatchFields, paginatedResponse } = require('../utils/queryHelpers');\n\n/**\n * GET /projects — List with pagination, sorting, and cohort_id filter\n */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\projects.js",
+        "start": 1,
+        "end": 10,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 10,
+          "column": 4,
+          "position": 94
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 1,
+        "end": 7,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 7,
+          "column": 6,
+          "position": 93
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 4,
+      "fragment": "router.get('/', authenticate, async (req, res, next) => {\n  try {\n    const { page, pageSize, offset } = parsePagination(req.query);\n    const { sortField, sortOrder } = parseSorting(req.query, ['id', 'title', 'cohort_id'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\projects.js",
+        "start": 11,
+        "end": 14,
+        "startLoc": {
+          "line": 11,
+          "column": 1,
+          "position": 96
+        },
+        "endLoc": {
+          "line": 14,
+          "column": 12,
+          "position": 180
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 13,
+        "end": 14,
+        "startLoc": {
+          "line": 13,
+          "column": 1,
+          "position": 112
+        },
+        "endLoc": {
+          "line": 14,
+          "column": 9,
+          "position": 180
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 4,
+      "fragment": "); params.push(`%${req.query.search}%`); }\n    const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';\n\n    const [[countResult], [projects",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\projects.js",
+        "start": 19,
+        "end": 22,
+        "startLoc": {
+          "line": 19,
+          "column": 15,
+          "position": 298
+        },
+        "endLoc": {
+          "line": 22,
+          "column": 9,
+          "position": 363
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 21,
+        "end": 24,
+        "startLoc": {
+          "line": 21,
+          "column": 17,
+          "position": 374
+        },
+        "endLoc": {
+          "line": 24,
+          "column": 6,
+          "position": 439
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 4,
+      "fragment": "} ORDER BY ${sortField} ${sortOrder} LIMIT ? OFFSET ?`, [...params, String(pageSize), String(offset)]),\n    ]);\n\n    res.status(200).json(paginatedResponse(projects",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\projects.js",
+        "start": 24,
+        "end": 27,
+        "startLoc": {
+          "line": 24,
+          "column": 6,
+          "position": 401
+        },
+        "endLoc": {
+          "line": 27,
+          "column": 9,
+          "position": 450
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 40,
+        "end": 43,
+        "startLoc": {
+          "line": 40,
+          "column": 12,
+          "position": 563
+        },
+        "endLoc": {
+          "line": 43,
+          "column": 6,
+          "position": 612
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 7,
+      "fragment": ", page, pageSize, countResult[0].total));\n  } catch (err) { next(err); }\n});\n\nrouter.get('/:id', authenticate, async (req, res, next) => {\n  try {\n    const [rows] = await pool.execute('SELECT * FROM projects WHERE id = ?'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\projects.js",
+        "start": 27,
+        "end": 33,
+        "startLoc": {
+          "line": 27,
+          "column": 9,
+          "position": 451
+        },
+        "endLoc": {
+          "line": 33,
+          "column": 38,
+          "position": 539
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 37,
+        "end": 55,
+        "startLoc": {
+          "line": 37,
+          "column": 6,
+          "position": 527
+        },
+        "endLoc": {
+          "line": 55,
+          "column": 89,
+          "position": 707
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": ");\n    res.status(200).json(rows[0]);\n  } catch (err) { next(err); }\n});\n\nrouter.post('/', authenticate, authorize('admin')",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\projects.js",
+        "start": 34,
+        "end": 39,
+        "startLoc": {
+          "line": 34,
+          "column": 20,
+          "position": 578
+        },
+        "endLoc": {
+          "line": 39,
+          "column": 2,
+          "position": 635
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 58,
+        "end": 49,
+        "startLoc": {
+          "line": 58,
+          "column": 17,
+          "position": 749
+        },
+        "endLoc": {
+          "line": 49,
+          "column": 2,
+          "position": 711
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 4,
+      "fragment": ") {\n      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', [\n        ...(!title ? [{ field: 'title', message: 'Title is required' }] : []),\n        ...(!cohort_id",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\projects.js",
+        "start": 42,
+        "end": 45,
+        "startLoc": {
+          "line": 42,
+          "column": 10,
+          "position": 695
+        },
+        "endLoc": {
+          "line": 45,
+          "column": 10,
+          "position": 753
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 52,
+        "end": 55,
+        "startLoc": {
+          "line": 52,
+          "column": 12,
+          "position": 788
+        },
+        "endLoc": {
+          "line": 55,
+          "column": 11,
+          "position": 846
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 5,
+      "fragment": ": result.insertId });\n  } catch (err) { next(err); }\n});\n\nrouter.patch('/:id', authenticate, authorize('admin')",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\projects.js",
+        "start": 52,
+        "end": 56,
+        "startLoc": {
+          "line": 52,
+          "column": 10,
+          "position": 865
+        },
+        "endLoc": {
+          "line": 56,
+          "column": 2,
+          "position": 912
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 63,
+        "end": 67,
+        "startLoc": {
+          "line": 63,
+          "column": 7,
+          "position": 1007
+        },
+        "endLoc": {
+          "line": 67,
+          "column": 2,
+          "position": 1054
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 8,
+      "fragment": ", [req.params.id]);\n    res.status(200).json(rows[0]);\n  } catch (err) { next(err); }\n});\n\nrouter.delete('/:id', authenticate, authorize('admin'), async (req, res, next) => {\n  try {\n    const [result] = await pool.execute('DELETE FROM projects WHERE id = ?'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\projects.js",
+        "start": 64,
+        "end": 71,
+        "startLoc": {
+          "line": 64,
+          "column": 38,
+          "position": 1063
+        },
+        "endLoc": {
+          "line": 71,
+          "column": 36,
+          "position": 1168
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 89,
+        "end": 101,
+        "startLoc": {
+          "line": 89,
+          "column": 89,
+          "position": 1080
+        },
+        "endLoc": {
+          "line": 101,
+          "column": 33,
+          "position": 1189
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": ");\n    res.status(204).send();\n  } catch (err) { next(err); }\n});\n\nmodule.exports = router;",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\projects.js",
+        "start": 72,
+        "end": 77,
+        "startLoc": {
+          "line": 72,
+          "column": 20,
+          "position": 1207
+        },
+        "endLoc": {
+          "line": 77,
+          "column": 2,
+          "position": 1254
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 102,
+        "end": 109,
+        "startLoc": {
+          "line": 102,
+          "column": 17,
+          "position": 1228
+        },
+        "endLoc": {
+          "line": 109,
+          "column": 2,
+          "position": 1277
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 9,
+      "fragment": "const express = require('express');\r\nconst router = express.Router();\r\nconst pool = require('../config/db');\r\nconst { authenticate, authorize } = require('../middleware/authMiddleware');\r\n\r\n/**\r\n * GET /intern/profile — Returns the logged-in intern's profile\r\n * including cohort name and assigned trainer(s)\r\n */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\intern.js",
+        "start": 1,
+        "end": 9,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 9,
+          "column": 4,
+          "position": 62
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\trainer.js",
+        "start": 1,
+        "end": 6,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 6,
+          "column": 46,
+          "position": 57
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 8,
+      "fragment": "const express = require('express');\nconst router = express.Router();\nconst pool = require('../config/db');\nconst AppError = require('../utils/AppError');\nconst { authenticate, authorize } = require('../middleware/authMiddleware');\nconst { parsePagination, paginatedResponse } = require('../utils/queryHelpers');\n\n// Shared JOIN fragment for evaluation queries",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\evaluations.js",
+        "start": 1,
+        "end": 8,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 8,
+          "column": 47,
+          "position": 88
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 1,
+        "end": 8,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 8,
+          "column": 47,
+          "position": 88
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": "router.get('/', authenticate, async (req, res, next) => {\n  try {\n    const { page, pageSize, offset } = parsePagination(req.query);\n\n    const conditions = []; const params = [];\n    if (req.query.submission_id",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\evaluations.js",
+        "start": 20,
+        "end": 25,
+        "startLoc": {
+          "line": 20,
+          "column": 1,
+          "position": 102
+        },
+        "endLoc": {
+          "line": 25,
+          "column": 14,
+          "position": 188
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 13,
+        "end": 23,
+        "startLoc": {
+          "line": 13,
+          "column": 1,
+          "position": 112
+        },
+        "endLoc": {
+          "line": 23,
+          "column": 8,
+          "position": 188
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 5,
+      "fragment": "); }\n    \n    const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';\n\n    const [[countResult], [evaluations",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\evaluations.js",
+        "start": 26,
+        "end": 30,
+        "startLoc": {
+          "line": 26,
+          "column": 11,
+          "position": 245
+        },
+        "endLoc": {
+          "line": 30,
+          "column": 12,
+          "position": 296
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 21,
+        "end": 24,
+        "startLoc": {
+          "line": 21,
+          "column": 3,
+          "position": 390
+        },
+        "endLoc": {
+          "line": 24,
+          "column": 6,
+          "position": 439
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 5,
+      "fragment": ",\n        [...params, String(pageSize), String(offset)]),\n    ]);\n\n    res.status(200).json(paginatedResponse(evaluations",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\evaluations.js",
+        "start": 32,
+        "end": 36,
+        "startLoc": {
+          "line": 32,
+          "column": 48,
+          "position": 340
+        },
+        "endLoc": {
+          "line": 36,
+          "column": 12,
+          "position": 380
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 40,
+        "end": 43,
+        "startLoc": {
+          "line": 40,
+          "column": 19,
+          "position": 573
+        },
+        "endLoc": {
+          "line": 43,
+          "column": 6,
+          "position": 612
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 8,
+      "fragment": ", page, pageSize, countResult[0].total));\n  } catch (err) { next(err); }\n});\n\nrouter.get('/:id', authenticate, async (req, res, next) => {\n  try {\n    const [rows] = await pool.execute(\n      `SELECT e.*, u.name as trainer_name, t.title as task_title, i.name as intern_name ",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\evaluations.js",
+        "start": 36,
+        "end": 43,
+        "startLoc": {
+          "line": 36,
+          "column": 12,
+          "position": 381
+        },
+        "endLoc": {
+          "line": 43,
+          "column": 83,
+          "position": 471
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 37,
+        "end": 55,
+        "startLoc": {
+          "line": 37,
+          "column": 6,
+          "position": 527
+        },
+        "endLoc": {
+          "line": 55,
+          "column": 89,
+          "position": 707
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 8,
+      "fragment": ");\n    res.status(200).json(rows[0]);\n  } catch (err) { next(err); }\n});\n\n/**\n * Validate required evaluation fields.\n */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\evaluations.js",
+        "start": 46,
+        "end": 53,
+        "startLoc": {
+          "line": 46,
+          "column": 23,
+          "position": 517
+        },
+        "endLoc": {
+          "line": 53,
+          "column": 4,
+          "position": 561
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 58,
+        "end": 67,
+        "startLoc": {
+          "line": 58,
+          "column": 17,
+          "position": 749
+        },
+        "endLoc": {
+          "line": 67,
+          "column": 4,
+          "position": 795
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 10,
+      "fragment": ": result.insertId });\n  } catch (err) { \n    await connection.rollback();\n    next(err); \n  } finally {\n    connection.release();\n  }\n});\n\nrouter",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\evaluations.js",
+        "start": 91,
+        "end": 100,
+        "startLoc": {
+          "line": 91,
+          "column": 13,
+          "position": 1040
+        },
+        "endLoc": {
+          "line": 100,
+          "column": 7,
+          "position": 1103
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\submissions.js",
+        "start": 78,
+        "end": 89,
+        "startLoc": {
+          "line": 78,
+          "column": 13,
+          "position": 1014
+        },
+        "endLoc": {
+          "line": 89,
+          "column": 4,
+          "position": 1075
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 12,
+      "fragment": ", authenticate, authorize('admin', 'trainer'), async (req, res, next) => {\n  const connection = await pool.getConnection();\n  try {\n    validateEvalFields(req.body);\n    const { submission_id, trainer_id } = req.body;\n\n    await connection.beginTransaction();\n\n    const [result] = await connection.execute(\n      `UPDATE evaluations \n       SET submission_id = ?, trainer_id = ?, code_quality = ?, functionality = ?, documentation = ?, timeliness = ?, score = ?, feedback = ?, strengths = ?, improvements = ?, updated_at = CURRENT_TIMESTAMP\n       WHERE id = ?`",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\evaluations.js",
+        "start": 100,
+        "end": 111,
+        "startLoc": {
+          "line": 100,
+          "column": 7,
+          "position": 1108
+        },
+        "endLoc": {
+          "line": 111,
+          "column": 21,
+          "position": 1216
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\evaluations.js",
+        "start": 72,
+        "end": 83,
+        "startLoc": {
+          "line": 72,
+          "column": 4,
+          "position": 844
+        },
+        "endLoc": {
+          "line": 83,
+          "column": 45,
+          "position": 952
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 10,
+      "fragment": "});\n  } catch (err) {\n    await connection.rollback();\n    next(err);\n  } finally {\n    connection.release();\n  }\n});\n\nrouter.delete",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\evaluations.js",
+        "start": 118,
+        "end": 127,
+        "startLoc": {
+          "line": 118,
+          "column": 2,
+          "position": 1305
+        },
+        "endLoc": {
+          "line": 127,
+          "column": 7,
+          "position": 1362
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\submissions.js",
+        "start": 78,
+        "end": 100,
+        "startLoc": {
+          "line": 78,
+          "column": 2,
+          "position": 1020
+        },
+        "endLoc": {
+          "line": 100,
+          "column": 4,
+          "position": 1105
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 7,
+      "fragment": ");\n  }\n});\n\nrouter.delete('/:id', authenticate, authorize('admin'), async (req, res, next) => {\n  try {\n    const [result] = await pool.execute('DELETE FROM evaluations WHERE id = ?'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\evaluations.js",
+        "start": 123,
+        "end": 129,
+        "startLoc": {
+          "line": 123,
+          "column": 2,
+          "position": 1349
+        },
+        "endLoc": {
+          "line": 129,
+          "column": 39,
+          "position": 1412
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\tasks.js",
+        "start": 77,
+        "end": 101,
+        "startLoc": {
+          "line": 77,
+          "column": 4,
+          "position": 1257
+        },
+        "endLoc": {
+          "line": 101,
+          "column": 33,
+          "position": 1189
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 6,
+      "fragment": ");\n    res.status(204).send();\n  } catch (err) { next(err); }\n});\n\nmodule.exports = router;",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\evaluations.js",
+        "start": 130,
+        "end": 135,
+        "startLoc": {
+          "line": 130,
+          "column": 23,
+          "position": 1451
+        },
+        "endLoc": {
+          "line": 135,
+          "column": 2,
+          "position": 1498
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 102,
+        "end": 109,
+        "startLoc": {
+          "line": 102,
+          "column": 17,
+          "position": 1228
+        },
+        "endLoc": {
+          "line": 109,
+          "column": 2,
+          "position": 1277
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 10,
+      "fragment": "const express = require('express');\nconst router = express.Router();\nconst pool = require('../config/db');\nconst AppError = require('../utils/AppError');\nconst { authenticate, authorize } = require('../middleware/authMiddleware');\nconst { parsePagination, parseSorting, buildPatchFields, paginatedResponse } = require('../utils/queryHelpers');\n\n/**\n * GET /cohorts — List cohorts with pagination and sorting\n */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\cohorts.js",
+        "start": 1,
+        "end": 10,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 10,
+          "column": 4,
+          "position": 94
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 1,
+        "end": 7,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 7,
+          "column": 6,
+          "position": 93
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 4,
+      "fragment": "router.get('/', authenticate, async (req, res, next) => {\n  try {\n    const { page, pageSize, offset } = parsePagination(req.query);\n    const ALLOWED_FIELDS",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\cohorts.js",
+        "start": 11,
+        "end": 14,
+        "startLoc": {
+          "line": 11,
+          "column": 1,
+          "position": 96
+        },
+        "endLoc": {
+          "line": 14,
+          "column": 15,
+          "position": 155
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 13,
+        "end": 14,
+        "startLoc": {
+          "line": 13,
+          "column": 1,
+          "position": 112
+        },
+        "endLoc": {
+          "line": 14,
+          "column": 2,
+          "position": 155
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 4,
+      "fragment": "`%${req.query.search}%`); }\n    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';\n\n    const",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\cohorts.js",
+        "start": 19,
+        "end": 22,
+        "startLoc": {
+          "line": 19,
+          "column": 2,
+          "position": 252
+        },
+        "endLoc": {
+          "line": 22,
+          "column": 6,
+          "position": 301
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 33,
+        "end": 37,
+        "startLoc": {
+          "line": 33,
+          "column": 2,
+          "position": 459
+        },
+        "endLoc": {
+          "line": 37,
+          "column": 64,
+          "position": 509
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 4,
+      "fragment": "${whereClause} ORDER BY ${sortField} ${sortOrder} LIMIT ? OFFSET ?`, [...params, String(pageSize), String(offset)]),\n    ]);\n\n    res.status(200).json(paginatedResponse(cohorts",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\cohorts.js",
+        "start": 24,
+        "end": 27,
+        "startLoc": {
+          "line": 24,
+          "column": 24,
+          "position": 346
+        },
+        "endLoc": {
+          "line": 27,
+          "column": 8,
+          "position": 397
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 40,
+        "end": 43,
+        "startLoc": {
+          "line": 40,
+          "column": 13,
+          "position": 561
+        },
+        "endLoc": {
+          "line": 43,
+          "column": 6,
+          "position": 612
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 8,
+      "fragment": ");\n    res.status(200).json(rows[0]);\n  } catch (err) { next(err); }\n});\n\n/**\n * POST /cohorts — Create a new cohort\n */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\cohorts.js",
+        "start": 50,
+        "end": 57,
+        "startLoc": {
+          "line": 50,
+          "column": 19,
+          "position": 622
+        },
+        "endLoc": {
+          "line": 57,
+          "column": 4,
+          "position": 666
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 58,
+        "end": 67,
+        "startLoc": {
+          "line": 58,
+          "column": 17,
+          "position": 749
+        },
+        "endLoc": {
+          "line": 67,
+          "column": 4,
+          "position": 795
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 8,
+      "fragment": ", [req.params.id]);\n    res.status(200).json(rows[0]);\n  } catch (err) { next(err); }\n});\n\n/**\n * DELETE /cohorts/:id\n */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\cohorts.js",
+        "start": 82,
+        "end": 89,
+        "startLoc": {
+          "line": 82,
+          "column": 37,
+          "position": 1053
+        },
+        "endLoc": {
+          "line": 89,
+          "column": 4,
+          "position": 1106
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 89,
+        "end": 67,
+        "startLoc": {
+          "line": 89,
+          "column": 89,
+          "position": 1080
+        },
+        "endLoc": {
+          "line": 67,
+          "column": 4,
+          "position": 795
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 4,
+      "fragment": ", authenticate, authorize('admin'), async (req, res, next) => {\n  try {\n    const [result] = await pool.execute(\n      'UPDATE users SET cohort_id = NULL WHERE id = ? AND cohort_id = ?'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\cohorts.js",
+        "start": 133,
+        "end": 136,
+        "startLoc": {
+          "line": 133,
+          "column": 25,
+          "position": 1577
+        },
+        "endLoc": {
+          "line": 136,
+          "column": 67,
+          "position": 1626
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 99,
+        "end": 101,
+        "startLoc": {
+          "line": 99,
+          "column": 7,
+          "position": 1142
+        },
+        "endLoc": {
+          "line": 101,
+          "column": 33,
+          "position": 1189
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 4,
+      "fragment": ", async (req, res, next) => {\n  try {\n    const userId = await createUser(req.body);\n    res.status(201).json",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\auth.js",
+        "start": 65,
+        "end": 68,
+        "startLoc": {
+          "line": 65,
+          "column": 12,
+          "position": 629
+        },
+        "endLoc": {
+          "line": 68,
+          "column": 5,
+          "position": 677
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\users.js",
+        "start": 68,
+        "end": 71,
+        "startLoc": {
+          "line": 68,
+          "column": 2,
+          "position": 811
+        },
+        "endLoc": {
+          "line": 71,
+          "column": 9,
+          "position": 859
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 8,
+      "fragment": "const express = require('express');\r\nconst router = express.Router();\r\nconst pool = require('../config/db');\r\nconst { authenticate, authorize } = require('../middleware/authMiddleware');\r\n\r\n/**\r\n * GET /admin/stats — Aggregated dashboard statistics (admin only)\r\n */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src\\routes\\admin.js",
+        "start": 1,
+        "end": 8,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 8,
+          "column": 4,
+          "position": 62
+        }
+      },
+      "secondFile": {
+        "name": "src\\routes\\trainer.js",
+        "start": 1,
+        "end": 6,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 6,
+          "column": 46,
+          "position": 57
+        }
+      }
+    }
+  ]
+}

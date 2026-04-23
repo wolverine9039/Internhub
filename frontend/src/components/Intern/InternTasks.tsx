@@ -3,6 +3,7 @@ import type { User, Task } from '@/types';
 import { taskService } from '@/services/taskService';
 import Badge from '@/components/Shared/Badge';
 import './InternModule.css';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface InternTasksProps {
   user: User | null;
@@ -45,7 +46,9 @@ const InternTasks: React.FC<InternTasksProps> = ({ user }) => {
   }, [tasks]);
 
   if (loading) {
-    return <div className="loading-container"><div className="loading-spinner" /> Loading tasks...</div>;
+    return (
+      <LoadingWave />
+    );
   }
 
   return (

@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { evaluationService, EvaluationQueryParams } from '@/services/evaluationService';
-import type { Evaluation } from '@/types';
+import type { Evaluation, EvaluationFormData } from '@/types';
+import { getErrorMessage } from '@/utils/errorUtils';
 import Pagination from '@/components/Shared/Pagination';
 import ConfirmDialog from '@/components/Shared/ConfirmDialog';
 import EvaluationFormModal from './EvaluationFormModal';
 import './AdminDashboard.css';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface AdminEvaluationsProps {
   onNavigate?: (screen: string) => void;
@@ -28,8 +30,9 @@ const AdminEvaluations: React.FC<AdminEvaluationsProps> = () => {
       const res = await evaluationService.getEvaluations(params);
       setEvaluations(res.items);
       setPagination({ page: res.page, pages: res.pages, total: res.total });
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to load evaluations');
+    } catch (err: unknown) {
+      const errorMessage = getErrorMessage(err, 'Failed to load evaluations');
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -56,25 +59,21 @@ const AdminEvaluations: React.FC<AdminEvaluationsProps> = () => {
       await evaluationService.deleteEvaluation(deleteConfirmId);
       setDeleteConfirmId(null);
       fetchEvaluations(pagination.page);
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to delete evaluation');
+    } catch (err: unknown) {
+      const errorMessage = getErrorMessage(err, 'Failed to delete evaluation');
+      setError(errorMessage);
       setDeleteConfirmId(null);
     }
   };
 
-  const onFormSubmit = async (data: any) => {
-    try {
-      if (editingEval) {
-        await evaluationService.updateEvaluation(editingEval.id, data);
-      } else {
-        await evaluationService.createEvaluation(data);
-      }
-      setIsFormOpen(false);
-      fetchEvaluations(pagination.page);
-    } catch (err: any) {
-      console.error(err);
-      throw err;
+  const onFormSubmit = async (data: EvaluationFormData) => {
+    if (editingEval) {
+      await evaluationService.updateEvaluation(editingEval.id, data);
+    } else {
+      await evaluationService.createEvaluation(data);
     }
+    setIsFormOpen(false);
+    fetchEvaluations(pagination.page);
   };
 
   const getScoreColor = (score: number) => {
@@ -98,9 +97,7 @@ const AdminEvaluations: React.FC<AdminEvaluationsProps> = () => {
 
       <div className="admin-card">
         {loading ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div> Loading evaluations...
-          </div>
+          <LoadingWave />
         ) : evaluations.length === 0 ? (
           <div className="empty-state">No evaluations found</div>
         ) : (

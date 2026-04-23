@@ -28,6 +28,69 @@ export interface UpcomingDeadline {
   project_title: string;
 }
 
+// ── Analytics Types ──
+
+export interface AnalyticsKPIs {
+  taskCompletionRate: number;
+  avgEvaluationScore: number;
+  totalEvaluations: number;
+  submissionRate: number;
+  activeInternCount: number;
+  totalInternCount: number;
+}
+
+export interface TaskStatusItem {
+  status: string;
+  count: number;
+}
+
+export interface ScoreDistItem {
+  range: string;
+  count: number;
+}
+
+export interface ScoreDimensions {
+  code_quality: number;
+  functionality: number;
+  documentation: number;
+  timeliness: number;
+}
+
+export interface CohortPerformanceItem {
+  id: number;
+  name: string;
+  status: string;
+  internCount: number;
+  totalTasks: number;
+  completedTasks: number;
+  taskProgress: number;
+  avgScore: number;
+}
+
+export interface LeaderboardIntern {
+  rank: number;
+  id: number;
+  name: string;
+  cohort: string;
+  avgScore: number;
+  tasksCompleted: number;
+  submissions: number;
+}
+
+export interface AnalyticsData {
+  kpis: AnalyticsKPIs;
+  taskStatusBreakdown: TaskStatusItem[];
+  scoreDistribution: ScoreDistItem[];
+  scoreDimensions: ScoreDimensions;
+  cohortPerformance: CohortPerformanceItem[];
+  topInterns: LeaderboardIntern[];
+}
+
+export interface AnalyticsFilters {
+  from?: string;
+  to?: string;
+}
+
 export const adminService = {
   getDashboardStats: () =>
     api.get<DashboardStats>('/admin/stats').then(r => r.data),
@@ -41,6 +104,9 @@ export const adminService = {
   getUpcomingDeadlines: () =>
     api.get<UpcomingDeadline[]>('/admin/upcoming-deadlines').then(r => r.data),
 
+  getAnalytics: (filters?: AnalyticsFilters) =>
+    api.get<AnalyticsData>('/admin/analytics', { params: filters }).then(r => r.data),
+
   exportData: async (resource: 'users' | 'tasks' | 'submissions' | 'evaluations') => {
     const res = await api.get(`/admin/export/${resource}`, { responseType: 'blob' });
     const url = window.URL.createObjectURL(new Blob([res.data]));
@@ -53,3 +119,4 @@ export const adminService = {
     window.URL.revokeObjectURL(url);
   }
 };
+

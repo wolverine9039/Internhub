@@ -13,6 +13,8 @@ const taskRoutes = require('./routes/tasks');
 const submissionRoutes = require('./routes/submissions');
 const evaluationRoutes = require('./routes/evaluations');
 const adminRoutes = require('./routes/admin');
+const internRoutes = require('./routes/intern');
+const trainerRoutes = require('./routes/trainer');
 
 dotenv.config();
 
@@ -54,6 +56,8 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/submissions', submissionRoutes);
 app.use('/api/evaluations', evaluationRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/intern', internRoutes);
+app.use('/api/trainer', trainerRoutes);
 
 // ─── 404 Catch-All ───────────────────────────────────────────
 app.use((req, res) => {
@@ -70,12 +74,17 @@ app.use((req, res) => {
 // ─── Centralized Error Handler (must be last) ────────────────
 app.use(errorHandler);
 
-// ─── Start Server ────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n  ✅ InternHub API Server is running`);
-  console.log(`  ==================================`);
-  console.log(`  Live AWS RDS Database Connected`);
-  console.log(`  Running on: http://localhost:${PORT}`);
-  console.log(`  Health:     http://localhost:${PORT}/health`);
-  console.log(`  API base:   http://localhost:${PORT}/api\n`);
-});
+// ─── Start Server (only when run directly, not when imported by tests) ──
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`\n  ✅ InternHub API Server is running`);
+    console.log(`  ==================================`);
+    console.log(`  Live AWS RDS Database Connected`);
+    console.log(`  Running on: http://localhost:${PORT}`);
+    console.log(`  Health:     http://localhost:${PORT}/health`);
+    console.log(`  API base:   http://localhost:${PORT}/api\n`);
+  });
+}
+
+module.exports = app;
+

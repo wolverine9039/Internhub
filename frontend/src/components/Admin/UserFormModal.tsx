@@ -37,7 +37,7 @@ const UserFormModal: React.FC<UserFormModalProps> = ({ isOpen, editUser, onSubmi
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (evt: React.FormEvent) => {
+  const handleSubmit = (evt: React.SyntheticEvent<HTMLFormElement>) => {
     evt.preventDefault();
     if (!validate()) return;
     const data: { name: string; email: string; password?: string; role: string } = { name, email, role };
@@ -48,33 +48,33 @@ const UserFormModal: React.FC<UserFormModalProps> = ({ isOpen, editUser, onSubmi
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }} aria-hidden="true">
+      <dialog open className="modal-card" style={{ border: 'none', padding: 0, margin: 0 }} aria-modal="true" aria-label={editUser ? 'Edit User' : 'Create User'}>
         <div className="modal-header">
           <h3 className="modal-title">{editUser ? 'Edit User' : 'Create User'}</h3>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
             <div className="form-group">
-              <label className="form-label">Name</label>
-              <input className={`form-input ${errors.name ? 'error' : ''}`} value={name} onChange={e => setName(e.target.value)} placeholder="Full name" />
+              <label className="form-label" htmlFor="user-name">Name</label>
+              <input id="user-name" className={`form-input ${errors.name ? 'error' : ''}`} value={name} onChange={e => setName(e.target.value)} placeholder="Full name" />
               {errors.name && <div className="form-error">{errors.name}</div>}
             </div>
             <div className="form-group">
-              <label className="form-label">Email</label>
-              <input className={`form-input ${errors.email ? 'error' : ''}`} type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="user@company.com" />
+              <label className="form-label" htmlFor="user-email">Email</label>
+              <input id="user-email" className={`form-input ${errors.email ? 'error' : ''}`} type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="user@company.com" />
               {errors.email && <div className="form-error">{errors.email}</div>}
             </div>
             {!editUser && (
               <div className="form-group">
-                <label className="form-label">Password</label>
-                <input className={`form-input ${errors.password ? 'error' : ''}`} type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" />
+                <label className="form-label" htmlFor="user-password">Password</label>
+                <input id="user-password" className={`form-input ${errors.password ? 'error' : ''}`} type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" />
                 {errors.password && <div className="form-error">{errors.password}</div>}
               </div>
             )}
             <div className="form-group">
-              <label className="form-label">Role</label>
-              <select className="form-select" value={role} onChange={e => setRole(e.target.value)}>
+              <label className="form-label" htmlFor="user-role">Role</label>
+              <select id="user-role" className="form-select" value={role} onChange={e => setRole(e.target.value)}>
                 <option value="intern">Intern</option>
                 <option value="trainer">Trainer</option>
                 <option value="admin">Admin</option>
@@ -86,7 +86,7 @@ const UserFormModal: React.FC<UserFormModalProps> = ({ isOpen, editUser, onSubmi
             <button type="submit" className="btn btn-primary btn-sm">{editUser ? 'Save Changes' : 'Create User'}</button>
           </div>
         </form>
-      </div>
+      </dialog>
     </div>
   );
 };

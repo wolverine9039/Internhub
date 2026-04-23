@@ -1,5 +1,5 @@
 import api from './api';
-import type { Evaluation, PaginatedResponse } from '@/types';
+import type { Evaluation, PaginatedResponse, EvaluationFormData } from '@/types';
 
 export interface EvaluationQueryParams {
   page?: number;
@@ -14,12 +14,12 @@ export const evaluationService = {
     return res.data;
   },
 
-  createEvaluation: async (data: any): Promise<Evaluation> => {
+  createEvaluation: async (data: EvaluationFormData): Promise<Evaluation> => {
     const res = await api.post('/evaluations', data);
     return res.data;
   },
 
-  updateEvaluation: async (id: number, data: any): Promise<Evaluation> => {
+  updateEvaluation: async (id: number, data: EvaluationFormData): Promise<Evaluation> => {
     const res = await api.put(`/evaluations/${id}`, data);
     return res.data;
   },
@@ -28,3 +28,4 @@ export const evaluationService = {
     await api.delete(`/evaluations/${id}`);
   }
 };
+

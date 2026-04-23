@@ -1,13 +1,15 @@
 // AdminTasks.tsx
 import React, { useEffect, useState, useCallback } from 'react';
 import { taskService, TaskQueryParams } from '@/services/taskService';
-import type { Task } from '@/types';
+import type { Task, TaskFormData } from '@/types';
+import { getErrorMessage } from '@/utils/errorUtils';
 import Pagination from '@/components/Shared/Pagination';
 import TaskFormModal from './TaskFormModal';
 import ConfirmDialog from '@/components/Shared/ConfirmDialog';
 import Badge from '@/components/Shared/Badge';
 import { useAuth } from '@/context/AuthContext';
 import './AdminDashboard.css'; // Reuse dashboard table styles
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface AdminTasksProps {
   onNavigate?: (screen: string) => void;
@@ -42,8 +44,8 @@ const AdminTasks: React.FC<AdminTasksProps> = () => {
       const res = await taskService.getTasks(params);
       setTasks(res.items);
       setPagination({ page: res.page, pages: res.pages, total: res.total });
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to load tasks');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'Failed to load tasks'));
     } finally {
       setLoading(false);
     }
@@ -70,25 +72,24 @@ const AdminTasks: React.FC<AdminTasksProps> = () => {
       await taskService.deleteTask(deleteConfirmId);
       setDeleteConfirmId(null);
       fetchTasks(pagination.page);
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to delete task');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'Failed to delete task'));
       setDeleteConfirmId(null);
     }
   };
 
-  const onFormSubmit = async (data: any) => {
-    try {
-      if (editingTask) {
-        await taskService.updateTask(editingTask.id, data);
-      } else {
-        await taskService.createTask({ ...data, created_by: user?.id });
-      }
-      setIsFormOpen(false);
-      fetchTasks(pagination.page);
-    } catch (err: any) {
-      console.error(err);
-      throw err; // Let modal handle error display if we wanted to
+  const onFormSubmit = async (data: TaskFormData) => {
+    const payload = {
+      ...data,
+      priority: data.priority as 'low' | 'medium' | 'high',
+    };
+    if (editingTask) {
+      await taskService.updateTask(editingTask.id, payload);
+    } else {
+      await taskService.createTask({ ...payload, created_by: user?.id });
     }
+    setIsFormOpen(false);
+    fetchTasks(pagination.page);
   };
 
   const getPriorityColor = (p: string) => {
@@ -140,9 +141,7 @@ const AdminTasks: React.FC<AdminTasksProps> = () => {
 
       <div className="admin-card">
         {loading ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div> Loading tasks...
-          </div>
+          <LoadingWave />
         ) : tasks.length === 0 ? (
           <div className="empty-state">No tasks found</div>
         ) : (

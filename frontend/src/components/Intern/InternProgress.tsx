@@ -4,6 +4,7 @@ import { taskService } from '@/services/taskService';
 import { submissionService } from '@/services/submissionService';
 import { evaluationService } from '@/services/evaluationService';
 import './InternModule.css';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface InternProgressProps {
   user: User | null;
@@ -80,7 +81,9 @@ const InternProgress: React.FC<InternProgressProps> = ({ user }) => {
   }, [evaluations, tasks]);
 
   if (loading) {
-    return <div className="loading-container"><div className="loading-spinner" /> Loading progress...</div>;
+    return (
+      <LoadingWave />
+    );
   }
 
   return (

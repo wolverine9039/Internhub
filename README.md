@@ -1,6 +1,6 @@
 # InternHub
 
-Internship management platform for the Tech BU Internship Program.
+Internships management platform for the Tech BU Internship Program.
 
 ## Tech Stack
 

@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
+const { authenticate } = require('../middleware/authMiddleware');
+const { createUser } = require('../services/userService');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_dev_secret';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
@@ -16,10 +18,10 @@ router.post('/login', async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', [
-        ...(!email ? [{ field: 'email', message: 'Email is required' }] : []),
-        ...(!password ? [{ field: 'password', message: 'Password is required' }] : []),
-      ]);
+      const errorDetails = [];
+      if (!email) errorDetails.push({ field: 'email', message: 'Email is required' });
+      if (!password) errorDetails.push({ field: 'password', message: 'Password is required' });
+      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', errorDetails);
     }
 
     // Fetch user by email
@@ -58,37 +60,53 @@ router.post('/login', async (req, res, next) => {
 });
 
 /**
- * POST /auth/register — Register a new user (admin-only in production, open for dev seed)
+ * POST /auth/register — Register a new user (uses shared userService)
  */
 router.post('/register', async (req, res, next) => {
   try {
-    const { name, email, password, role, cohort_id } = req.body;
+    const userId = await createUser(req.body);
+    res.status(201).json({ message: 'User registered', userId });
+  } catch (err) {
+    next(err);
+  }
+});
 
-    if (!name || !email || !password || !role) {
-      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', [
-        ...(!name ? [{ field: 'name', message: 'Name is required' }] : []),
-        ...(!email ? [{ field: 'email', message: 'Email is required' }] : []),
-        ...(!password ? [{ field: 'password', message: 'Password is required' }] : []),
-        ...(!role ? [{ field: 'role', message: 'Role is required' }] : []),
-      ]);
+/**
+ * PUT /auth/change-password — Change the authenticated user's password
+ */
+router.put('/change-password', authenticate, async (req, res, next) => {
+  try {
+    const { current_password, new_password } = req.body;
+
+    if (!current_password || !new_password) {
+      const errorDetails = [];
+      if (!current_password) errorDetails.push({ field: 'current_password', message: 'Current password is required' });
+      if (!new_password) errorDetails.push({ field: 'new_password', message: 'New password is required' });
+      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', errorDetails);
     }
 
-    // Check duplicate email
-    const [existing] = await pool.execute('SELECT id FROM users WHERE email = ?', [email]);
-    if (existing.length > 0) {
-      throw new AppError(409, 'DUPLICATE_EMAIL', 'A user with this email already exists');
+    if (new_password.length < 6) {
+      throw new AppError(422, 'VALIDATION_ERROR', 'New password must be at least 6 characters');
     }
 
-    // Hash password
+    // Fetch user's current hash
+    const [rows] = await pool.execute('SELECT password_hash FROM users WHERE id = ?', [req.user.id]);
+    if (rows.length === 0) {
+      throw new AppError(404, 'NOT_FOUND', 'User not found');
+    }
+
+    // Verify current password
+    const isMatch = await bcrypt.compare(current_password, rows[0].password_hash);
+    if (!isMatch) {
+      throw new AppError(401, 'INVALID_CREDENTIALS', 'Current password is incorrect');
+    }
+
+    // Hash and save new password
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(new_password, salt);
+    await pool.execute('UPDATE users SET password_hash = ? WHERE id = ?', [hashedPassword, req.user.id]);
 
-    const [result] = await pool.execute(
-      'INSERT INTO users (name, email, password_hash, role, cohort_id) VALUES (?, ?, ?, ?, ?)',
-      [name, email, hashedPassword, role, cohort_id || null]
-    );
-
-    res.status(201).json({ message: 'User registered', userId: result.insertId });
+    res.status(200).json({ message: 'Password changed successfully' });
   } catch (err) {
     next(err);
   }

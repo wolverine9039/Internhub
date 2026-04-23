@@ -2,9 +2,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { submissionService, SubmissionQueryParams } from '@/services/submissionService';
 import type { Submission } from '@/types';
+import { getErrorMessage } from '@/utils/errorUtils';
 import Pagination from '@/components/Shared/Pagination';
 import Badge from '@/components/Shared/Badge';
 import './AdminDashboard.css';
+import LoadingWave from '@/components/Shared/LoadingWave';
 
 interface AdminSubmissionsProps {
   onNavigate?: (screen: string) => void;
@@ -32,8 +34,8 @@ const AdminSubmissions: React.FC<AdminSubmissionsProps> = () => {
       const res = await submissionService.getSubmissions(params);
       setSubmissions(res.items);
       setPagination({ page: res.page, pages: res.pages, total: res.total });
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to load submissions');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'Failed to load submissions'));
     } finally {
       setLoading(false);
     }
@@ -49,8 +51,8 @@ const AdminSubmissions: React.FC<AdminSubmissionsProps> = () => {
       setUpdatingId(id);
       await submissionService.updateSubmissionStatus(id, status);
       fetchSubmissions(pagination.page);
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to update status');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'Failed to update status'));
     } finally {
       setUpdatingId(null);
     }
@@ -89,9 +91,7 @@ const AdminSubmissions: React.FC<AdminSubmissionsProps> = () => {
 
       <div className="admin-card">
         {loading ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div> Loading submissions...
-          </div>
+          <LoadingWave />
         ) : submissions.length === 0 ? (
           <div className="empty-state">No submissions found</div>
         ) : (

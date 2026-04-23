@@ -1,0 +1,116 @@
+# ─── InternHub: App Server Initial Setup ──────────────────────
+# Run ONCE on a fresh EC2 to install Docker, Docker Compose, and Git
+# Usage: ansible-playbook -i inventory.ini setup-app-server.yml
+---
+- name: Setup App Server (EC2 #3)
+  hosts: app_server
+  become: true
+
+  tasks:
+    # ── System Updates ────────────────────────────────────────
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install required system packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+          - git
+          - python3-pip
+        state: present
+
+    # ── Docker Installation ───────────────────────────────────
+    - name: Add Docker GPG key
+      shell: |
+        install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+        chmod a+r /etc/apt/keyrings/docker.asc
+      args:
+        creates: /etc/apt/keyrings/docker.asc
+
+    - name: Add Docker repository
+      shell: |
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+      args:
+        creates: /etc/apt/sources.list.d/docker.list
+
+    - name: Update apt after adding Docker repo
+      apt:
+        update_cache: yes
+
+    - name: Install Docker Engine and Compose plugin
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add ubuntu user to docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+    # ── Clone Project Repository ──────────────────────────────
+    - name: Clone InternHub repository
+      git:
+        repo: "{{ github_repo }}"
+        dest: "{{ project_dir }}"
+        version: master
+        force: yes
+      become_user: ubuntu
+
+    # ── Create Production .env File ───────────────────────────
+    - name: Check if .env exists in docker directory
+      stat:
+        path: "{{ project_dir }}/docker/.env"
+      register: env_file
+
+    - name: Copy .env.example to .env if not exists
+      copy:
+        src: "{{ project_dir }}/docker/.env.example"
+        dest: "{{ project_dir }}/docker/.env"
+        remote_src: yes
+        owner: ubuntu
+        group: ubuntu
+      when: not env_file.stat.exists
+
+    - name: Remind to configure .env file
+      debug:
+        msg: |
+          ⚠️  IMPORTANT: Edit the .env file with real production credentials!
+          File: {{ project_dir }}/docker/.env
+          Required: DB_PASSWORD, JWT_SECRET
+
+    # ── Verification ──────────────────────────────────────────
+    - name: Verify Docker installation
+      command: docker --version
+      register: docker_version
+      changed_when: false
+
+    - name: Verify Docker Compose installation
+      command: docker compose version
+      register: compose_version
+      changed_when: false
+
+    - name: Print versions
+      debug:
+        msg:
+          - "Docker: {{ docker_version.stdout }}"
+          - "Compose: {{ compose_version.stdout }}"
+          - "✅ App Server setup complete!"

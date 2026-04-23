@@ -3,15 +3,21 @@ const router = express.Router();
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
+const { parsePagination, paginatedResponse } = require('../utils/queryHelpers');
+
+// Shared JOIN fragment for submission queries
+const SUBMISSION_JOIN_SQL = `
+  FROM submissions s 
+  LEFT JOIN users u ON s.intern_id = u.id 
+  LEFT JOIN tasks t ON s.task_id = t.id
+`;
 
 /**
  * GET /submissions — List with pagination and filters
  */
 router.get('/', authenticate, async (req, res, next) => {
   try {
-    const page = Math.max(1, parseInt(req.query.page) || 1);
-    const page_size = Math.min(100, Math.max(1, parseInt(req.query.page_size) || 20));
-    const offset = (page - 1) * page_size;
+    const { page, pageSize, offset } = parsePagination(req.query);
 
     const conditions = []; const params = [];
     if (req.query.task_id) { conditions.push('s.task_id = ?'); params.push(req.query.task_id); }
@@ -20,36 +26,22 @@ router.get('/', authenticate, async (req, res, next) => {
     
     const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
-    const countQuery = `SELECT COUNT(*) AS total FROM submissions s ${where}`;
-    const dataQuery = `
-      SELECT s.*, u.name as intern_name, t.title as task_title 
-      FROM submissions s 
-      LEFT JOIN users u ON s.intern_id = u.id 
-      LEFT JOIN tasks t ON s.task_id = t.id 
-      ${where} 
-      ORDER BY s.submitted_at DESC 
-      LIMIT ? OFFSET ?
-    `;
-
     const [[countResult], [submissions]] = await Promise.all([
-      pool.execute(countQuery, params),
-      pool.execute(dataQuery, [...params, String(page_size), String(offset)]),
+      pool.execute(`SELECT COUNT(*) AS total FROM submissions s ${where}`, params),
+      pool.execute(`SELECT s.*, u.name as intern_name, t.title as task_title ${SUBMISSION_JOIN_SQL} ${where} ORDER BY s.submitted_at DESC LIMIT ? OFFSET ?`,
+        [...params, String(pageSize), String(offset)]),
     ]);
 
-    res.status(200).json({ items: submissions, page, page_size, total: countResult[0].total, pages: Math.ceil(countResult[0].total / page_size) });
+    res.status(200).json(paginatedResponse(submissions, page, pageSize, countResult[0].total));
   } catch (err) { next(err); }
 });
 
 router.get('/:id', authenticate, async (req, res, next) => {
   try {
-    const [rows] = await pool.execute(`
-      SELECT s.*, u.name as intern_name, t.title as task_title 
-      FROM submissions s 
-      LEFT JOIN users u ON s.intern_id = u.id 
-      LEFT JOIN tasks t ON s.task_id = t.id 
-      WHERE s.id = ?
-    `, [req.params.id]);
-    
+    const [rows] = await pool.execute(
+      `SELECT s.*, u.name as intern_name, t.title as task_title ${SUBMISSION_JOIN_SQL} WHERE s.id = ?`,
+      [req.params.id]
+    );
     if (rows.length === 0) throw new AppError(404, 'NOT_FOUND', 'Submission not found');
     res.status(200).json(rows[0]);
   } catch (err) { next(err); }
@@ -62,12 +54,13 @@ router.post('/', authenticate, authorize('intern'), async (req, res, next) => {
   const connection = await pool.getConnection();
   try {
     const { task_id, intern_id, github_url, demo_url, file_url, notes } = req.body;
+    
     if (!task_id || !intern_id || !github_url) {
-      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', [
-        ...(!task_id ? [{ field: 'task_id', message: 'Task ID is required' }] : []),
-        ...(!intern_id ? [{ field: 'intern_id', message: 'Intern ID is required' }] : []),
-        ...(!github_url ? [{ field: 'github_url', message: 'GitHub URL is required' }] : []),
-      ]);
+      const errorDetails = [];
+      if (!task_id) errorDetails.push({ field: 'task_id', message: 'Task ID is required' });
+      if (!intern_id) errorDetails.push({ field: 'intern_id', message: 'Intern ID is required' });
+      if (!github_url) errorDetails.push({ field: 'github_url', message: 'GitHub URL is required' });
+      throw new AppError(422, 'VALIDATION_ERROR', 'Request validation failed', errorDetails);
     }
 
     await connection.beginTransaction();
@@ -115,12 +108,8 @@ router.patch('/:id', authenticate, authorize('admin', 'trainer'), async (req, re
   } catch (err) { next(err); }
 });
 
-router.delete('/:id', authenticate, authorize('admin'), async (req, res, next) => {
-  try {
-    const [result] = await pool.execute('DELETE FROM submissions WHERE id = ?', [req.params.id]);
-    if (result.affectedRows === 0) throw new AppError(404, 'NOT_FOUND', 'Submission not found');
-    res.status(204).send();
-  } catch (err) { next(err); }
-});
+const { deleteById } = require('../utils/crudFactory');
+
+router.delete('/:id', authenticate, authorize('admin'), deleteById('submissions', 'Submission'));
 
 module.exports = router;
