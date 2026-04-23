@@ -38,7 +38,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         {/* Mobile header */}
         <div className="mobile-header">
           <button className="hamburger-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>☰</button>
-          <div className="mobile-brand">Intern<span>Hub</span></div>
+          <div className="mobile-brand">Intern<span> Management Tool</span></div>
         </div>
         {children}
       </main>

@@ -81,14 +81,14 @@ const Sidebar: React.FC<SidebarProps> = ({
   return (
     <>
       {/* Mobile backdrop */}
-      {isOpen && <div className="sidebar-backdrop" onClick={onToggle} />}
+      {isOpen && <div className="sidebar-backdrop" role="presentation" onClick={onToggle} onKeyDown={(e) => { if (e.key === 'Escape') onToggle?.(); }} />}
 
       <aside className={`sidebar ${isOpen ? 'open' : ''} ${collapsed ? 'collapsed' : ''}`}>
         {/* Logo & collapse toggle */}
 
         <div className="sidebar-top">
           <div className="sidebar-logo">
-            Intern<span>Hub</span>
+            Intern<span> Management Tool</span>
           </div>
           <button
             className="collapse-btn"
@@ -102,7 +102,8 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         <nav className="sidebar-nav">
           {navItems[role]?.map((item) => (
-            <div
+            <button
+              type="button"
               key={item.screen}
               className={`nav-item ${activeScreen === item.screen ? 'active' : ''}`}
               onClick={() => handleNavClick(item.screen)}
@@ -110,7 +111,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             >
               <span className="icon">{item.icon}</span>
               <span className="nav-label">{item.label}</span>
-            </div>
+            </button>
           ))}
         </nav>
 
